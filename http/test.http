@@ -1,0 +1,34 @@
+
+###
+GET /api/test/ HTTP/1.1
+Host: localhost:3000
+
+###
+POST /api/test/ HTTP/1.1
+Host: localhost:3000
+Content-Type: application/json
+
+{
+    "personId": 27
+    , "position": "FFFFFFF"
+    , "sporttype": {
+        "id": 75
+        , "displayName": "Художественная гимнастика"
+    }
+}
+
+###
+PUT /api/test/ HTTP/1.1
+Host: localhost:3000
+Content-Type: application/json
+
+{
+    "sportrank": {
+        "id": 4
+        , "displayName": "Художественная гимнастика"
+    }
+}
+
+###
+DELETE /api/test/ HTTP/1.1
+Host: localhost:3000
