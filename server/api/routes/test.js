@@ -1,30 +1,54 @@
 
 const express = require('express');
 
-let router = express.Router();
+const db = require('../utils/mongoDbUtils');
 
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
+db.setUpConnection();
+let router = express.Router();
 
 //----- endpoint: /api/test/
 router.route('/test')
-  .get(function(req, res, next) {
-    console.log('Get a random book');
-    res.send('Get a random book');
+  .get(function(req, res) {
+    
+    db.listNotes()
+      .then((data) => {
+        res.send(data)
+      });
   })
-  .post(function(req, res, next) {
-    console.log('Add a random book', req.body);
-    res.send('Add a book');
+  .post(function(req, res) {
+
+    db.createNote(req.body)
+      .then((data) => {
+        res.send(data)
+      });
   })
-  .put(function(req, res, next) {
-    console.log('Update a random book');
-    res.send('Update the book');
-  })
-  .delete(function(req, res, next) {
-    console.log('delete a random book');
-    res.send('delete the book');
-  })
+  
+  
 ;
+
+router.route('/test/:id')
+  .get(function(req, res) {
+    
+    db.listNotes(req.params.id)
+      .then((data) => {
+        res.send(data)
+      });
+  })
+  .put(function(req, res) {
+    db.updateNote(req.params.id, req.body)
+      .then((data) => {
+        res.send(data)
+      });
+  })
+  .delete(function(req, res) {
+    
+    db.deleteNote(req.params.id)
+      .then((data) => {
+        res.send(data)
+      })
+      .catch((error) => {
+        res.send(error);
+      })
+  })
 
 module.exports = router;

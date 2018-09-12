@@ -8,7 +8,11 @@ module.exports = {
     }
     , db : {
         mongo : {
-            url: 'mongodb://<eeki>:<eeki1234>@ds251332.mlab.com:51332/checkers'
+            url: 'mongodb://e:e123456@ds046677.mlab.com:46677/ch'
+            , options: {
+                autoReconnect: (process.env.NODE_ENV == 'production')
+                , useNewUrlParser: true 
+            }
         }
     }, 
 };
