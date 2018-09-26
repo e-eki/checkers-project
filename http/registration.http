@@ -1,0 +1,30 @@
+
+###
+GET /api/registration/ HTTP/1.1
+Host: {{host}}
+
+###
+POST /api/registration/ HTTP/1.1
+Host: {{host}}
+Content-Type: application/json
+
+{
+	"login": "sdfdd"
+	, "email": "234@"
+	, "password": "111"
+}
+
+###
+PUT /api/registration/ HTTP/1.1
+Host: {{host}}
+Content-Type: application/json
+
+{
+	"login": "qqqWWW"
+	, "email": "q1222"
+	, "password": "333"
+}
+
+###
+DELETE /api/registration/ HTTP/1.1
+Host: {{host}}

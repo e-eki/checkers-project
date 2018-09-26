@@ -14,17 +14,15 @@ Content-Type: application/json
 }
 
 ###
-PUT /api/test/ HTTP/1.1
+PUT /api/test/5b9952892b96c72df0310331 HTTP/1.1
 Host: {{host}}
 Content-Type: application/json
 
 {
-    "sportrank": {
-        "id": 4
-        , "displayName": "Художественная гимнастика"
-    }
+	"title": "second"
+	, "color": "grey"
 }
 
 ###
-DELETE /api/test/5b994ae5d38ec017d0d7644c HTTP/1.1
+DELETE /api/test/5b99546120f7c02bd834645e HTTP/1.1
 Host: {{host}}
