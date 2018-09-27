@@ -9,9 +9,9 @@ Host: {{host}}
 Content-Type: application/json
 
 {
-	"login": "sdfdd"
-	, "email": "234@"
-	, "password": "111"
+	"login": "zzz"
+	, "email": "ccc"
+	, "password": "1r11"
 }
 
 ###

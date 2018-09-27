@@ -14,5 +14,8 @@ module.exports = {
                 , useNewUrlParser: true 
             }
         }
-    }, 
+    }
+    , bcrypt: {
+        saltLength: 10
+    } 
 };

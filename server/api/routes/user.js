@@ -35,6 +35,7 @@ router.route('/user')
 	})
 ;
 
+//----- endpoint: /api/user/:id
 router.route('/user/:id')
 
   .get(function(req, res) {   
@@ -65,5 +66,6 @@ router.route('/user/:id')
         res.send(error);
       })
   })
+;
 
 module.exports = router;

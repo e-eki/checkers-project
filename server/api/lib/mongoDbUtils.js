@@ -16,7 +16,7 @@ module.exports = {
 
 	closeConnection: function() {
 		mongoose.disconnect();  // отключение от базы данных
-	}
+	},
 	
 	/*listNotes: function(id) {
 		if (id) return User.findOne({_id: id});

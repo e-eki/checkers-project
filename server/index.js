@@ -38,6 +38,7 @@ mongoDbUtils.setUpConnection();
 //app.use('/api', require('./api/auth/logout'));
 //app.use('/api', require('./api/auth/session'));
 app.use('/api', require('./api/auth/registration'));
+app.use('/api', require('./api/auth/emailConfirm'));
 
 //app.use('/api', require('./api/routes/test'));
 app.use('/api', require('./api/routes/user'));

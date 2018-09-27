@@ -4,6 +4,7 @@ const Promise = require('bluebird');
 
 const userModel = require('../models/user');
 const utils = require('../lib/utils');
+const mail = require('../lib/mail');
 
 let router = express.Router();
 
@@ -33,13 +34,23 @@ router.route('/registration')
 				if (emailDuplicates.length) throw new Error('email already exists');
 				else if (loginDuplicates.length) throw new Error('login already exists');
 
+				return utils.makePasswordHash(req.body.password);
+			})
+			.then((hash) => {
+
 				//save new user
 				return userModel.create({
 					login     : req.body.login,
 					email     : req.body.email,
 					isEmailConfirmed: false,
-					password     : req.body.password,
+					password     : hash,
 				});
+			})
+			.then((data) => {
+
+				//res.send(data);
+
+				return mail.sendConfirmEmailLetter();
 			})
 			.then((data) => {
 
@@ -47,8 +58,7 @@ router.route('/registration')
 			})
 			.catch((error) => {
 
-				const errorMessage = error.message ? error.message : error;
-				return utils.sendErrorResponse(res, errorMessage);
+				return utils.sendErrorResponse(res, error);
 			});
 	})
 
@@ -61,5 +71,6 @@ router.route('/registration')
 
 		return utils.sendErrorResponse(res, 'UNSUPPORTED_METHOD');
 	})
+;
 
 module.exports = router;
