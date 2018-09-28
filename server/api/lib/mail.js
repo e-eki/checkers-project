@@ -16,15 +16,16 @@ module.exports = {
 			}
 		});
 
+		const letterHtml = require('../templates/emailConfirmLetter').get(data);
+
 		return transport.sendMail({
-			from: 'viktoriadremina1990@gmail.com',
-			to: 'ifirtree@gmail.com',
-			subject: 'Регистрация на сайте',
-			text: 'Какой то текст',
-			html:'<p>HTML version of the message</p>'
+			from: '"Игра в шашки онлайн." <checkers-game-online@gmail.com>' ,
+			to: 'ifirtree@gmail.com',  //!!!TODO: data.email
+			subject: 'Подтверждение адреса электронной почты на сайте «Игра в шашки онлайн.»',
+			html: letterHtml
 		})
             .then((result) => {
-
+				
                 transport.close();
                 return result;
             });

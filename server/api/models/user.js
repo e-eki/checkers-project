@@ -16,8 +16,10 @@ module.exports = {
 		const user = new UserModel({
 			login     : data.login,
 			email     : data.email,
+			confirmEmailCode: data.confirmEmailCode,
 			isEmailConfirmed: data.isEmailConfirmed ? data.isEmailConfirmed : false,
 			password     : data.password,
+			firstName: data.firstName,
 		});
 	
 		return user.save();
@@ -28,8 +30,10 @@ module.exports = {
 			_id: id,
 			login     : data.login,
 			email     : data.email,
+			confirmEmailCode: data.confirmEmailCode,
 			isEmailConfirmed: data.isEmailConfirmed,
 			password     : data.password,
+			firstName: data.firstName,
 		});
 
 		return UserModel.findOneAndUpdate({_id: id}, user, {new: true});
