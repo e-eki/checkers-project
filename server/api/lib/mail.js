@@ -9,19 +9,19 @@ module.exports = {
 	sendConfirmEmailLetter: function(data) {
 
 		let transport = nodemailer.createTransport({
-			service: 'Gmail', 
+			service: config.mail_settings.service, 
 			auth: { 
-				user: 'viktoriadremina1990@gmail.com', 
-				pass: 'qwerty12345_'
+				user: config.mail_settings.auth.user 
+				, pass: config.mail_settings.auth.pass
 			}
 		});
 
 		const letterHtml = require('../templates/emailConfirmLetter').get(data);
 
 		return transport.sendMail({
-			from: '"Игра в шашки онлайн." <checkers-game-online@gmail.com>' ,
+			from: config.mail_settings.from,
 			to: 'ifirtree@gmail.com',  //!!!TODO: data.email
-			subject: 'Подтверждение адреса электронной почты на сайте «Игра в шашки онлайн.»',
+			subject: config.mail_settings.confirmEmailSubject,
 			html: letterHtml
 		})
             .then((result) => {

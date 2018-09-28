@@ -48,14 +48,26 @@ router.route('/emailconfirm/:uuid')
 
 				// по идее должен быть один юзер на один код подтверждения
 				const userData = users[0];
-				userData.isEmailConfirmed = true;
 
+				// если уже переходили по ссылке
+				if (userData.isEmailConfirmed) return true;
+
+				userData.isEmailConfirmed = true;
 				// проставляем юзеру флаг подтверждения имейла
 				return userModel.update(userData._id, userData);
 			})
-			.then((data) => {
+			.then((usedLink) => {
 
-				res.send(data);
+				// если по ссылке уже переходили, то редиректим на главную
+				if (usedLink === true) 
+					return res.redirect('http://localhost:3000');
+
+				//если нет, то показываем страницу успешной регистрации
+				//TODO: ?? как сделать редирект на сайт через неск.секунд после показа страницы?
+				const page = require('../templates/successConfirmPage');
+
+				res.set('Content-Type', 'text/html');
+				return res.send(page);
 			})
 			.catch((error) => {
 

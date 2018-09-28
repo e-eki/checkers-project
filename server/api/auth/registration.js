@@ -52,7 +52,7 @@ router.route('/registration')
 
 				//для каждого юзера генерится уникальный код подтверждения и записывается в БД
 				// (при повторной отправке подтверждения на имейл код подтверждения берется этот же)
-				const confirmEmailCode = utils.makeUId(req.body.login + req.body.email);  
+				const confirmEmailCode = utils.makeUId(req.body.login + req.body.email + Date.now());  
 
 				userData = {
 					login     : req.body.login,

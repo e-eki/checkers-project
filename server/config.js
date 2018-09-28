@@ -18,4 +18,13 @@ module.exports = {
     , bcrypt: {
         saltLength: 10
     } 
+    , mail_settings: {
+        service: 'Gmail' 
+        , auth: { 
+            user: 'viktoriadremina1990@gmail.com', 
+            pass: 'qwerty12345_'
+        }
+        , from: '"Игра в шашки онлайн." <checkers-game-online@gmail.com>'
+        , confirmEmailSubject: 'Подтверждение адреса электронной почты на сайте «Игра в шашки онлайн.»'
+    }
 };
