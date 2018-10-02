@@ -19,7 +19,7 @@ module.exports = new function() {
 			</head> 
 			<body>
 				<div class="wrapper">
-					<p>Здравствуйте, ${data.firstName}!</p>
+					<p>Здравствуйте, ${data.login}!</p>
 					<p>Мы рады приветствовать вас на нашем сайте!
 					<br/>Чтобы продолжить регистрацию, перейдите по <a href="http://localhost:3000/api/emailconfirm/${data.confirmEmailCode}/">ссылке</a>.</p>
 					<p>Ваша «Игра в шашки онлайн».

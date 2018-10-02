@@ -27,4 +27,15 @@ module.exports = {
         , from: '"Игра в шашки онлайн." <checkers-game-online@gmail.com>'
         , confirmEmailSubject: 'Подтверждение адреса электронной почты на сайте «Игра в шашки онлайн.»'
     }
+
+    , token: {
+        secret: 'Ym9yc2NodA=='
+        , access: {
+            expiresIn: 600000   //10 мин = 10*60*1000
+          },
+        
+          refresh: {
+            expiresIn: 3600000  //60 мин
+          },
+    }
 };

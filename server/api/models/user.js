@@ -19,7 +19,7 @@ module.exports = {
 			confirmEmailCode: data.confirmEmailCode,
 			isEmailConfirmed: data.isEmailConfirmed ? data.isEmailConfirmed : false,
 			password     : data.password,
-			firstName: data.firstName,
+			role: data.role,
 		});
 	
 		return user.save();
@@ -33,7 +33,7 @@ module.exports = {
 			confirmEmailCode: data.confirmEmailCode,
 			isEmailConfirmed: data.isEmailConfirmed,
 			password     : data.password,
-			firstName: data.firstName,
+			role: data.role,
 		});
 
 		return UserModel.findOneAndUpdate({_id: id}, user, {new: true});

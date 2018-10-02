@@ -18,19 +18,22 @@ router.route('/registration')
 
   	.post(function(req, res) {
 
-		let userData;
+		return Promise.resolve(true)
+			.then(() => {
+				let userData;
 
-		//validate req.body
-		if (!req.body.email || req.body.email == '') throw new Error('incorrect registration data: empty email');
-		else if (!req.body.login || req.body.login == '') throw new Error('incorrect registration data: empty login');
-		else if (!req.body.password || req.body.password == '') throw new Error('incorrect registration data: empty password');
+				//validate req.body
+				if (!req.body.email || req.body.email == '') throw new Error('incorrect registration data: empty email');
+				else if (!req.body.login || req.body.login == '') throw new Error('incorrect registration data: empty login');
+				else if (!req.body.password || req.body.password == '') throw new Error('incorrect registration data: empty password');
 
-		//check email & login duplicates
-		let tasks = [];
-		tasks.push(userModel.query({email: req.body.email}));
-		tasks.push(userModel.query({login: req.body.login}));
-		
-		return Promise.all(tasks)
+				//check email & login duplicates
+				let tasks = [];
+				tasks.push(userModel.query({email: req.body.email}));
+				tasks.push(userModel.query({login: req.body.login}));
+				
+				return Promise.all(tasks);
+			})
 			.spread((emailDuplicates, loginDuplicates) => {
 
 				// если занят логин, то выбрасываем ошибку
@@ -43,7 +46,7 @@ router.route('/registration')
 				if (emailDuplicates.length) {
 					
 					if (emailDuplicates[0].isEmailConfirmed) throw new Error('email already exists');
-					else return utils.sendErrorResponse(res, error, 403);
+					else return utils.sendErrorResponse(res, error, 403);  //TODO!!!
 				}
 
 				return utils.makePasswordHash(req.body.password);
@@ -59,9 +62,11 @@ router.route('/registration')
 					email     : req.body.email,
 					confirmEmailCode: confirmEmailCode,
 					isEmailConfirmed: false,
-					password     : hash,
-					firstName: req.body.firstName,
+					password     : hash
 				};
+
+				//??? роль юзеру
+				userData.role = 'user';
 
 				//save new user
 				return userModel.create(userData);

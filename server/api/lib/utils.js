@@ -21,19 +21,18 @@ module.exports = {
     // вычисляет хэш пароля
     makePasswordHash: function(password) {
 
-        let tasks = [];
         // оборачиваем в промис вызов функции, тк иначе она промис не возвращает, хоть и асинхронная
-        tasks.push(bcrypt.genSalt(config.bcrypt.saltLength));   // генерим соль
-
-        return new Promise.all(tasks)
+        return Promise.resolve(bcrypt.genSalt(config.bcrypt.saltLength))  // генерим соль
             .then((salt) => {
                 // берем пароль юзера + соль и генерим хеш
-                return bcrypt.hash(password, salt[0]);
+                return bcrypt.hash(password, salt);
             })
-            .then((hash) => {
-                
-                return hash;
-            });
+    },
+
+    // сравнивает пароль с хэшем пароля из БД
+    comparePassword: function(password, hash) {
+
+        return Promise.resolve(bcrypt.compare(password, hash));
     },
 
     //генерирует уникальный идентификатор

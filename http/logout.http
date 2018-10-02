@@ -1,0 +1,4 @@
+
+DELETE /api/logout/ HTTP/1.1
+Host: {{host}}
+Authorization: Token eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJ1cVySWQiOiI1YmIzZDQxMzBlMjU4NDI1OTg1YzljYzciLCJ1c2VyUm9sZSI6InVzZXIiLCJpYXQiOjE1Mzg1MTIxMzMsImV4cCI6MTUzODUxMjczM30.WiCbTkXNd6eAYYlTCGcmGwYPd0TeyBqUosY_44YNzeUbm1nUwxeJWrDqZHbx1L9PypsUophKD-ilaqPNPz_Edg

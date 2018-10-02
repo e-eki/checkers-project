@@ -34,11 +34,10 @@ mongoDbUtils.setUpConnection();
 // ---------------------------------------------------------------
 // запросы к api
 //app.use('/api', api);
-//app.use('/api', require('./api/auth/login'));
-//app.use('/api', require('./api/auth/logout'));
-//app.use('/api', require('./api/auth/session'));
 app.use('/api', require('./api/auth/registration'));
 app.use('/api', require('./api/auth/emailConfirm'));
+app.use('/api', require('./api/auth/login'));
+app.use('/api', require('./api/auth/logout'));
 
 //app.use('/api', require('./api/routes/test'));
 app.use('/api', require('./api/routes/user'));
