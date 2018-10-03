@@ -39,6 +39,7 @@ app.use('/api', require('./api/auth/emailConfirm'));
 app.use('/api', require('./api/auth/login'));
 app.use('/api', require('./api/auth/logout'));
 app.use('/api', require('./api/auth/changePassword'));
+app.use('/api', require('./api/auth/refreshTokens'));
 
 //app.use('/api', require('./api/routes/test'));
 app.use('/api', require('./api/routes/user'));

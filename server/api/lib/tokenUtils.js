@@ -61,7 +61,7 @@ const tokenUtils = new function() {
 		return accessToken;
 	};
 
-	this.decodeToken = function(token) {
+	/*this.decodeToken = function(token) {
 
 		let options = {
 			json: true,
@@ -69,7 +69,7 @@ const tokenUtils = new function() {
 		};
 
 		return jwt.decode(token, options);
-	},
+	},*/
 
 	// проверяет access token
 	this.verifyAccessToken = function(token) {

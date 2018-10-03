@@ -28,11 +28,15 @@ router.route('/logout')
 	//data = accessToken
 	.delete(function(req, res) {
 
-		const headerAuthorization = req.header('Authorization') || '';
-		const accessToken = tokenUtils.getTokenFromHeader(headerAuthorization);
-		
-		//validate & decode token
-		return Promise.resolve(tokenUtils.verifyAccessToken(accessToken))
+		return Promise.resolve(true)
+			.then(() => {
+
+				const headerAuthorization = req.header('Authorization') || '';
+				const accessToken = tokenUtils.getTokenFromHeader(headerAuthorization);
+				
+				//validate & decode token
+				return tokenUtils.verifyAccessToken(accessToken);
+			})
 			.then((result) => {
 				
 				if (result.error || !result.payload) throw new Error('invalid access token: ' + result.error.message);

@@ -2,7 +2,6 @@
 const express = require('express');
 const Promise = require('bluebird');
 
-const config = require('../../config');
 const utils = require('../lib/utils');
 const tokenUtils = require('../lib/tokenUtils');
 const userModel = require('../models/user');
