@@ -18,9 +18,10 @@ router.route('/registration')
 
   	.post(function(req, res) {
 
+		let userData;
+
 		return Promise.resolve(true)
 			.then(() => {
-				let userData;
 
 				//validate req.body
 				if (!req.body.email || req.body.email == '') throw new Error('incorrect registration data: empty email');

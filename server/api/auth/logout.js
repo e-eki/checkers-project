@@ -35,7 +35,7 @@ router.route('/logout')
 		return Promise.resolve(tokenUtils.verifyAccessToken(accessToken))
 			.then((result) => {
 				
-				if (result.error) throw new Error('invalid access token: ' + result.error.message);
+				if (result.error || !result.payload) throw new Error('invalid access token: ' + result.error.message);
 
 				return tokenUtils.deleteAllRefreshTokens(result.payload.userId);
 			})

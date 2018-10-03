@@ -1,5 +1,6 @@
 
 const express = require('express');
+const Promise = require('bluebird');
 
 const config = require('../../config');
 const utils = require('../lib/utils');
@@ -28,19 +29,28 @@ router.route('/changepassword/')
 	}*/
 	.put(function(req, res) {
 
-		const headerAuthorization = req.header('Authorization') || '';
-		const accessToken = tokenUtils.getTokenFromHeader(headerAuthorization);
+		let newPassword;
 
-		const newPassword = req.body.newPassword;
+		return Promise.resolve(true)
+			.then(() => {
 
-		//validate & decode token
-		return Promise.resolve(tokenUtils.verifyAccessToken(accessToken))
+				//validate req.body
+				if (!req.body.newPassword || req.body.newPassword == '') throw new Error('incorrect login data: empty newPassword');
+
+				newPassword = req.body.newPassword;
+
+				const headerAuthorization = req.header('Authorization') || '';
+				const accessToken = tokenUtils.getTokenFromHeader(headerAuthorization);
+
+				//validate & decode token
+				return tokenUtils.verifyAccessToken(accessToken)
+			})
 			.then((result) => {
 					
-				if (result.error) throw new Error('invalid access token: ' + result.error.message);
+				if (result.error || !result.payload) throw new Error('invalid access token: ' + result.error.message);
 
 				// проверяем, подтверждена ли почта
-				return Promise.resolve(userModel.query({id: payload.userId}));
+				return userModel.query({_id: result.payload.userId});
 			})
 			.then((userData) => {
 
@@ -54,13 +64,9 @@ router.route('/changepassword/')
 				//получаем хэш нового пароля
 				tasks.push(utils.makePasswordHash(newPassword));
 
-				// удаляем из БД все рефреш токены юзера, а срок действия его access токена закончится сам
-				// после смены пароля надо заново логиниться (?? либо принудительно после того, как закончится access token)
-				tasks.push(tokenUtils.deleteAllRefreshTokens(result.payload.userId));
-
 				return Promise.all(tasks);
 			})
-			.spread((user, hash, data) => {
+			.spread((user, hash) => {
 
 				const userData = {
 					login     : user.login,
@@ -71,11 +77,22 @@ router.route('/changepassword/')
 					role: user.role,
 				};
 
-				return Promise.resolve(userModel.update(user.id, userData));
+				let tasks = [];
+
+				tasks.push(user.id);
+				tasks.push(userModel.update(user.id, userData));
+
+				return Promise.all(tasks);
 			})
-			.then((dbResponse) => {
+			.spread((userId, dbResponse) => {
 
 				if (dbResponse.errors) throw new Error('password updated with error');
+
+				// удаляем из БД все рефреш токены юзера, а срок действия его access токена закончится сам
+				// после смены пароля надо заново логиниться (?? либо принудительно после того, как закончится access token)
+				return tokenUtils.deleteAllRefreshTokens(userId);
+			})
+			.then(() => {
 
 				res.send('Password changed');
 			})

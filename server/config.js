@@ -31,7 +31,7 @@ module.exports = {
     , token: {
         secret: 'Ym9yc2NodA=='
         , access: {
-            expiresIn: 600000   //10 мин = 10*60*1000
+            expiresIn: 1200000   //20 мин = 20*60*1000
           },
         
           refresh: {
