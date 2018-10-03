@@ -46,7 +46,7 @@ router.route('/registration')
 				if (emailDuplicates.length) {
 					
 					if (emailDuplicates[0].isEmailConfirmed) throw new Error('email already exists');
-					else return utils.sendErrorResponse(res, error, 403);  //TODO!!!
+					else return utils.sendErrorResponse(res, 'email already exists, but not confirmed', 403);  //TODO!!!
 				}
 
 				return utils.makePasswordHash(req.body.password);
@@ -82,7 +82,12 @@ router.route('/registration')
             })
 			.then((data) => {
 
-				res.send(data);
+				//показываем страницу успешной регистрации
+				//TODO: ?? как сделать редирект на главную через неск.секунд после показа страницы?
+				const page = require('../templates/successRegisterPage');
+
+				res.set('Content-Type', 'text/html');
+				return res.send(page);
 			})
 			.catch((error) => {
 

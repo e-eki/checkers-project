@@ -5,7 +5,7 @@ const Promise = require('bluebird');
 const userModel = require('../models/user');
 const refreshTokenModel = require('../models/refreshToken');
 const utils = require('../lib/utils');
-const tokens = require('../lib/tokens');
+const tokenUtils = require('../lib/tokenUtils');
 
 let router = express.Router();
 
@@ -32,7 +32,7 @@ router.route('/login')
 				return userModel.query({email: req.body.email});
 			})
 			.then((userData) => {
-
+				//find user with this email
 				if (!userData.length) throw new Error('no user with this email');  //TODO: предложить зарегиться
 
 				let tasks = [];
@@ -43,25 +43,36 @@ router.route('/login')
 				return Promise.all(tasks);
 			})
 			.spread((user, passwordIsCorrect) => {
-
+				//check password
 				if (passwordIsCorrect === false) throw new Error('incorrect password');
 
 				let tasks = [];
+				tasks.push(user);
+
+				//удаляем все рефреш токены для данного юзера - можно залогиниться только на одном устройстве, 
+				// на других в это время разлогинивается
+				tasks.push(tokenUtils.deleteAllRefreshTokens(user.id));
+
+				return Promise.all(tasks);
+			})
+			.spread((user, data) => {
+				// get tokens
+				let tasks = [];
 
 				tasks.push(user);
-				tasks.push(tokens.getAccessToken(user));
-				tasks.push(tokens.getAccessTokenExpiresIn());
-				tasks.push(tokens.getRefreshToken(user));
+				tasks.push(tokenUtils.getAccessToken(user));
+				tasks.push(tokenUtils.getAccessTokenExpiresIn());
+				tasks.push(tokenUtils.getRefreshToken(user));
 				return Promise.all(tasks);
-			}) 
+			})
 			.spread((user, accessToken, accessTokenExpiresIn, refreshToken) => {
-
-				//validate results
+				// validate tokens
 				if (!accessToken || accessToken == '') throw new Error('accessToken creates with error');
 				if (!refreshToken || refreshToken == '') throw new Error('refreshToken creates with error');
 
 				let tasks = [];
 
+				//save refresh token to DB
 				let refreshTokenData = {
 					userId: user.id,
 					refreshToken: refreshToken
@@ -69,6 +80,7 @@ router.route('/login')
 
 				tasks.push(refreshTokenModel.create(refreshTokenData));
 
+				//send tokens to user
 				let responseData = {
 					accessToken: accessToken,
 					refreshToken: refreshToken,
@@ -80,7 +92,7 @@ router.route('/login')
 				return Promise.all(tasks);
 			})
 			.spread((dbResponse, responseData) => {
-
+				// ? если в БД не удалось сохранить рефреш токен - то юзер не залогинен, надо повторить всё сначала
 				if (dbResponse.errors) throw new Error('refresh token saved with error');
 
 				res.send(responseData);

@@ -2,10 +2,8 @@
 const express = require('express');
 const Promise = require('bluebird');
 
-const userModel = require('../models/user');
-const refreshTokenModel = require('../models/refreshToken');
 const utils = require('../lib/utils');
-const tokens = require('../lib/tokens');
+const tokenUtils = require('../lib/tokenUtils');
 
 let router = express.Router();
 
@@ -31,31 +29,15 @@ router.route('/logout')
 	.delete(function(req, res) {
 
 		const headerAuthorization = req.header('Authorization') || '';
-
-		//TODO - Regex
-		const parts = headerAuthorization.split(' ');
-		const token = parts[1];
+		const accessToken = tokenUtils.getTokenFromHeader(headerAuthorization);
 		
-		//validate token
-		return Promise.resolve(tokens.verifyToken(token))
+		//validate & decode token
+		return Promise.resolve(tokenUtils.verifyAccessToken(accessToken))
 			.then((result) => {
 				
-				if (result.error) throw new Error('invalid token: ' + result.error.message);
+				if (result.error) throw new Error('invalid access token: ' + result.error.message);
 
-				return refreshTokenModel.query({userId: result.payload.userId});
-			})
-			.then((refreshTokens) => {
-
-				if (!refreshTokens.length) return true;
-
-				let tasks = [];
-				console.log(refreshTokens[0].id);
-				
-				refreshTokens.forEach((token) => {
-					tasks.push(refreshTokenModel.delete(token.id));
-				})
-
-				return Promise.all(tasks);
+				return tokenUtils.deleteAllRefreshTokens(result.payload.userId);
 			})
 			.then((data) => {
 
@@ -64,7 +46,7 @@ router.route('/logout')
 			.catch((error) => {
 
 				return utils.sendErrorResponse(res, error);
-			})
+			});
 
 	})
 ;

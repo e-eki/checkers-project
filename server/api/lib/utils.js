@@ -5,9 +5,9 @@ const uuidv5 = require('uuid/v5');
 
 const config = require('../../config');
 
-module.exports = {
+const utils = new function() {
 
-	sendErrorResponse: function(res, error, statusCode, headers) {
+	this.sendErrorResponse = function(res, error, statusCode, headers) {
 
         const status = statusCode || 500;
         const errorMessage = error.message ? error.message : error;
@@ -16,10 +16,10 @@ module.exports = {
             res.set(headers);
         }
         return res.status(status).send(errorMessage);
-    },
+    };
 
     // вычисляет хэш пароля
-    makePasswordHash: function(password) {
+    this.makePasswordHash = function(password) {
 
         // оборачиваем в промис вызов функции, тк иначе она промис не возвращает, хоть и асинхронная
         return Promise.resolve(bcrypt.genSalt(config.bcrypt.saltLength))  // генерим соль
@@ -27,16 +27,20 @@ module.exports = {
                 // берем пароль юзера + соль и генерим хеш
                 return bcrypt.hash(password, salt);
             })
-    },
+    };
 
     // сравнивает пароль с хэшем пароля из БД
-    comparePassword: function(password, hash) {
+    this.comparePassword = function(password, hash) {
 
         return Promise.resolve(bcrypt.compare(password, hash));
-    },
+    };
 
     //генерирует уникальный идентификатор
-    makeUId: function(string) {
+    this.makeUId = function(string) {
         return uuidv5(string, uuidv5.URL);   //??
-    },
-}
+    };
+
+
+};
+
+module.exports = utils;

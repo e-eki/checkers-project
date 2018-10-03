@@ -1,6 +1,7 @@
 
 const express = require('express');
 
+const config = require('../../config');
 const utils = require('../lib/utils');
 const userModel = require('../models/user');
 
@@ -59,11 +60,14 @@ router.route('/emailconfirm/:uuid')
 			.then((usedLink) => {
 
 				// если по ссылке уже переходили, то редиректим на главную
-				if (usedLink === true) 
-					return res.redirect('http://localhost:3000');
+				if (usedLink === true) {
 
-				//если нет, то показываем страницу успешной регистрации
-				//TODO: ?? как сделать редирект на сайт через неск.секунд после показа страницы?
+					const mainLink = `${config.server.protocol}://${config.server.host}:${config.server.port}`;
+					return res.redirect(`${mainLink}`);
+				};
+
+				//если нет, то показываем страницу успешного подтверждения
+				//TODO: ?? как сделать редирект на главную через неск.секунд после показа страницы?
 				const page = require('../templates/successConfirmPage');
 
 				res.set('Content-Type', 'text/html');

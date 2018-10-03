@@ -4,7 +4,7 @@ module.exports = {
     , server: {
         port: 3000
         , host: 'localhost' 
-        //, protocol: 'http' // "https",
+        , protocol: 'http' // "https"
     }
     , db : {
         mongo : {
