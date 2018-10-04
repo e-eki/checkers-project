@@ -29,7 +29,7 @@ module.exports = {
     }
 
     , token: {
-        secret: 'Ym9yc2NodA=='
+        secret: 'ZnVja2luZyBmdWNraW5nIGJvcnNjaA=='
         , access: {
             expiresIn: 1200000   //20 мин = 20*60*1000
           },

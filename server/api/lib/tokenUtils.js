@@ -100,7 +100,7 @@ const tokenUtils = new function() {
 					//token = token.toString();
 					//TODO: как сравнить токены? сравнение строк не работает
 					//if (!refreshToken || token > refreshToken[0].toString() || token < refreshToken[0].toString()) throw new Error('bad refresh token');
-					if (!refreshToken) throw new Error('bad refresh token');
+					if (!refreshToken[0]) throw new Error('bad refresh token');
 					else return {error: error, payload: payload};
 				})
 		});
@@ -125,23 +125,75 @@ const tokenUtils = new function() {
 			})
 			.then((dbResponses) => {
 
-				if (dbResponses == true) return true;
+				if (dbResponses == true) return 'no refresh tokens for user';
 
-				// log errors
 				dbResponses.forEach((dbResponse) => {
 
 					if (dbResponse.errors) {
+						// log errors
 						dbResponse.errors.forEach((error) => {
-
-							console.log('refresh token saved with error: ' + error.message);
-						})
+							console.log('refresh token deleted with error: ' + error.message);
+						});
 					};
 				});
 
-				return true;
+				return 'all refresh tokens for user deleted';
 			})
 	};
 
+	this.getRefreshTokensAndSaveToDB = function(user) {
+
+		// get tokens
+		let tasks = [];
+
+		tasks.push(user);
+		tasks.push(tokenUtils.getAccessToken(user));
+		tasks.push(tokenUtils.getAccessTokenExpiresIn());
+		tasks.push(tokenUtils.getRefreshToken(user));
+
+		return Promise.all(tasks)
+			.spread((user, accessToken, accessTokenExpiresIn, refreshToken) => {
+				// validate tokens
+				if (!accessToken || accessToken == '') throw new Error('accessToken creates with error');
+				if (!refreshToken || refreshToken == '') throw new Error('refreshToken creates with error');
+
+				let tasks = [];
+
+				//save refresh token to DB
+				let refreshTokenData = {
+					userId: user.id,
+					refreshToken: refreshToken
+				};
+
+				tasks.push(refreshTokenModel.create(refreshTokenData));
+
+				//tokens data will send to user
+				let tokensData = {
+					accessToken: accessToken,
+					refreshToken: refreshToken,
+					expires_in: accessTokenExpiresIn,
+				};
+
+				tasks.push(tokensData);
+
+				return Promise.all(tasks);
+			})
+			.spread((dbResponse, tokensData) => {
+
+				if (dbResponse.errors) {
+
+					// log errors
+					dbResponse.errors.forEach((error) => {
+						console.log('refresh token saved with error: ' + error.message);
+					});
+
+					// ? если в БД не удалось сохранить рефреш токен - то ошибка, надо повторить всё сначала
+					throw new Error('refresh token saved with error');
+				}
+
+				return tokensData;
+			});
+	};
 
 };
 

@@ -25,8 +25,7 @@ router.route('/refreshtokens/')
 		return Promise.resolve(true)
 			.then(() => {
 
-				const headerAuthorization = req.header('Authorization') || '';
-				const refreshToken = tokenUtils.getTokenFromHeader(headerAuthorization);
+				const refreshToken = req.body.refreshToken;
 
 				//validate & decode token
 				return tokenUtils.verifyRefreshToken(refreshToken);
@@ -45,16 +44,19 @@ router.route('/refreshtokens/')
 				return Promise.all(tasks);
 			})
 			.spread((userId, dbResponse) => {
-
-				return userModel.query({_id: result.payload.userId});
+				//search user for this token (for userRole in access token)
+				return userModel.query({_id: userId});
 			})
 			.then((user) => {
 
-				if (!user) throw new Error('no user for this refresh token');
-
-				
+				if (!user.length) throw new Error('no user for this refresh token');
+				// получаем новую пару токенов
+				return tokenUtils.getRefreshTokensAndSaveToDB(user[0]);
 			})
+			.then((tokensData) => {
 
+				res.send(tokensData);
+			})
 			.catch((error) => {
 
 				return utils.sendErrorResponse(res, error);

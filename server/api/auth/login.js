@@ -56,46 +56,12 @@ router.route('/login')
 				return Promise.all(tasks);
 			})
 			.spread((user, data) => {
-				// get tokens
-				let tasks = [];
-
-				tasks.push(user);
-				tasks.push(tokenUtils.getAccessToken(user));
-				tasks.push(tokenUtils.getAccessTokenExpiresIn());
-				tasks.push(tokenUtils.getRefreshToken(user));
-				return Promise.all(tasks);
+				// получаем новую пару токенов
+				return tokenUtils.getRefreshTokensAndSaveToDB(user);
 			})
-			.spread((user, accessToken, accessTokenExpiresIn, refreshToken) => {
-				// validate tokens
-				if (!accessToken || accessToken == '') throw new Error('accessToken creates with error');
-				if (!refreshToken || refreshToken == '') throw new Error('refreshToken creates with error');
+			.then((tokensData) => {
 
-				let tasks = [];
-
-				//save refresh token to DB
-				let refreshTokenData = {
-					userId: user.id,
-					refreshToken: refreshToken
-				};
-
-				tasks.push(refreshTokenModel.create(refreshTokenData));
-
-				//send tokens to user
-				let responseData = {
-					accessToken: accessToken,
-					refreshToken: refreshToken,
-					expires_in: accessTokenExpiresIn,
-				};
-
-				tasks.push(responseData);
-
-				return Promise.all(tasks);
-			})
-			.spread((dbResponse, responseData) => {
-				// ? если в БД не удалось сохранить рефреш токен - то юзер не залогинен, надо повторить всё сначала
-				if (dbResponse.errors) throw new Error('refresh token saved with error');
-
-				res.send(responseData);
+				res.send(tokensData);
 			})
 			.catch((error) => {
 
