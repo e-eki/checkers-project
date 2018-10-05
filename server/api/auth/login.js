@@ -3,7 +3,6 @@ const express = require('express');
 const Promise = require('bluebird');
 
 const userModel = require('../models/user');
-const refreshTokenModel = require('../models/refreshToken');
 const utils = require('../lib/utils');
 const tokenUtils = require('../lib/tokenUtils');
 
