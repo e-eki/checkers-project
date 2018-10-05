@@ -1,4 +1,6 @@
 
+//config version for Github
+
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
 module.exports = {
@@ -10,9 +12,9 @@ module.exports = {
     }
     , db : {
         mongo : {
-            url: 'mongodb://e:e123456@ds046677.mlab.com:46677/ch'
+            url: 'mongodb://<dbuser>:<dbpassword>@ds046677.mlab.com:46677/ch'
             , options: {
-                autoReconnect: (process.env.NODE_ENV == 'production')  //??
+                autoReconnect: (process.env.NODE_ENV == 'production')
                 , useNewUrlParser: true 
             }
         }
@@ -23,15 +25,15 @@ module.exports = {
     , mail_settings: {
         service: 'Gmail' 
         , auth: { 
-            user: 'checkers.game.online', 
-            pass: 'qwerty12345_'
+            user: '<user>', 
+            pass: '<password>'
         }
         , from: '"Игра в шашки онлайн." <checkers.game.online@gmail.com>'
         , confirmEmailSubject: 'Подтверждение адреса электронной почты на сайте «Игра в шашки онлайн.»'
     }
 
     , token: {
-        secret: 'ZnVja2luZyBmdWNraW5nIGJvcnNjaA=='
+        secret: '<token_secret>'
         , access: {
             expiresIn: 1200000   //20 мин = 20*60*1000
           },
