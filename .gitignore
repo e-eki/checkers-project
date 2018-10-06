@@ -1,2 +1,7 @@
 
 node_modules
+<<<<<<< HEAD
+=======
+
+./server/config.js
+>>>>>>> master
