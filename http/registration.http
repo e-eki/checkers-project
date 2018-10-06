@@ -9,9 +9,9 @@ Host: {{host}}
 Content-Type: application/json
 
 {
-	"login": "qq5q"
-	, "email": "aa5a"
-	, "password": "111"
+	"login": "vika"
+	, "email": "ifirtree@gmail.com"
+	, "password": "333"
 }
 
 ###

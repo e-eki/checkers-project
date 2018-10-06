@@ -6,6 +6,6 @@ Host: {{host}}
 Content-Type: application/json
 
 {
-	"email": "uuu"
-	, "password": "000"
+	"email": "ifirtree@gmail.com"
+	, "password": "333"
 }

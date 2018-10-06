@@ -1,0 +1,8 @@
+
+### https://oauth.vk.com/authorize?client_id=6711833&display=page&scope=email&redirect_uri=http://localhost:3000/api/login&response_type=code&v=5.85&state=vk
+
+
+
+
+
+### https://www.facebook.com/v3.1/dialog/oauth?client_id=477848405602475&redirect_uri=http://localhost:3000/api/login&state=fb&scope=email

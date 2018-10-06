@@ -4,7 +4,7 @@ const NODE_ENV = process.env.NODE_ENV || 'development';
 module.exports = {
     version: '1.0'
     , server: {
-        port: process.env.PORT || 3000
+        port: process.env.PORT || 80
         , host: (NODE_ENV == 'development') ? 'localhost' : 'checkers-game0.herokuapp.com'  
         , protocol: (NODE_ENV == 'development') ? 'http' : "https"
     }
@@ -39,5 +39,16 @@ module.exports = {
           refresh: {
             expiresIn: 3600000  //60 мин
           },
+    }
+    , vk: {
+        clientId: 6711833
+        , secret: 'rOrwLNZOUlqmqXqZNhhZ'
+        , ver: 5.69
+        , redirectUri: (NODE_ENV == 'development') ? 'http://localhost:3000/api/login' : 'https://checkers-game0.herokuapp.com/api/login'   //??
+    }
+    , fb: {
+        clientId: 455348051621476
+        , secret: '5659aab04ba4524050c5b15c64ebd421'
+        , redirectUri: (NODE_ENV == 'development') ? 'http://localhost:3000/api/login' : 'https://checkers-game0.herokuapp.com/api/login'   //??
     }
 };
