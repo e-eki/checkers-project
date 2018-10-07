@@ -41,7 +41,6 @@ app.use('/api', require('./api/auth/logout'));
 app.use('/api', require('./api/auth/changePassword'));
 app.use('/api', require('./api/auth/refreshTokens'));
 
-//app.use('/api', require('./api/routes/test'));
 app.use('/api', require('./api/routes/user'));
 
 // ---------------------------------------------------------------
@@ -68,5 +67,5 @@ app.use((err, req, res, next) => {
 app.listen(config.server.port, () => {
     console.log(`Hosted on:  ${config.server.host}:${config.server.port}`);
     //console.log(process.env.npm_lifecycle_event);
-    console.log(process.env.NODE_ENV, process.env.PORT);
+    //console.log(process.env.NODE_ENV, process.env.PORT);
 });

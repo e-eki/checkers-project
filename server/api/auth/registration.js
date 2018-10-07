@@ -72,9 +72,16 @@ router.route('/registration')
 				//save new user
 				return userModel.create(userData);
 			})
-			.then((data) => {
+			.then((dbResponse) => {
+
+				const data = {
+					login: userData.login,
+					email: userData.email,
+					confirmEmailCode: userData.confirmEmailCode
+				};
+
 				//отправляем письмо с кодом подтверждения на указанный имейл
-				return mail.sendConfirmEmailLetter(userData);
+				return mail.sendConfirmEmailLetter(data);
 			})
 			.catch((error) => {
                 // возможную ошибку на этапе отправки письма игнорируем - только логируем ее

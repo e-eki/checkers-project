@@ -3,6 +3,8 @@ const express = require('express');
 
 const config = require('../../config');
 const utils = require('../lib/utils');
+const mail = require('../lib/mail');
+const tokenUtils = require('../lib/tokenUtils');
 const userModel = require('../models/user');
 
 let router = express.Router();
@@ -16,11 +18,56 @@ router.route('/emailconfirm/')
 	})
 
 	//запрос на повторное подтверждение почты пользователя
-	//data? email
+	/* data = {
+		accessToken: <access_token>
+	}*/
 	.post(function(req, res) {
 
-		//TODO
-		return utils.sendErrorResponse(res, 'UNSUPPORTED_METHOD');
+		return Promise.resolve(true)
+			.then(() => {
+
+				const headerAuthorization = req.header('Authorization') || '';
+				const accessToken = tokenUtils.getTokenFromHeader(headerAuthorization);
+				
+				//validate & decode token
+				return tokenUtils.verifyAccessToken(accessToken);
+			})
+			.then((result) => {
+				// validate result
+				if (result.error || !result.payload) throw new Error('invalid access token: ' + result.error.message);
+
+				const userId = result.payload.userId;
+
+				return userModel.query({_id: userId});
+			})
+			.then((userData) => {
+
+				if (!userData.length) throw new Error('no user for this access token');
+
+				const user = userData[0];
+
+				if (user.isEmailConfirmed) return true; // если имейл уже подтвержден
+
+				const data = {
+					login: user.login,
+					email: user.email,
+					confirmEmailCode: user.confirmEmailCode
+				};
+
+				//отправляем письмо с кодом подтверждения на указанный имейл
+				return mail.sendConfirmEmailLetter(data);
+			})
+			.then((data) => {
+
+				// если имейл уже подтвержден
+				if (data === true) res.send('Email already confirmed');
+
+				res.send('Confirm email sent again' );
+			})
+			.catch((error) => {
+
+				return utils.sendErrorResponse(res, error);
+			});
 	})
 
 	.put(function(req, res) {

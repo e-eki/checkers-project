@@ -25,12 +25,16 @@ router.route('/logout')
 		return utils.sendErrorResponse(res, 'UNSUPPORTED_METHOD');
 	})
 
-	//data = accessToken
+	//разлогинивание пользователя
+	/*data = {
+		accessToken: <access_token>
+	}*/
 	.delete(function(req, res) {
 
 		return Promise.resolve(true)
 			.then(() => {
 
+				//get token from header
 				const headerAuthorization = req.header('Authorization') || '';
 				const accessToken = tokenUtils.getTokenFromHeader(headerAuthorization);
 				
@@ -38,7 +42,7 @@ router.route('/logout')
 				return tokenUtils.verifyAccessToken(accessToken);
 			})
 			.then((result) => {
-				
+				// validate result
 				if (result.error || !result.payload) throw new Error('invalid access token: ' + result.error.message);
 
 				return tokenUtils.deleteAllRefreshTokens(result.payload.userId);
@@ -51,7 +55,6 @@ router.route('/logout')
 
 				return utils.sendErrorResponse(res, error);
 			});
-
 	})
 ;
 

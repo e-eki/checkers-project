@@ -1,30 +1,11 @@
 
-###
-GET /api/registration/ HTTP/1.1
-Host: {{host}}
-
-###
+### Регистрация на сайте
 POST /api/registration/ HTTP/1.1
 Host: {{host}}
 Content-Type: application/json
 
 {
-	"login": "qq5q"
-	, "email": "aa5a"
-	, "password": "111"
-}
-
-###
-PUT /api/registration/ HTTP/1.1
-Host: {{host}}
-Content-Type: application/json
-
-{
-	"login": "qqqWWW"
-	, "email": "q1222"
+	"login": "yyy"
+	, "email": "xxx"
 	, "password": "333"
 }
-
-###
-DELETE /api/registration/ HTTP/1.1
-Host: {{host}}

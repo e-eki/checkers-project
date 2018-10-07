@@ -47,11 +47,13 @@ router.route('/refreshtokens/')
 				//search user for this token (for userRole in access token)
 				return userModel.query({_id: userId});
 			})
-			.then((user) => {
+			.then((userData) => {
 
-				if (!user.length) throw new Error('no user for this refresh token');
+				if (!userData.length) throw new Error('no user for this refresh token');
+
 				// получаем новую пару токенов
-				return tokenUtils.getRefreshTokensAndSaveToDB(user[0]);
+				const user = userData[0];
+				return tokenUtils.getRefreshTokensAndSaveToDB(user);
 			})
 			.then((tokensData) => {
 

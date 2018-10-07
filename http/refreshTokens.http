@@ -1,6 +1,6 @@
 
 
-###
+### Обновление обоих токенов по истечении срока действия refresh токена
 POST /api/refreshtokens/ HTTP/1.1
 Host: {{host}}
 Content-Type: application/json

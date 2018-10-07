@@ -7,6 +7,7 @@ const refreshTokenModel = require('../models/refreshToken');
 
 const tokenUtils = new function() {
 
+	// генерит аксесс токен
 	this.getAccessToken = function(user) {
 
 		let payload = {
@@ -23,6 +24,7 @@ const tokenUtils = new function() {
 		return jwt.sign(payload, config.token.secret, options);
 	};
 
+	// генерит время жизни аксесс токена
 	this.getAccessTokenExpiresIn = function() {
 
 		let now = new Date().getTime();
@@ -30,6 +32,7 @@ const tokenUtils = new function() {
 		return (now + config.token.access.expiresIn);
 	};
 
+	// генерит рефреш токен
 	this.getRefreshToken = function(user) {
 
 		let payload = {
@@ -45,6 +48,7 @@ const tokenUtils = new function() {
 		return jwt.sign(payload, config.token.secret, options);
 	};
 
+	// генерит время жизни рефреш токена
 	/*this.getRefreshTokenExpiresIn = function() {
 
 		let now = new Date().getTime();
@@ -52,6 +56,7 @@ const tokenUtils = new function() {
 		return (now + config.token.refresh.expiresIn);
 	};*/
 
+	// получает из заголовка ответа токен
 	this.getTokenFromHeader = function(headerAuthorization) {
 
 		//TODO - Regex?
@@ -106,17 +111,18 @@ const tokenUtils = new function() {
 		});
 	};
 
-	// удаляет все рефрештокены из БД для данного юзера
+	// удаляет все рефреш токены из БД для данного юзера
 	this.deleteAllRefreshTokens = function(userId) {
 
+		//find refresh tokens
 		return Promise.resolve(refreshTokenModel.query({userId: userId}))
 			.then((refreshTokens) => {
-				//find refresh tokens
-
+				
 				if (!refreshTokens.length) return true;
 
 				let tasks = [];
 				
+				// delete all tokens
 				refreshTokens.forEach((token) => {
 					tasks.push(refreshTokenModel.delete(token.id));
 				})
@@ -141,6 +147,7 @@ const tokenUtils = new function() {
 			})
 	};
 
+	// генерит новые токены (аксесс, рефреш и время жизни аксесса) и сохраняет в БД рефреш токен
 	this.getRefreshTokensAndSaveToDB = function(user) {
 
 		// get tokens
