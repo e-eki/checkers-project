@@ -13,20 +13,24 @@ let router = express.Router();
 //----- endpoint: /api/login/
 router.route('/login')
 
-	// вход через vkontakte/facebook
+	// вход через vkontakte/facebook/google
 	/*data = {
-		service: <vk | fb>, code: <code>
+		service: <vk | fb | g>, code: <code>
 	}*/
 	.get(function(req, res) {
 
 		return Promise.resolve(true)
 			.then(() => {
 
-				//validate req.query (code & state sends by vk as GET-parameter)
-				if (!req.query.state || req.query.state == '') throw new Error('incorrect vk login data: empty service name');
-				else if (!req.query.code || req.query.code == '') throw new Error('incorrect vk login data: empty code');
+				//validate req.query
+				// (code & state sends by vk as GET-parameter)
+				// (code & scope sends by google as GET-parameter)
+				if ((!req.query.state || req.query.state == '') && (!req.query.scope || req.query.scope == ''))
+					throw new Error('empty service name');
 
-				const service = req.query.state;
+				else if (!req.query.code || req.query.code == '') throw new Error('incorrect social login data: empty code');
+
+				const service = req.query.state ? req.query.state : 'google';
 				//const redirectUri = config.server.host + ':' + config.server.host + '/api' + req.route.path;  //???
 
 				const data = {
@@ -154,12 +158,16 @@ let loginAction = function(service, data) {
 
 			let _promise;
 
+			//TODO: fb
 			switch (service) {
 				case 'site':
 					_promise = authUtils.getUserBySiteAuth(data.email, data.password);
 					break;
 				case 'vk':
 					_promise = authUtils.getUserByVkAuth(data.code);
+					break;
+				case 'google':
+					_promise = authUtils.getUserByGoogleAuth(data.code);
 					break;
 				default:
 					throw new Error('login error: no service name');

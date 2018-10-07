@@ -6,6 +6,7 @@ const config = require('../../config');
 
 module.exports = {
 
+	// отправка письма подтверждения имейла
 	sendConfirmEmailLetter: function(data) {
 
 		let transport = nodemailer.createTransport({
@@ -16,8 +17,10 @@ module.exports = {
 			}
 		});
 
+		// собственно письмо
 		const letterHtml = require('../templates/emailConfirmLetter').get(data);
 
+		// отправляем
 		return transport.sendMail({
 			from: config.mail_settings.from,
 			to: 'ifirtree@gmail.com',  //!!!TODO: data.email

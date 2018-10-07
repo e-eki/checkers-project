@@ -7,6 +7,7 @@ const config = require('../../config');
 
 const utils = new function() {
 
+    // метод не поддерживается
 	this.sendErrorResponse = function(res, error, statusCode, headers) {
 
         const status = statusCode || 500;
