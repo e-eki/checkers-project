@@ -1,9 +1,10 @@
 
 
-Checkers-project
+## Checkers-project
 
+Игра в шашки онлайн.
 Back-end & front-end.
-front-end не полная версия, взят из папки _**public**_ проекта _**checkers-app**_ [ссылка](https://github.com/e-eki/checkers-app/tree/g/master/public).
+front-end не полная версия, взят из папки _**public**_ проекта _**checkers-app**_: [ссылка](https://github.com/e-eki/checkers-app/tree/g/master/public).
 
 ## Структура проекта:
 
@@ -27,7 +28,7 @@ front-end не полная версия, взят из папки _**public**_ 
       * templates
 
 ### front-end/public
-Главная страница сайта (сервер отдает ее в ответ на все запросы, кроме запросов к api.
+Главная страница сайта (сервер отдает ее в ответ на все запросы, кроме запросов к api).
 
 ### front-end/public/index.html
 Главный html-файл.
