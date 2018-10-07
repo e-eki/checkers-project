@@ -33,7 +33,6 @@ mongoDbUtils.setUpConnection();
 
 // ---------------------------------------------------------------
 // запросы к api
-//app.use('/api', api);
 app.use('/api', require('./api/auth/registration'));
 app.use('/api', require('./api/auth/emailConfirm'));
 app.use('/api', require('./api/auth/login'));
