@@ -19,6 +19,7 @@ module.exports = {
 			confirmEmailCode: data.confirmEmailCode,
 			isEmailConfirmed: data.isEmailConfirmed ? data.isEmailConfirmed : false,
 			password     : data.password,
+			resetPasswordCode: data.resetPasswordCode,
 			role: data.role,
 		});
 	
@@ -33,6 +34,7 @@ module.exports = {
 			confirmEmailCode: data.confirmEmailCode,
 			isEmailConfirmed: data.isEmailConfirmed,
 			password     : data.password,
+			resetPasswordCode: data.resetPasswordCode,
 			role: data.role,
 		});
 

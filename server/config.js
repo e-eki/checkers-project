@@ -8,6 +8,9 @@ module.exports = {
         , host: (NODE_ENV == 'development') ? 'localhost' : 'checkers-game0.herokuapp.com'  
         , protocol: (NODE_ENV == 'development') ? 'http' : "https"
     }
+    , app: {
+        port: (NODE_ENV == 'development') ? 8080 : (process.env.PORT || 3000)
+    }
     , db : {
         mongo : {
             url: 'mongodb://e:e123456@ds046677.mlab.com:46677/ch'
@@ -28,6 +31,7 @@ module.exports = {
         }
         , from: '"Игра в шашки онлайн." <checkers.game.online@gmail.com>'
         , confirmEmailSubject: 'Подтверждение адреса электронной почты на сайте «Игра в шашки онлайн.»'
+        , resetPasswordSubject: 'Восстановление пароля на сайте «Игра в шашки онлайн.»'
     }
 
     , token: {

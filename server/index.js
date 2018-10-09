@@ -44,6 +44,14 @@ app.use('/api', require('./api/routes/user'));
 
 // ---------------------------------------------------------------
 
+// запросы к страницам на сайте (???)
+const mainLink = `${config.server.protocol}://${config.server.host}:${config.app.port}`;
+
+app.get('/login', (req, res) => res.redirect(`${mainLink}/login`));  //TODO: check!!!
+
+
+
+// ---------------------------------------------------------------
 
 // на все остальные запросы отдаем главную страницу
 app.get('/*', (req, res) => res.sendFile(indexHTML));

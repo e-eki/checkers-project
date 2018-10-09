@@ -63,7 +63,9 @@ router.route('/registration')
 					email     : req.body.email,
 					confirmEmailCode: confirmEmailCode,
 					isEmailConfirmed: false,
-					password     : hash
+					password     : hash,
+					resetPasswordCode: '',
+					role: 'user'
 				};
 
 				//??? роль юзеру

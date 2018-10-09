@@ -62,7 +62,7 @@ router.route('/emailconfirm/')
 				// если имейл уже подтвержден
 				if (data === true) res.send('Email already confirmed');
 
-				res.send('Confirm email sent again' );
+				return res.send('Confirm mail sent again' );
 			})
 			.catch((error) => {
 
