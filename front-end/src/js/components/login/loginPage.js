@@ -97,7 +97,10 @@ export default class LoginPage extends Component {
 		}
 		debugger;
 
-		return axios.get(socialLink)
+		return axios.post('http://localhost:3000/api/login/', {
+			email: this.state.emailData,
+			password: this.state.passwordData
+		})
 			.then((response) => {
 				debugger;
 				console.log(response);
