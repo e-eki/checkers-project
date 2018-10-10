@@ -1,0 +1,36 @@
+
+.content {
+
+	&__header {
+		margin: 2vh 0;
+
+		@media (max-width: @screen-lg) {
+			margin: 2vh 3vw;
+		}
+	}
+
+	&__main {
+		position: relative;
+	}
+
+	&__footer {
+		margin: 7vh 0 2vh 0;
+
+		@media (max-width: @screen-lg) {
+			margin: 112vh 0 2vh 0;
+		}
+
+		@media (max-width: @screen-sm) {
+			margin: 136vh 0 2vh 0;
+		}
+
+		//landscape smartphones
+		@media screen and (min-width:320px) and (max-width:823px) and (orientation: landscape) {
+			margin: 20vh 0 2vh 0;
+		}
+	}
+
+	&_transparent {
+		opacity: 0.25;
+	}
+}

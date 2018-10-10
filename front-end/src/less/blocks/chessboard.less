@@ -1,0 +1,24 @@
+
+.chessboard {
+    background: rgb(133, 36, 36);
+    border-radius: 15px;
+    padding: 4.5vmin;
+    height: 77.5vmin;
+
+    @media (max-width: @screen-md) {
+        padding: 5.5vmin;
+    }
+
+    @media (max-width: @screen-sm) {
+        padding: 6vmin;
+    }
+
+    //landscape smartphones
+    @media screen and (min-width:320px) and (max-width:823px) and (orientation: landscape) {
+        padding: 5vmin;
+    }
+	
+    &__marks-container {
+        position: absolute;
+    }
+}

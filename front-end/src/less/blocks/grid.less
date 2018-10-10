@@ -1,0 +1,75 @@
+
+.grid {
+	position: relative;
+	
+    width: 77vmin;
+    height: 77vmin;
+	margin: 0.5vmin;
+	border-spacing: 0;
+
+	&__cell {
+		position: relative;
+
+		&_white {
+			background: white;
+		}
+
+		&_black {
+			background: black;
+		}
+
+		&_highlight {
+			background: orange;
+    		cursor: pointer;
+		}
+	}
+
+	&__actor {
+		position: absolute;
+		top: 5%;
+		left: 5%;
+
+		height: 70%;
+		width: 70%;
+		border-radius: 50px;
+		border: 5px;
+		border-style: ridge;
+
+		@media (max-width: @screen-md) {
+			height: 65%;
+			width: 65%;
+		}
+
+		@media (max-width: @screen-sm) {
+			height: 55%;
+			width: 55%;
+		}
+
+		//landscape smartphones
+		@media screen and (min-width:320px) and (max-width:823px) and (orientation: landscape) {
+			height: 60%;
+			width: 60%;
+		}
+
+		&_white {
+			background: white;
+		}
+
+		&_black {
+			background: black;
+		}
+
+		&_checker {
+			border-color: green;
+		}
+
+		&_dam {
+			border-color: red;
+		}
+
+		&_highlight {
+			border-color: orange;
+    		cursor: pointer;
+		}
+	}
+}

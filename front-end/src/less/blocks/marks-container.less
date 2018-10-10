@@ -1,0 +1,57 @@
+
+.marks-container {
+	display: flex; 
+    justify-content: space-around;
+    color: darkgrey;
+    font-family: Tahoma;
+	font-size: 15px;
+
+	@media (max-width: @screen-md) {
+		font-size: 11.5px;
+	}
+
+	//landscape smartphones
+	@media screen and (min-width:320px) and (max-width:823px) and (orientation: landscape) {
+		font-size: 13px;
+	}
+	
+	&_horizontal {
+		width: 77vmin;
+		flex-direction: row;
+	}
+	
+	&_vertical {
+		width: 2vmin;
+		height: 77vmin;
+		flex-direction: column;
+
+		@media (max-width: @screen-md) {
+			width: 3vmin;
+		}
+
+		@media (max-width: @screen-sm) {
+			width: 4vmin;
+		}
+
+		//landscape smartphones
+		@media screen and (min-width:320px) and (max-width:823px) and (orientation: landscape) {
+			width: 3vmin;
+		}
+	}
+	
+	&_top {
+		top: 1vmin;
+	}
+	
+	&_bottom {
+		bottom: 1vmin;
+	}
+	
+	&_left {
+		left: 1.5vmin;
+	}
+	
+	&_right {
+		right: 1.5vmin;
+	}
+}

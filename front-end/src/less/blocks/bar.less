@@ -1,0 +1,121 @@
+
+.bar {
+	background: rgba(133, 59, 36, 0.21);
+    border-radius: 10px;
+	width: 18vw;
+	//min-width: 140px;
+	//height: 82vmin;
+	padding: 1vw;
+	
+	& div {
+		margin: 3vh 0;
+
+		@media (max-width: @screen-lg) {
+			margin: 2vh 0;
+		}
+	}
+
+	& input {
+		margin: 1vh;
+
+		@media (max-width: @screen-sm) {
+			max-width: 103px;
+		}
+	}
+
+	& select {
+		min-width: 130px;
+		width: 13vw;
+		outline: none;
+		margin: 1vh 0;
+
+		@media (max-width: @screen-sm) {
+			min-width: 100px;
+		}
+	}
+
+	& textarea {
+		width: 90%;
+		font-size: 84%;
+		min-width: 90px;
+		height: 34vh;
+		outline: none;
+		resize: none;
+		margin-top: 5px;
+
+		@media (max-width: @screen-lg) {
+			height: 27vh;
+			font-size: 100%;
+		}
+	}
+
+	@media (max-width: @screen-lg) {
+		position: absolute;
+		//top: 90vh;
+		top: 70vh;
+		width: 36%;
+		padding: 2vw;
+		height: 87vh;
+	}
+
+	@media (max-width: @screen-md) {
+		width: 38%;
+		height: 90vh;
+		top: 58vh;
+	}
+
+	@media (max-width: @screen-sm) {
+		top: 63vh;
+    	height: 118vh;
+	}
+
+	//landscape smartphones
+	@media screen and (min-width:320px) and (max-width:823px) and (orientation: landscape) {
+		position: relative;
+		top: 0;
+		height: 150vh;
+		padding: 1vw;
+	}
+
+	&__button {
+		margin-bottom: 3vh;
+	}
+
+	&_enabled-item {
+		cursor: pointer;
+	}
+
+	&_disabled-item {
+		cursor: default;
+	}
+
+	&_tools {
+		@media (max-width: @screen-lg) {
+			left: 7vw;
+		}
+
+		@media (max-width: @screen-md) {
+			left: 4vw;
+		}
+
+		//landscape smartphones
+		@media screen and (min-width:320px) and (max-width:823px) and (orientation: landscape) {
+			left: 0;
+		}
+	}
+
+	&_info {
+		@media (max-width: @screen-lg) {
+			right: 7vw;
+		}
+
+		@media (max-width: @screen-md) {
+			right: 4vw;
+		}
+
+		//landscape smartphones
+		@media screen and (min-width:320px) and (max-width:823px) and (orientation: landscape) {
+			right: 0;
+		}
+	}
+}

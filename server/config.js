@@ -8,9 +8,10 @@ module.exports = {
         , host: (NODE_ENV == 'development') ? 'localhost' : 'checkers-game0.herokuapp.com'  
         , protocol: (NODE_ENV == 'development') ? 'http' : "https"
     }
+    /* для запуска фронта на другом порту
     , app: {
         port: (NODE_ENV == 'development') ? 8080 : (process.env.PORT || 3000)
-    }
+    }*/
     , db : {
         mongo : {
             url: 'mongodb://e:e123456@ds046677.mlab.com:46677/ch'

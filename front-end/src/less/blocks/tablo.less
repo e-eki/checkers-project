@@ -1,0 +1,25 @@
+
+.tablo {
+	width: 100vw;
+    text-align:center;
+    color: rgb(182, 18, 18);
+    font-weight: bold;
+	font-size: 35px;
+	display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+	
+	&_shown {
+		display: flex;
+	}
+	
+	&_hidden {
+		display: none;
+	}
+	
+	@media (max-width: @screen-sm) {
+		font-size: 29px;
+	}
+	
+}
