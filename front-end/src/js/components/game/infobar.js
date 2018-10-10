@@ -105,7 +105,7 @@ export default class Infobar extends Component {
 				<div>Белые фигуры на доске: <span>{this.props.whiteActorsCount}</span></div>
 				<div>Черные фигуры на доске: <span>{this.props.blackActorsCount}</span></div>
 				<div>История ходов: 
-					<textarea readOnly = 'true' value = {this.state.currentActionDefinition}></textarea>
+					<textarea readOnly = {true} value = {this.state.currentActionDefinition}></textarea>
 				</div>				
 			</div>
         )

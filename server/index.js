@@ -8,7 +8,6 @@ const mongoDbUtils = require('./api/lib/mongoDbUtils');
 
 const indexHTML = path.resolve('./front-end/public/index.html');
 const app = express();
-const port = 3000;
 
 // статические файлы
 //app.use('/', express.static('front-end/public'));
@@ -44,15 +43,6 @@ app.use('/api', require('./api/routes/user'));
 
 // ---------------------------------------------------------------
 
-// запросы к страницам на сайте (???)
-//const mainLink = `${config.server.protocol}://${config.server.host}:${config.app.port}`;
-
-app.get('/login', (req, res) => res.redirect(`${mainLink}/login`));  //TODO: check!!!
-
-
-
-// ---------------------------------------------------------------
-
 // на все остальные запросы отдаем главную страницу
 app.get('/*', (req, res) => res.sendFile(indexHTML));
 
@@ -63,9 +53,7 @@ app.use((req, res, next) => {
 
 // Если же произошла иная ошибка, то отдаем 500 Internal Server Error
 app.use((err, req, res, next) => {
-    /*if (err && err.stack) {
-        console.error(err.stack);
-    }*/
+    console.log('server error: ', err.message);
 
     const status = 500;
     return res.status(status).send({statusCode: status, data: null, error: {name: 'server_error', message: err.message}});
