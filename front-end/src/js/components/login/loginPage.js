@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
+import apiConst from '../apiConst';
+
 // страница входа на сайт
 export default class LoginPage extends Component {
 
@@ -23,6 +25,7 @@ export default class LoginPage extends Component {
 		this.clickLoginButton = this.clickLoginButton.bind(this);
 		this.clearData = this.clearData.bind(this);
 		this.socialLogin = this.socialLogin.bind(this);
+
 	}
 
 	// по клику на инпуте он очищается
@@ -75,7 +78,19 @@ export default class LoginPage extends Component {
 			return;
 		}
 
-		//
+		return axios.post(`${apiConst.api_url}/login/`, {
+			email: this.state.emailData,
+			password: this.state.passwordData
+		})
+			.then((response) => {
+				debugger;
+				console.log(response);
+				
+			})
+			.catch((error) => {
+
+				const answer = alert(error.message);
+			})
 
 	}
 
@@ -86,10 +101,10 @@ export default class LoginPage extends Component {
 
 		switch (service) {
 			case 'vkontakte':
-				socialLink = 'https://oauth.vk.com/authorize?client_id=6711833&display=page&scope=email&redirect_uri=http://localhost:3000/api/login&response_type=code&v=5.85&state=vk';
+				socialLink = `https://oauth.vk.com/authorize?client_id=${apiConst.vk_client_id}&display=page&scope=email&redirect_uri=${apiConst.api_url}/login&response_type=code&v=5.85&state=vk`;
 				break;
 			case 'google':
-				socialLink = 'https://accounts.google.com/o/oauth2/auth?redirect_uri=http://localhost:3000/api/login&response_type=code&client_id=100666725887-otk617ad9448ec49096hufs8001hhel3.apps.googleusercontent.com&scope=https://www.googleapis.com/auth/userinfo.email';
+				socialLink = `https://accounts.google.com/o/oauth2/auth?redirect_uri=${apiConst.api_url}/login&response_type=code&client_id=${apiConst.google_client_id}&scope=https://www.googleapis.com/auth/userinfo.email`;
 				break;
 			default:  //??
 				console.log('login error: no service name');
@@ -97,14 +112,16 @@ export default class LoginPage extends Component {
 		}
 		debugger;
 
-		return axios.post('http://localhost:3000/api/login/', {
-			email: this.state.emailData,
-			password: this.state.passwordData
-		})
+		// TODO!!! vkontakte api не отвечает localhost (нет 'Access-Control-Allow-Origin' в заголовке)
+		return axios.get(socialLink)
 			.then((response) => {
 				debugger;
 				console.log(response);
 				//redirect
+			})
+			.catch((error) => {
+
+				const answer = alert(error.message);
 			})
 	}
 

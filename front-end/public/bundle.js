@@ -86,6 +86,27 @@
 /************************************************************************/
 /******/ ({
 
+/***/ "./front-end/src/js/components/apiConst.js":
+/*!*************************************************!*\
+  !*** ./front-end/src/js/components/apiConst.js ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = {
+
+	api_url: 'http://localhost:3000/api',
+
+	vk_client_id: '6711833',
+	fb_client_id: '455348051621476',
+	google_client_id: '100666725887-otk617ad9448ec49096hufs8001hhel3.apps.googleusercontent.com'
+};
+
+/***/ }),
+
 /***/ "./front-end/src/js/components/app.js":
 /*!********************************************!*\
   !*** ./front-end/src/js/components/app.js ***!
@@ -145,6 +166,8 @@ var App = function (_Component) {
         key: 'render',
         value: function render() {
 
+            //??? должен ли сервер отдавать эти страницы по этим роутам?
+            // страница может быть в билде, который сервер отдает по адресу, или на сервере по отдельному адресу
             return _react2.default.createElement(
                 _reactRouterDom.Switch,
                 null,
@@ -2170,6 +2193,10 @@ var _axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 
 var _axios2 = _interopRequireDefault(_axios);
 
+var _apiConst = __webpack_require__(/*! ../apiConst */ "./front-end/src/js/components/apiConst.js");
+
+var _apiConst2 = _interopRequireDefault(_apiConst);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -2201,6 +2228,7 @@ var LoginPage = function (_Component) {
 		_this.clickLoginButton = _this.clickLoginButton.bind(_this);
 		_this.clearData = _this.clearData.bind(_this);
 		_this.socialLogin = _this.socialLogin.bind(_this);
+
 		return _this;
 	}
 
@@ -2259,7 +2287,16 @@ var LoginPage = function (_Component) {
 				return;
 			}
 
-			//
+			return _axios2.default.post(_apiConst2.default.api_url + '/login/', {
+				email: this.state.emailData,
+				password: this.state.passwordData
+			}).then(function (response) {
+				debugger;
+				console.log(response);
+			}).catch(function (error) {
+
+				var answer = alert(error.message);
+			});
 		}
 	}, {
 		key: 'socialLogin',
@@ -2270,10 +2307,10 @@ var LoginPage = function (_Component) {
 
 			switch (service) {
 				case 'vkontakte':
-					socialLink = 'https://oauth.vk.com/authorize?client_id=6711833&display=page&scope=email&redirect_uri=http://localhost:3000/api/login&response_type=code&v=5.85&state=vk';
+					socialLink = 'https://oauth.vk.com/authorize?client_id=' + _apiConst2.default.vk_client_id + '&display=page&scope=email&redirect_uri=' + _apiConst2.default.api_url + '/login&response_type=code&v=5.85&state=vk';
 					break;
 				case 'google':
-					socialLink = 'https://accounts.google.com/o/oauth2/auth?redirect_uri=http://localhost:3000/api/login&response_type=code&client_id=100666725887-otk617ad9448ec49096hufs8001hhel3.apps.googleusercontent.com&scope=https://www.googleapis.com/auth/userinfo.email';
+					socialLink = 'https://accounts.google.com/o/oauth2/auth?redirect_uri=' + _apiConst2.default.api_url + '/login&response_type=code&client_id=' + _apiConst2.default.google_client_id + '&scope=https://www.googleapis.com/auth/userinfo.email';
 					break;
 				default:
 					//??
@@ -2282,13 +2319,13 @@ var LoginPage = function (_Component) {
 			}
 			debugger;
 
-			return _axios2.default.post('http://localhost:3000/api/login/', {
-				email: this.state.emailData,
-				password: this.state.passwordData
-			}).then(function (response) {
+			return _axios2.default.get(socialLink).then(function (response) {
 				debugger;
 				console.log(response);
 				//redirect
+			}).catch(function (error) {
+
+				var answer = alert(error.message);
 			});
 		}
 	}, {

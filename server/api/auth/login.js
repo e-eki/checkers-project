@@ -22,6 +22,8 @@ router.route('/login')
 		return Promise.resolve(true)
 			.then(() => {
 
+				return 
+
 				//validate req.query
 				// (code & state sends by vk as GET-parameter)
 				// (code & scope sends by google as GET-parameter)
