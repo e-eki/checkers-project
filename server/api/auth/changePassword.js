@@ -72,7 +72,7 @@ router.route('/changepassword/')
 			});
 	})
 
-	//изменение пароля юзером в лк или по ссылке на сброс пароля
+	//изменение пароля юзером на странице сброса пароля (на нее можно перейти из в лк или по ссылке на сброс пароля)
 	/*data = {
 		accessToken,
 		newPassword
@@ -173,17 +173,38 @@ router.route('/changepassword/:uuid')
 
 				// по идее должен быть один юзер на один код сброса пароля
 				const userData = users[0];
-
 				userData.resetPasswordCode = '';
-				// проставляем юзеру флаг подтверждения имейла
-				return userModel.update(userData._id, userData);
+
+				let tasks = [];
+				tasks.push(user);
+
+				tasks.push(userModel.update(userData._id, userData));
+
+				return Promise.all(tasks);
 			})
-			.then((dbResponse) => {
+			.spread((user, dbResponse) => {
 
 				// редиректим на страницу сброса пароля
-				const mainLink = `${config.server.protocol}://${config.server.host}:${config.server.port}/resetPassword`;
-				return res.redirect(`${mainLink}`);
+				//const mainLink = `${config.server.protocol}://${config.server.host}:${config.server.port}/resetPassword`;
+				//return res.redirect(`${mainLink}`);
 
+				// --------- выдаем токены юзеру (редиректит фронт-энд)
+				let tasks = [];
+				tasks.push(user);
+
+				//удаляем все рефреш токены для данного юзера - можно залогиниться только на одном устройстве, 
+				// на других в это время разлогинивается
+				tasks.push(tokenUtils.deleteAllRefreshTokens(user.id));
+
+				return Promise.all(tasks);
+			})
+			.spread((user, data) => {
+				// получаем новую пару токенов
+				return tokenUtils.getRefreshTokensAndSaveToDB(user);
+			})
+			.then((tokensData) => {
+
+				res.send(tokensData);  // как передать токены, одновременно открыв страницу сброса пароля?
 			})
 			.catch((error) => {
 
