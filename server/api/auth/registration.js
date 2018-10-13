@@ -83,21 +83,23 @@ router.route('/registration')
 				};
 
 				//отправляем письмо с кодом подтверждения на указанный имейл
-				return mail.sendConfirmEmailLetter(data);
+				return mail.sendConfirmEmailLetter(data)
+					.catch((error) => {
+						// возможную ошибку на этапе отправки письма игнорируем - только логируем ее
+						console.log('email error: ', error.message);
+						return null;
+					})
 			})
-			.catch((error) => {
-                // возможную ошибку на этапе отправки письма игнорируем - только логируем ее
-                console.log('email error: ', error.message);
-                return null;
-            })
 			.then((data) => {
 
 				//показываем страницу успешной регистрации
 				//TODO: ?? как сделать редирект на главную через неск.секунд после показа страницы?
-				const page = require('../templates/successRegisterPage');
+				//const page = require('../templates/successRegisterPage');
 
-				res.set('Content-Type', 'text/html');
-				return res.send(page);
+				//res.set('Content-Type', 'text/html');
+				//return res.send(page);
+
+				return res.send('user successfully register');
 			})
 			.catch((error) => {
 

@@ -85,9 +85,9 @@ router.route('/changepassword/')
 			.then(() => {
 
 				//validate req.body
-				if (!req.body.newPassword || req.body.newPassword == '') throw new Error('incorrect changePassword data: empty newPassword');
+				if (!req.body.password || req.body.password == '') throw new Error('incorrect changePassword data: empty newPassword');
 
-				newPassword = req.body.newPassword;
+				newPassword = req.body.password;
 
 				const headerAuthorization = req.header('Authorization') || '';
 				const accessToken = tokenUtils.getTokenFromHeader(headerAuthorization);
@@ -166,19 +166,19 @@ router.route('/changepassword/:uuid')
 	.get(function(req, res) {
 
 		// ищем юзеров с данным кодом сброса пароля
-		return userModel.query({resetPasswordCode: req.params.uuid})
+		return Promise.resolve(userModel.query({resetPasswordCode: req.params.uuid}))
 			.then((users) => {
 
 				if (!users.length) throw new Error('no user with this uuid');
 
 				// по идее должен быть один юзер на один код сброса пароля
-				const userData = users[0];
-				userData.resetPasswordCode = '';
+				const user = users[0];
+				user.resetPasswordCode = '';
 
 				let tasks = [];
 				tasks.push(user);
 
-				tasks.push(userModel.update(userData._id, userData));
+				tasks.push(userModel.update(user._id, user));
 
 				return Promise.all(tasks);
 			})
@@ -204,9 +204,21 @@ router.route('/changepassword/:uuid')
 			})
 			.then((tokensData) => {
 
-				res.send(tokensData);  // как передать токены, одновременно открыв страницу сброса пароля?
+				// как передать токены, одновременно открыв страницу сброса пароля:
+				// передаем аксесс токен как параметр в ссылке, фронт-энд этот параметр извлекает 
+				// и использует для запроса на сброс пароля
+				// рефреш токен и время жизни ему не нужны, т.к когда истечет время жизни - 
+				// протухнет ссылка, и новую можно получить только в новом письме.
+
+				// редиректим на страницу сброса пароля
+
+				const link = `${config.server.protocol}://${config.server.host}:${config.server.port}/resetPassword/${tokensData.accessToken}`;
+				return res.redirect(`${link}`);
 			})
 			.catch((error) => {
+
+				console.log(error);
+				error.message = 'Некорректная ссылка на восстановление пароля';
 
 				return utils.sendErrorResponse(res, error);
 			});
