@@ -2,7 +2,6 @@
 const express = require('express');
 const Promise = require('bluebird');
 
-const config = require('../../config');
 const utils = require('../lib/utils');
 const tokenUtils = require('../lib/tokenUtils');
 const userModel = require('../models/user');
@@ -62,12 +61,7 @@ router.route('/refreshtokens/')
 			})
 			.catch((error) => {
 
-				//return utils.sendErrorResponse(res, error);
-
-				// в случае любой ошибки с токенами предполагается, что юзер не авторизован 
-				// - редиректим на страницу входа (спецом для кнопки лк на главной странице)
-				const link = `${config.server.protocol}://${config.server.host}:${config.server.port}/login`;
-				return res.redirect(`${link}`);
+				return utils.sendErrorResponse(res, error);
 			});
 	})
 

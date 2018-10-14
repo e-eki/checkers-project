@@ -50,12 +50,7 @@ router.route('/lkUserData')
 			})
 			.catch((error) => {
 
-				//return utils.sendErrorResponse(res, error);
-
-				// в случае любой ошибки с токенами предполагается, что юзер не авторизован 
-				// - редиректим на страницу входа (спецом для кнопки лк на главной странице)
-				const link = `${config.server.protocol}://${config.server.host}:${config.server.port}/login`;
-				return res.redirect(`${link}`);
+				return utils.sendErrorResponse(res, error);
 			});
 	})
 
