@@ -37,10 +37,15 @@ router.route('/user/:id')
 
   // получение юзера по его id
   .get(function(req, res) {   
-    userModel.query(req.params.id)
+    
+    return userModel.query({_id: req.params.id})
       .then((data) => {
-        res.send(data)
-      });
+        return res.send(data)
+      })
+      .catch((error) => {
+
+				return utils.sendErrorResponse(res, error);
+			});
   })
 
   .post(function(req, res) {
@@ -50,10 +55,15 @@ router.route('/user/:id')
 
   // редактирование данных юзера по его id
   .put(function(req, res) {
-    userModel.update(req.params.id, req.body)
+
+    return userModel.update(req.params.id, req.body)
       .then((data) => {
-        res.send(data)
-      });
+        return res.send(data)
+      })
+      .catch((error) => {
+
+				return utils.sendErrorResponse(res, error);
+			});
   })
 
   .delete(function(req, res) {
