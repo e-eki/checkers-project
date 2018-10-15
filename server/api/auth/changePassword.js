@@ -63,12 +63,14 @@ router.route('/changepassword/')
 			})
 			.then((dbResponse) => {
 
-				if (dbResponse.errors) throw new Error('reserPasswordCode updated with error');
-				return res.send('Reset password mail sent');
+				if (dbResponse.errors) throw new Error('resetPasswordCode updated with error');
+				return utils.sendResponse(res, 'Reset password mail sent');
 			})
 			.catch((error) => {
 
-				return utils.sendErrorResponse(res, error);
+				if (error.message == 'no user with this email') return utils.sendErrorResponse(res, error, 401);
+
+				return utils.sendErrorResponse(res, error, 500);
 			});
 	})
 
@@ -145,11 +147,13 @@ router.route('/changepassword/')
 			})
 			.then(() => {
 
-				return res.send('Password changed');
+				return utils.sendResponse(res, 'Password changed');
 			})
 			.catch((error) => {
+				//TODO: сделать status внутри error!
+				if (error.message == 'password updated with error') return utils.sendErrorResponse(res, error, 500);  
 
-				return utils.sendErrorResponse(res, error);
+				return utils.sendErrorResponse(res, error, 401);
 			});
 	})
 
@@ -217,10 +221,7 @@ router.route('/changepassword/:uuid')
 			})
 			.catch((error) => {
 
-				console.log(error);
-				error.message = 'Некорректная ссылка на восстановление пароля';
-
-				return utils.sendErrorResponse(res, error);
+				return utils.sendErrorResponse(res, error, 401);
 			});
 	})
 

@@ -46,15 +46,14 @@ router.route('/lkUserData')
 					role: user.role,
 				};
 
-				return res.send(lkData);
+				return utils.sendResponse(res, lkData);
 			})
 			.catch((error) => {
 
-				return utils.sendErrorResponse(res, error);
+				return utils.sendErrorResponse(res, error, 401);
 			});
 	})
 
-	// метод не поддерживается - пользователь может быть добавлен только через регистрацию
 	.post(function(req, res) {
 		
 		return utils.sendErrorResponse(res, 'UNSUPPORTED_METHOD');

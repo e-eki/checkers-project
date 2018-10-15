@@ -21,7 +21,7 @@ router.route('/login')
 
 		return Promise.resolve(true)
 			.then(() => {
-
+				
 				//validate req.query
 				// (code & state sends by vk as GET-parameter)
 				// (code & scope sends by google as GET-parameter)
@@ -41,11 +41,11 @@ router.route('/login')
 			})
 			.then((tokensData) => {
 
-				res.send(tokensData);
+				return utils.sendResponse(res, tokensData);
 			})
 			.catch((error) => {
 
-				return utils.sendErrorResponse(res, error);
+				return utils.sendErrorResponse(res, error, 401);
 			});
 	})
 
@@ -57,7 +57,7 @@ router.route('/login')
 
 		return Promise.resolve(true)
 			.then(() => {
-
+				
 				//validate req.body
 				if (!req.body.email || req.body.email == '') throw new Error('incorrect login data: empty email');
 				else if (!req.body.password || req.body.password == '') throw new Error('incorrect login data: empty password');
@@ -71,11 +71,11 @@ router.route('/login')
 			})
 			.then((tokensData) => {
 
-				res.send(tokensData);
+				return utils.sendResponse(res, tokensData);  
 			})
 			.catch((error) => {
 
-				return utils.sendErrorResponse(res, error);
+				return utils.sendErrorResponse(res, error, 401);
 			});
 	})
 

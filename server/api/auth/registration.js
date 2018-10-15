@@ -16,6 +16,7 @@ router.route('/registration')
 		return utils.sendErrorResponse(res, 'UNSUPPORTED_METHOD');
 	})
 
+	// регистрация на сайте
   	.post(function(req, res) {
 
 		let userData;
@@ -47,7 +48,7 @@ router.route('/registration')
 				if (emailDuplicates.length) {
 					
 					if (emailDuplicates[0].isEmailConfirmed) throw new Error('email already exists');
-					else return utils.sendErrorResponse(res, 'email already exists, but not confirmed', 403);  //TODO!!!
+					else return utils.sendErrorResponse(res, 'email already exists, but not confirmed', 401);  //TODO!!!
 				}
 
 				return utils.makePasswordHash(req.body.password);
@@ -99,11 +100,11 @@ router.route('/registration')
 				//res.set('Content-Type', 'text/html');
 				//return res.send(page);
 
-				return res.send('user successfully register');
+				return utils.sendResponse(res, 'user successfully register', 201);
 			})
 			.catch((error) => {
 
-				return utils.sendErrorResponse(res, error);
+				return utils.sendErrorResponse(res, error, 401);
 			});
 	})
 

@@ -7,15 +7,23 @@ const config = require('../../config');
 
 const utils = new function() {
 
-    // метод не поддерживается
-	this.sendErrorResponse = function(res, error, statusCode, headers) {
+    this.sendResponse = function(res, response, statusCode) {
 
-        const status = statusCode || 500;
-        const errorMessage = error.message ? error.message : error;
+        let status = statusCode || 200;
+        let responseData = response ? response : 'OK'; //??
 
-        if (headers) {
-            res.set(headers);
-        }
+        return res.status(status).send(responseData);
+    };
+
+	this.sendErrorResponse = function(res, error, statusCode) {
+
+        let status = statusCode || error.statusCode || 500;
+        if (error == 'UNSUPPORTED_METHOD') status = 404; //???
+
+        let errorMessage = error.message || error || 'error'; //??
+
+        //if (status == 500) errorMessage = 'internal_server_error: ' + errorMessage;   //??
+
         return res.status(status).send(errorMessage);
     };
 

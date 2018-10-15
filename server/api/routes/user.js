@@ -40,11 +40,12 @@ router.route('/user/:id')
     
     return userModel.query({_id: req.params.id})
       .then((data) => {
-        return res.send(data)
+
+        return utils.sendResponse(res, data);
       })
       .catch((error) => {
 
-				return utils.sendErrorResponse(res, error);
+				return utils.sendErrorResponse(res, error, 500);
 			});
   })
 
@@ -56,17 +57,22 @@ router.route('/user/:id')
   // редактирование данных юзера по его id
   .put(function(req, res) {
 
-    return userModel.update(req.params.id, req.body)
+    //TODO: проверка токенов
+    /*return userModel.update(req.params.id, req.body)
       .then((data) => {
-        return res.send(data)
+
+        return utils.sendResponse(res, data);
       })
       .catch((error) => {
 
-				return utils.sendErrorResponse(res, error);
-			});
+				return utils.sendErrorResponse(res, error, 500);
+      });*/
+      
+      return utils.sendErrorResponse(res, 'UNSUPPORTED_METHOD');
   })
 
   .delete(function(req, res) {
+
     /*userModel.delete(req.params.id)
       .then((data) => {
         res.send(data)

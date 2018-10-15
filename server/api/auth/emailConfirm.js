@@ -54,13 +54,13 @@ router.route('/emailconfirm/')
 			.then((data) => {
 
 				// если имейл уже подтвержден
-				if (data === true) res.send('Email already confirmed');
+				if (data === true) return utils.sendResponse(res, 'Email already confirmed');
 
-				return res.send('Confirm mail sent again' );
+				return utils.sendResponse(res, 'Confirm mail sent again');
 			})
 			.catch((error) => {
 
-				return utils.sendErrorResponse(res, error);
+				return utils.sendErrorResponse(res, error, 401);
 			});
 	})
 
@@ -110,13 +110,13 @@ router.route('/emailconfirm/:uuid')
 				//если нет, то показываем страницу успешного подтверждения
 				//TODO: ?? как сделать редирект на главную через неск.секунд после показа страницы?
 				const page = require('../templates/successConfirmPage');
-
 				res.set('Content-Type', 'text/html');
+
 				return res.send(page);
 			})
 			.catch((error) => {
 
-				return utils.sendErrorResponse(res, error);
+				return utils.sendErrorResponse(res, error, 401);
 			});
 	})
 
