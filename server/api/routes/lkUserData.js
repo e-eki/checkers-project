@@ -12,9 +12,9 @@ let router = express.Router();
 router.route('/lkUserData')
 
 	//получение данных юзера для личного кабинета
-		/*data = {
-			accessToken
-		}*/
+	/*data = {
+		accessToken
+	}*/
 	.get(function(req, res) { 
 
 		return Promise.resolve(true)

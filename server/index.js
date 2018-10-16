@@ -44,6 +44,7 @@ app.use('/api', require('./api/auth/refreshTokens'));
 
 app.use('/api', require('./api/routes/user'));
 app.use('/api', require('./api/routes/lkUserData'));
+app.use('/api', require('./api/routes/game'));
 
 // ---------------------------------------------------------------
 

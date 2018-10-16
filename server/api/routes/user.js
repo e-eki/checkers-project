@@ -55,6 +55,9 @@ router.route('/user/:id')
 	})
 
   // редактирование данных юзера по его id
+  /*data = {
+		accessToken
+	}*/
   .put(function(req, res) {
 
     //TODO: проверка токенов
