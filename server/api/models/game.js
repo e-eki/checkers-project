@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Promise = require('bluebird');
 
 const gameSchema = require('../schemas/game');
 
@@ -32,7 +33,7 @@ module.exports = {
 		const user = new GameModel({
 			_id: id,
 			userId : data.userId,
-			isFinished  :  data.isFinished ? data.isFinished : false,
+			isFinished  :  data.isFinished,
 			movesCount:  data.movesCount,
 			totalOfGame: data.totalOfGame,
 			userColor: data.userColor,
@@ -48,4 +49,17 @@ module.exports = {
 	delete: function(id) {
 		return GameModel.findOneAndRemove({_id: id});
 	},
+
+	findUserUnfinishedGames: function(userId) {
+		// костыль для заворачивания в промис
+		return Promise.resolve(
+			GameModel.
+			find({userId: userId}).
+			where('isFinished').equals('false').
+			exec())
+			  .then((result) => {
+
+				return result;
+			  })
+	}
 }

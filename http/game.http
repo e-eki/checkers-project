@@ -1,0 +1,25 @@
+
+###
+POST /api/game/ HTTP/1.1
+Host: {{host}}
+Authorization: Token eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YmJjZGZiNTAzOWQ0ODIyMjAyY2M1YTgiLCJ1c2VyUm9sZSI6InVzZXIiLCJpYXQiOjE1Mzk3NzQwNzEsImV4cCI6MTUzOTc3NTI3MSwic3ViIjoiYWNjZXNzIn0.kS5rqoQVF1mthNGJofwlIr4swDWfhM9Wx9mCNJWFQsOtT8jeR-FvpHN64Shs9VZXZbz1FbqiYnaHn_3jUk2h2w
+Content-Type: application/json
+
+{
+	"userColor": "white"
+	, "boardSize": "8"
+	, "level": "light"
+	, "mode": "classic"
+}
+
+###
+PUT /api/game HTTP/1.1
+Host: {{host}}
+Authorization: Token eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YmJjZGZiNTAzOWQ0ODIyMjAyY2M1YTgiLCJ1c2VyUm9sZSI6InVzZXIiLCJpYXQiOjE1Mzk3NzUzMDEsImV4cCI6MTUzOTc3NjUwMSwic3ViIjoiYWNjZXNzIn0.vrbIK1JIO7fh3YaR8tdaHd_3_cYO_1UXjYNuRb6eIQk-Q9yvYeZcE7CUjY22vAHTxCwP-fyRF_Mpzc4qPcsn6g
+Content-Type: application/json
+
+{
+	"movesCount": "3"
+	, "email": "q1222"
+	, "totalOfGame": "st"
+}

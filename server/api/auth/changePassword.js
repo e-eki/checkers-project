@@ -68,7 +68,7 @@ router.route('/changepassword/')
 			})
 			.catch((error) => {
 
-				if (error.message == 'no user with this email') return utils.sendErrorResponse(res, error, 401);
+				if (error.message == 'no user with this email') return utils.sendErrorResponse(res, error, 401);  //TODO
 
 				return utils.sendErrorResponse(res, error, 500);
 			});

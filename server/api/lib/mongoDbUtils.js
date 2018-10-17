@@ -13,7 +13,7 @@ module.exports = {
 		});
 	},
 
-	// отключение от базы данных
+	// отключение от базы данных  (??)
 	closeConnection: function() {
 		mongoose.disconnect();  
 	},
