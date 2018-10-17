@@ -5,10 +5,10 @@ const bodyParser = require('body-parser');
 
 const config = require('./config');
 const mongoDbUtils = require('./api/lib/mongoDbUtils');
+const utils = require('./api/lib/utils');
 
 const indexHTML = path.resolve('./front-end/public/index.html');
 const app = express();
-const port = 3000;
 
 // статические файлы
 //app.use('/', express.static('front-end/public'));
@@ -16,6 +16,8 @@ app.use(express.static('front-end/public'));
 
 app.use((req, res, next) => {
     res.set({
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
         'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE'
     });
 
@@ -29,7 +31,7 @@ app.use(bodyParser.json({type: 'application/json'}));
 //app.use(bodyParser.urlencoded({ extended: true }));
 
 //соединение с БД
-mongoDbUtils.setUpConnection();
+mongoDbUtils.setUpConnection();  //TODO - перехват ошибки
 
 // ---------------------------------------------------------------
 // запросы к api
@@ -41,26 +43,32 @@ app.use('/api', require('./api/auth/changePassword'));
 app.use('/api', require('./api/auth/refreshTokens'));
 
 app.use('/api', require('./api/routes/user'));
+app.use('/api', require('./api/routes/lkUserData'));
+app.use('/api', require('./api/routes/game'));
+app.use('/api', require('./api/routes/gameTurn'));
 
 // ---------------------------------------------------------------
-
 
 // на все остальные запросы отдаем главную страницу
 app.get('/*', (req, res) => res.sendFile(indexHTML));
 
 // Если произошла ошибка валидации, то отдаем 400 Bad Request
 app.use((req, res, next) => {
-    return res.status(404).send(`url does not exist: ${req.url}`);
+
+    //return res.status(404).send(`url does not exist: ${req.url}`);
+    const errorMessage = `url does not exist: ${req.url}`;
+
+    return utils.sendErrorResponse(res, errorMessage, 404);
 });
 
 // Если же произошла иная ошибка, то отдаем 500 Internal Server Error
 app.use((err, req, res, next) => {
-    /*if (err && err.stack) {
-        console.error(err.stack);
-    }*/
 
-    const status = 500;
-    return res.status(status).send({statusCode: status, data: null, error: {name: 'server_error', message: err.message}});
+    //const status = 500;
+    //return res.status(status).send({statusCode: status, data: null, error: {name: 'server_error', message: err.message}});
+    const errorMessage = err.message ? err.message : '';
+
+    return utils.sendErrorResponse(res, errorMessage, 500);
 });
 
 app.listen(config.server.port, () => {

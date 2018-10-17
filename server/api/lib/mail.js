@@ -4,10 +4,10 @@ const nodemailer = require('nodemailer');
 
 const config = require('../../config');
 
-module.exports = {
+const mail = new function() {
 
 	// отправка письма подтверждения имейла
-	sendConfirmEmailLetter: function(data) {
+	this.sendConfirmEmailLetter = function(data) {
 
 		let transport = nodemailer.createTransport({
 			service: config.mail_settings.service, 
@@ -32,5 +32,37 @@ module.exports = {
                 transport.close();
                 return result;
             });
+	};
+
+	// отправка письма сброса пароля
+	this.sendResetPasswordLetter = function(data) {
+
+		let transport = nodemailer.createTransport({
+			service: config.mail_settings.service, 
+			auth: { 
+				user: config.mail_settings.auth.user 
+				, pass: config.mail_settings.auth.pass
+			}
+		});
+
+		// собственно письмо
+		const letterHtml = require('../templates/resetPasswordLetter').get(data);
+
+		// отправляем
+		return transport.sendMail({
+			from: config.mail_settings.from,
+			to: 'ifirtree@gmail.com',  //!!!TODO: data.email
+			subject: config.mail_settings.resetPasswordSubject,
+			html: letterHtml
+		})
+            .then((result) => {
+				
+                transport.close();
+                return result;
+            });
 	}
-}
+
+
+};
+
+module.exports = mail;

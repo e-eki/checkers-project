@@ -19,32 +19,26 @@ router.route('/emailconfirm/')
 
 	//запрос на повторное подтверждение почты пользователя
 	/* data = {
-		accessToken: <access_token>
+		email: <email>
 	}*/
 	.post(function(req, res) {
 
 		return Promise.resolve(true)
 			.then(() => {
 
-				const headerAuthorization = req.header('Authorization') || '';
-				const accessToken = tokenUtils.getTokenFromHeader(headerAuthorization);
-				
-				//validate & decode token
-				return tokenUtils.verifyAccessToken(accessToken);
-			})
-			.then((result) => {
-				// validate result
-				if (result.error || !result.payload) throw new Error('invalid access token: ' + result.error.message);
+				//validate req.body
+				if (!req.body.email || req.body.email == '') throw new Error('incorrect changePassword data: empty email');
 
-				const userId = result.payload.userId;
+				const email = req.body.email;
 
-				return userModel.query({_id: userId});
+				// ищем юзера с таким имейлом
+				return userModel.query({email: email});
 			})
 			.then((userData) => {
 
-				if (!userData.length) throw new Error('no user for this access token');
-
-				const user = userData[0];
+				if (!userData.length) throw new Error('no user with this email');
+				
+				user = userData[0];
 
 				if (user.isEmailConfirmed) return true; // если имейл уже подтвержден
 
@@ -60,13 +54,13 @@ router.route('/emailconfirm/')
 			.then((data) => {
 
 				// если имейл уже подтвержден
-				if (data === true) res.send('Email already confirmed');
+				if (data === true) return utils.sendResponse(res, 'Email already confirmed');
 
-				res.send('Confirm email sent again' );
+				return utils.sendResponse(res, 'Confirm mail sent again');
 			})
 			.catch((error) => {
 
-				return utils.sendErrorResponse(res, error);
+				return utils.sendErrorResponse(res, error, 401);
 			});
 	})
 
@@ -116,13 +110,13 @@ router.route('/emailconfirm/:uuid')
 				//если нет, то показываем страницу успешного подтверждения
 				//TODO: ?? как сделать редирект на главную через неск.секунд после показа страницы?
 				const page = require('../templates/successConfirmPage');
-
 				res.set('Content-Type', 'text/html');
+
 				return res.send(page);
 			})
 			.catch((error) => {
 
-				return utils.sendErrorResponse(res, error);
+				return utils.sendErrorResponse(res, error, 401);
 			});
 	})
 

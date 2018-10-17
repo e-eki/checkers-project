@@ -16,6 +16,7 @@ router.route('/registration')
 		return utils.sendErrorResponse(res, 'UNSUPPORTED_METHOD');
 	})
 
+	// регистрация на сайте
   	.post(function(req, res) {
 
 		let userData;
@@ -47,7 +48,7 @@ router.route('/registration')
 				if (emailDuplicates.length) {
 					
 					if (emailDuplicates[0].isEmailConfirmed) throw new Error('email already exists');
-					else return utils.sendErrorResponse(res, 'email already exists, but not confirmed', 403);  //TODO!!!
+					else return utils.sendErrorResponse(res, 'email already exists, but not confirmed', 401);  //TODO!!!
 				}
 
 				return utils.makePasswordHash(req.body.password);
@@ -63,7 +64,9 @@ router.route('/registration')
 					email     : req.body.email,
 					confirmEmailCode: confirmEmailCode,
 					isEmailConfirmed: false,
-					password     : hash
+					password     : hash,
+					resetPasswordCode: '',
+					role: 'user'
 				};
 
 				//??? роль юзеру
@@ -81,25 +84,27 @@ router.route('/registration')
 				};
 
 				//отправляем письмо с кодом подтверждения на указанный имейл
-				return mail.sendConfirmEmailLetter(data);
+				return mail.sendConfirmEmailLetter(data)
+					.catch((error) => {
+						// возможную ошибку на этапе отправки письма игнорируем - только логируем ее
+						console.log('email error: ', error.message);
+						return null;
+					})
 			})
-			.catch((error) => {
-                // возможную ошибку на этапе отправки письма игнорируем - только логируем ее
-                console.log('email error: ', error.message);
-                return null;
-            })
 			.then((data) => {
 
 				//показываем страницу успешной регистрации
 				//TODO: ?? как сделать редирект на главную через неск.секунд после показа страницы?
-				const page = require('../templates/successRegisterPage');
+				//const page = require('../templates/successRegisterPage');
 
-				res.set('Content-Type', 'text/html');
-				return res.send(page);
+				//res.set('Content-Type', 'text/html');
+				//return res.send(page);
+
+				return utils.sendResponse(res, 'user successfully register', 201);
 			})
 			.catch((error) => {
 
-				return utils.sendErrorResponse(res, error);
+				return utils.sendErrorResponse(res, error, 401);
 			});
 	})
 

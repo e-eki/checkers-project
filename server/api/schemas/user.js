@@ -10,6 +10,7 @@ const userSchema = new Schema(
 		confirmEmailCode: { type: String },
 		isEmailConfirmed : {type: Boolean },
 		password     : { type: String },
+		resetPasswordCode: { type: String },
 		role     : { type: String },
 	},
 	{versionKey: false}   //отключение поля __v, которое указывает на версию документа

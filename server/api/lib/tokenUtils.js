@@ -105,6 +105,7 @@ const tokenUtils = new function() {
 					//token = token.toString();
 					//TODO: как сравнить токены? сравнение строк не работает
 					//if (!refreshToken || token > refreshToken[0].toString() || token < refreshToken[0].toString()) throw new Error('bad refresh token');
+					
 					if (!refreshToken[0]) throw new Error('bad refresh token');
 					else return {error: error, payload: payload};
 				})

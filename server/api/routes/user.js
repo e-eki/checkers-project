@@ -37,10 +37,16 @@ router.route('/user/:id')
 
   // получение юзера по его id
   .get(function(req, res) {   
-    userModel.query(req.params.id)
+    
+    return userModel.query({_id: req.params.id})
       .then((data) => {
-        res.send(data)
-      });
+
+        return utils.sendResponse(res, data);
+      })
+      .catch((error) => {
+
+				return utils.sendErrorResponse(res, error, 500);
+			});
   })
 
   .post(function(req, res) {
@@ -49,14 +55,27 @@ router.route('/user/:id')
 	})
 
   // редактирование данных юзера по его id
+  /*data = {
+		accessToken
+	}*/
   .put(function(req, res) {
-    userModel.update(req.params.id, req.body)
+
+    //TODO: проверка токенов
+    /*return userModel.update(req.params.id, req.body)
       .then((data) => {
-        res.send(data)
-      });
+
+        return utils.sendResponse(res, data);
+      })
+      .catch((error) => {
+
+				return utils.sendErrorResponse(res, error, 500);
+      });*/
+      
+      return utils.sendErrorResponse(res, 'UNSUPPORTED_METHOD');
   })
 
   .delete(function(req, res) {
+
     /*userModel.delete(req.params.id)
       .then((data) => {
         res.send(data)

@@ -49,11 +49,11 @@ router.route('/logout')
 			})
 			.then((data) => {
 
-				res.send('User is logged out' );
+				return utils.sendResponse(res, 'User is logged out', 204);
 			})
 			.catch((error) => {
 
-				return utils.sendErrorResponse(res, error);
+				return utils.sendErrorResponse(res, error, 401);
 			});
 	})
 ;

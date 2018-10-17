@@ -57,11 +57,11 @@ router.route('/refreshtokens/')
 			})
 			.then((tokensData) => {
 
-				res.send(tokensData);
+				utils.sendResponse(res, tokensData, 201);
 			})
 			.catch((error) => {
 
-				return utils.sendErrorResponse(res, error);
+				return utils.sendErrorResponse(res, error, 401);
 			});
 	})
 
