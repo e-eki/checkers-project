@@ -1,0 +1,51 @@
+
+.lk-form {
+
+	background: @light-brown;
+    width: 100vw;
+    height: 100vw;
+    text-align:center;
+	font-size: @lk-font-size;
+	display: flex;
+    flex-direction: column;
+    align-items: center;
+	justify-content: start;
+	
+	&__title {
+		font-weight: bold;
+		font-size: @lk-title-font-size;
+		color: @dark-red-brown;
+
+		margin-top: 6vh;
+	}
+
+	&__user-info {
+		text-align: left;
+		border-top: 2px solid @dark-red-brown;
+
+		margin: 2vh;
+	}
+
+	&__games-info {
+		text-align: left;
+		border-top: 2px solid @dark-red-brown;
+
+		margin: 2vh;
+	}
+
+	&__button {
+
+		margin: 2vh 0;
+    	width: 30%;
+	}
+	
+	&_shown {
+		display: flex;
+	}
+	
+	&_hidden {
+		display: none;
+	}
+
+	
+}
