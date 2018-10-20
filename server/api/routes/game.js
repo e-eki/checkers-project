@@ -4,8 +4,10 @@ const Promise = require('bluebird');
 
 const utils = require('../lib/utils');
 const tokenUtils = require('../lib/tokenUtils');
+const gameUtils = require('../lib/gameUtils');
 const userModel = require('../models/user');
 const gameModel = require('../models/game');
+const Chessboard = require('../game/blocks/chessboard');
 
 let router = express.Router();
 
@@ -49,6 +51,9 @@ router.route('/game')
 
 				let user = userData[0];
 
+				const chessboard = new Chessboard(req.body.boardSize, req.body.mode);
+				const actorsData = chessboard.actorsData;
+
 				const gameData = {
 					userId:  user._id,
 					isFinished  :  false,
@@ -59,7 +64,9 @@ router.route('/game')
 					boardSize: req.body.boardSize,
 					level: req.body.level,
 					mode: req.body.mode,
-					actorsData: [],    //??
+					startTime: new Date().getTime(),  //??
+					gameTime: '0 ч 0 мин',
+					actorsData: actorsData,    
 				};
 
 				return gameModel.create(gameData);
@@ -118,7 +125,6 @@ router.route('/game')
 				const user = userData[0];
 
 				let tasks = [];
-
 				tasks.push(user);
 				// get game
 				tasks.push(gameModel.findUserUnfinishedGames(user._id));
@@ -130,22 +136,18 @@ router.route('/game')
 				if (!games.length) throw new Error('no unfinished games for this user');
 
 				//по идее должна быть только одна (или ни одной) незаконченная игра для каждого юзера
-				const game = games[0];
+				const game = games[0];;
 
-				const gameData = {
-					userId:  game.userId,
-					isFinished  :  true,
-					movesCount:  req.body.movesCount,
-					totalOfGame: req.body.totalOfGame,
+				const finishTime = new Date().getTime();
+				const gameTimeNote = gameUtils.getGameTimeNote(game.startTime, finishTime);
 
-					userColor: game.userColor,
-					boardSize: game.boardSize,
-					level: game.level,
-					mode: game.mode,
-					actorsData: game.actorsData,    //??
-				};
+				game.isFinished = true;
+				game.movesCount = req.body.movesCount;
+				game.totalOfGame = req.body.totalOfGame;
+				game.actorsData = [];   //??
+				game.gameTime = gameTimeNote;
 
-				return gameModel.update(game._id, gameData);
+				return gameModel.update(game._id, game);
 			})
 			.then((dbResponse) => {
 

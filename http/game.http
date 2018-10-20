@@ -2,7 +2,7 @@
 ###
 POST /api/game/ HTTP/1.1
 Host: {{host}}
-Authorization: Token eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YmJjZGZiNTAzOWQ0ODIyMjAyY2M1YTgiLCJ1c2VyUm9sZSI6InVzZXIiLCJpYXQiOjE1Mzk3NzQwNzEsImV4cCI6MTUzOTc3NTI3MSwic3ViIjoiYWNjZXNzIn0.kS5rqoQVF1mthNGJofwlIr4swDWfhM9Wx9mCNJWFQsOtT8jeR-FvpHN64Shs9VZXZbz1FbqiYnaHn_3jUk2h2w
+Authorization: Token eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YmJjZGZiNTAzOWQ0ODIyMjAyY2M1YTgiLCJ1c2VyUm9sZSI6InVzZXIiLCJpYXQiOjE1NDAwNjU1MTgsImV4cCI6MTU0MDA3MjcxOCwic3ViIjoiYWNjZXNzIn0.7OnDmFC0Kx5Ul2fZ36njH1_4xPT3XB5P_-9TSrl8_zz51PA8edLNBkdg_JQdycnJ7Vf8cmx7Y6P0NDXclDI28w
 Content-Type: application/json
 
 {
@@ -15,11 +15,10 @@ Content-Type: application/json
 ###
 PUT /api/game HTTP/1.1
 Host: {{host}}
-Authorization: Token eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YmJjZGZiNTAzOWQ0ODIyMjAyY2M1YTgiLCJ1c2VyUm9sZSI6InVzZXIiLCJpYXQiOjE1Mzk3NzUzMDEsImV4cCI6MTUzOTc3NjUwMSwic3ViIjoiYWNjZXNzIn0.vrbIK1JIO7fh3YaR8tdaHd_3_cYO_1UXjYNuRb6eIQk-Q9yvYeZcE7CUjY22vAHTxCwP-fyRF_Mpzc4qPcsn6g
+Authorization: Token eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YmJjZGZiNTAzOWQ0ODIyMjAyY2M1YTgiLCJ1c2VyUm9sZSI6InVzZXIiLCJpYXQiOjE1NDAwNjU1MTgsImV4cCI6MTU0MDA3MjcxOCwic3ViIjoiYWNjZXNzIn0.7OnDmFC0Kx5Ul2fZ36njH1_4xPT3XB5P_-9TSrl8_zz51PA8edLNBkdg_JQdycnJ7Vf8cmx7Y6P0NDXclDI28w
 Content-Type: application/json
 
 {
 	"movesCount": "3"
-	, "email": "q1222"
 	, "totalOfGame": "st"
 }
