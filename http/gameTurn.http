@@ -1,0 +1,10 @@
+
+###
+POST /api/gameturn/ HTTP/1.1
+Host: {{host}}
+Authorization: Token eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YmJjZGZiNTAzOWQ0ODIyMjAyY2M1YTgiLCJ1c2VyUm9sZSI6InVzZXIiLCJpYXQiOjE1NDAxNDk2NzMsImV4cCI6MTU0MDE1Njg3Mywic3ViIjoiYWNjZXNzIn0.7s5hdx0Fz-nZqHD1SD2jxwh4Gh_5Sv1IpN4kkiEFbSodfQHdZq5fuTaU3nZgVq-YKh5QDbtCFeWumyOo3_h8Wg
+Content-Type: application/json
+
+{
+	"userTurn": "1111"
+}

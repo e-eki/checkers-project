@@ -4,8 +4,10 @@ const Promise = require('bluebird');
 
 const utils = require('../lib/utils');
 const tokenUtils = require('../lib/tokenUtils');
+const gameUtils = require('../lib/gameUtils');
 const userModel = require('../models/user');
 const gameModel = require('../models/game');
+const Chessboard = require('../game/blocks/chessboard');
 
 let router = express.Router();
 
@@ -33,21 +35,15 @@ router.route('/game')
 				const headerAuthorization = req.header('Authorization') || '';
 				const accessToken = tokenUtils.getTokenFromHeader(headerAuthorization);
 
-				//validate & decode token
-				return tokenUtils.verifyAccessToken(accessToken)
+				return tokenUtils.findUserByAccessToken(accessToken);
 			})
-			.then((result) => {
-					
-				if (result.error || !result.payload) throw new Error('invalid access token: ' + result.error.message);
+			.then((user) => {
 
-				// get user
-				return userModel.query({_id: result.payload.userId});
-			})
-			.then((userData) => {
-
-				if (!userData.length) throw new Error('no user with this access token');
-
-				let user = userData[0];
+				// инициализация шахматной доски - начальная расстановка актеров на доске
+				//const chessboard = new Chessboard(req.body.userColor, req.body.boardSize, req.body.level, req.body.mode);
+				
+				const chessboard = new Chessboard(req.body);  //TODO!
+				const actorsData = chessboard.actorsData;
 
 				const gameData = {
 					userId:  user._id,
@@ -59,7 +55,9 @@ router.route('/game')
 					boardSize: req.body.boardSize,
 					level: req.body.level,
 					mode: req.body.mode,
-					actorsData: [],    //??
+					startTime: new Date().getTime(),  //??
+					gameTime: '0 ч 0 мин',
+					actorsData: actorsData,    
 				};
 
 				return gameModel.create(gameData);
@@ -101,51 +99,20 @@ router.route('/game')
 				const headerAuthorization = req.header('Authorization') || '';
 				const accessToken = tokenUtils.getTokenFromHeader(headerAuthorization);
 
-				//validate & decode token
-				return tokenUtils.verifyAccessToken(accessToken)
+				return gameUtils.findCurrentGameByToken(accessToken);
 			})
-			.then((result) => {
-					
-				if (result.error || !result.payload) throw new Error('invalid access token: ' + result.error.message);
+			.then((game) => {
 
-				// get user
-				return userModel.query({_id: result.payload.userId});
-			})
-			.then((userData) => {
+				const finishTime = new Date().getTime();
+				const gameTimeNote = gameUtils.getGameTimeNote(game.startTime, finishTime);
 
-				if (!userData.length) throw new Error('no user with this access token');
+				game.isFinished = true;
+				game.movesCount = req.body.movesCount;
+				game.totalOfGame = req.body.totalOfGame;
+				game.actorsData = [];   //??
+				game.gameTime = gameTimeNote;
 
-				const user = userData[0];
-
-				let tasks = [];
-
-				tasks.push(user);
-				// get game
-				tasks.push(gameModel.findUserUnfinishedGames(user._id));
-
-				return Promise.all(tasks);
-			})
-			.spread((user, games) => {
-
-				if (!games.length) throw new Error('no unfinished games for this user');
-
-				//по идее должна быть только одна (или ни одной) незаконченная игра для каждого юзера
-				const game = games[0];
-
-				const gameData = {
-					userId:  game.userId,
-					isFinished  :  true,
-					movesCount:  req.body.movesCount,
-					totalOfGame: req.body.totalOfGame,
-
-					userColor: game.userColor,
-					boardSize: game.boardSize,
-					level: game.level,
-					mode: game.mode,
-					actorsData: game.actorsData,    //??
-				};
-
-				return gameModel.update(game._id, gameData);
+				return gameModel.update(game._id, game);
 			})
 			.then((dbResponse) => {
 

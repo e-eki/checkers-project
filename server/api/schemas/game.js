@@ -1,6 +1,8 @@
 
 const mongoose = require('mongoose');
 
+const actorDataSchema = require('./actorData');
+
 const Schema = mongoose.Schema;
 
 const gameSchema = new Schema(
@@ -13,7 +15,9 @@ const gameSchema = new Schema(
 		boardSize: Number,
 		level: String,
 		mode: String,
-		actorsData: [{ color: String, type: String, x: Number, y: Number }],    //TODO!
+		startTime: Date,
+		gameTime: String,
+		actorsData: [actorDataSchema],    //TODO!
 		
 	},
 	{versionKey: false}   //отключение поля __v, которое указывает на версию документа

@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 
 const config = require('../../config');
 const refreshTokenModel = require('../models/refreshToken');
+const userModel = require('../models/user');
 
 const tokenUtils = new function() {
 
@@ -201,6 +202,32 @@ const tokenUtils = new function() {
 
 				return tokensData;
 			});
+	};
+
+	// проверяет аксесс токен и находит по нему юзера
+	this.findUserByAccessToken = function(accessToken) {
+
+		return Promise.resolve(true)
+			.then(() => {
+
+				//validate & decode token
+				return this.verifyAccessToken(accessToken)
+			})
+			.then((result) => {
+					
+				if (result.error || !result.payload) throw new Error('invalid access token: ' + result.error.message);
+
+				// get user
+				return userModel.query({_id: result.payload.userId});
+			})
+			.then((userData) => {
+
+				if (!userData.length) throw new Error('no user with this access token');
+
+				const user = userData[0];
+
+				return user;
+			})
 	};
 
 };

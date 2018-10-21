@@ -1,8 +1,10 @@
 const mongoose = require('mongoose');
 const Promise = require('bluebird');
 
+const actorDataSchema = require('../schemas/actorData');
 const gameSchema = require('../schemas/game');
 
+const ActorDataModel = mongoose.model('ActorData', actorDataSchema);
 const GameModel = mongoose.model('Game', gameSchema);
 
 module.exports = {
@@ -14,6 +16,25 @@ module.exports = {
 	},
 	
 	create: function(data) {
+
+		let actors = [];
+
+		data.actorsData.forEach((actorData) => {
+
+			//if (actorData) {  //??
+
+				const actor = new ActorDataModel({
+					color: actorData.color,
+					type: actorData.type,
+					x: actorData.x,
+					y: actorData.y, 
+				});
+	
+				//actor.save();
+				actors.push(actor);
+			//}
+		});
+
 		const game = new GameModel({
 			userId : data.userId,
 			isFinished  :  data.isFinished,
@@ -23,7 +44,9 @@ module.exports = {
 			boardSize: data.boardSize,
 			level: data.level,
 			mode: data.mode,
-			actorsData: data.actorsData,    //TODO!
+			startTime: data.startTime,
+			gameTime: data.gameTime,
+			actorsData: actors,    //TODO!
 		});
 	
 		return game.save();
@@ -40,6 +63,8 @@ module.exports = {
 			boardSize: data.boardSize,
 			level: data.level,
 			mode: data.mode,
+			startTime: data.startTime,
+			gameTime: data.gameTime,
 			actorsData: data.actorsData,    //TODO!
 		});
 
