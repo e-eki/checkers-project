@@ -2,7 +2,6 @@
 const express = require('express');
 const Promise = require('bluebird');
 
-const userModel = require('../models/user');
 const utils = require('../lib/utils');
 const tokenUtils = require('../lib/tokenUtils');
 
@@ -23,21 +22,9 @@ router.route('/lkUserData')
 				const headerAuthorization = req.header('Authorization') || '';
 				const accessToken = tokenUtils.getTokenFromHeader(headerAuthorization);
 
-				//validate & decode token
-				return tokenUtils.verifyAccessToken(accessToken)
+				return tokenUtils.findUserByAccessToken(accessToken);
 			})
-			.then((result) => {
-					
-				if (result.error || !result.payload) throw new Error('invalid access token: ' + result.error.message);
-
-				// get user
-				return userModel.query({_id: result.payload.userId});
-			})
-			.then((userData) => {
-
-				if (!userData.length) throw new Error('no user with this access token');
-
-				user = userData[0];
+			.then((user) => {
 
 				const lkData = {
 					login: user.login,

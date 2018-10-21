@@ -13,10 +13,13 @@ class Chessboard {
 		this.boardSize = boardSize;
 		this.mode = mode;
 		this.actorsData = [];
-		this.grid = [];   //??
-		this.actors = [];  //??
+		this.grid = [];   
+		this.actors = [];  
 		
 		this.actorsData = (actorsData !== undefined) ? actorsData : this.fillActorsData();
+		let t = this.actorsData[0];
+		t = this.actorsData[0][0];
+
 		this.grid = this.fillGrid();   //??
 		this.actors = this.fillActorsByActorsData();  //??
 	}
@@ -39,6 +42,7 @@ class Chessboard {
 		return grid;
 	}
 	
+	// упорядоченный (!) массив с данными актеров - положение в массиве соответствует положению на доске
 	fillActorsData() {
 
 		let actorsData = [];
@@ -69,7 +73,7 @@ class Chessboard {
 					// если есть цвет, то есть актер на данной клетке
 					if (actorColor) {
 
-						let actorType = (this.mode == 'classic') ? 'checker' : 'dam';
+						let actorType = (this.mode !== 'classic') ? 'checker' : 'dam';  //TODO
 
 						actorsData[y].push({
 
@@ -92,6 +96,7 @@ class Chessboard {
 		return actorsData;
 	}
 
+	// actors - неупорядоченный массив с данными актеров
 	fillActorsByActorsData() {
 
 		let actors = [];
@@ -118,6 +123,65 @@ class Chessboard {
 
 		return actors;
 	}
+
+	isInside(vector) {
+
+		return (vector.x >= 0 && vector.x < this.boardSize) && (vector.y >= 0 && vector.y < this.boardSize);
+	};
+	
+	find(position) {
+
+		let actor = this.actors.filter((actor) => {  
+			return actor.position.compare(position) == true;
+		});
+
+		if (actor.length) return actor[0];
+		else return null;
+	}
+	
+	get(position) {
+
+		let actor = this.find(position); 
+
+		return actor || this.grid[position.y][position.x];
+	};
+	
+	set(position, destination) {
+
+		let actor = this.find(position);
+
+		if (actor) actor.position = destination;
+	};
+	
+	add(actor) {
+
+		this.actors.push(actor);
+	};
+	
+	delete(position) { 
+
+		let actor = this.find(position);
+
+		if (actor) {
+		  const index = this.actors.indexOf(actor);
+		  this.actors = this.actors.slice(0, index).concat(this.actors.slice(index + 1));
+		}
+	};
+
+	test() {
+
+		let t = new Vector(1, 1);
+		let t1 = new Vector(2, 1);
+		let f = new Vector(8, 1);
+
+		let r = this.isInside(t);
+		r = this.isInside(f);
+
+		r = this.get(t);
+		r = this.get(t1);
+		
+	}
+
 
 
 };

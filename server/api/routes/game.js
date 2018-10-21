@@ -35,22 +35,11 @@ router.route('/game')
 				const headerAuthorization = req.header('Authorization') || '';
 				const accessToken = tokenUtils.getTokenFromHeader(headerAuthorization);
 
-				//validate & decode token
-				return tokenUtils.verifyAccessToken(accessToken)
+				return tokenUtils.findUserByAccessToken(accessToken);
 			})
-			.then((result) => {
-					
-				if (result.error || !result.payload) throw new Error('invalid access token: ' + result.error.message);
+			.then((user) => {
 
-				// get user
-				return userModel.query({_id: result.payload.userId});
-			})
-			.then((userData) => {
-
-				if (!userData.length) throw new Error('no user with this access token');
-
-				let user = userData[0];
-
+				// инициализация шахматной доски - начальная расстановка актеров на доске
 				const chessboard = new Chessboard(req.body.boardSize, req.body.mode);
 				const actorsData = chessboard.actorsData;
 
@@ -108,35 +97,9 @@ router.route('/game')
 				const headerAuthorization = req.header('Authorization') || '';
 				const accessToken = tokenUtils.getTokenFromHeader(headerAuthorization);
 
-				//validate & decode token
-				return tokenUtils.verifyAccessToken(accessToken)
+				return gameUtils.findCurrentGameByToken(accessToken);
 			})
-			.then((result) => {
-					
-				if (result.error || !result.payload) throw new Error('invalid access token: ' + result.error.message);
-
-				// get user
-				return userModel.query({_id: result.payload.userId});
-			})
-			.then((userData) => {
-
-				if (!userData.length) throw new Error('no user with this access token');
-
-				const user = userData[0];
-
-				let tasks = [];
-				tasks.push(user);
-				// get game
-				tasks.push(gameModel.findUserUnfinishedGames(user._id));
-
-				return Promise.all(tasks);
-			})
-			.spread((user, games) => {
-
-				if (!games.length) throw new Error('no unfinished games for this user');
-
-				//по идее должна быть только одна (или ни одной) незаконченная игра для каждого юзера
-				const game = games[0];;
+			.then((game) => {
 
 				const finishTime = new Date().getTime();
 				const gameTimeNote = gameUtils.getGameTimeNote(game.startTime, finishTime);

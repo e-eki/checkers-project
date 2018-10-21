@@ -21,24 +21,28 @@ module.exports = {
 
 		data.actorsData.forEach((column) => {
 
-			if (column) {
+			let actorsColumn = [];
 
-				column.forEach((actorData) => {
+			column.forEach((actorData) => {
 
-					if (actorData) {
+				if (actorData) {
 
-						const actor = new ActorDataModel({
-							color: actorData.color,
-							type: actorData.type,
-							x: actorData.x,
-							y: actorData.y, 
-						});
-			
-						//actor.save();
-						actors.push(actor);
-					}
-				})
-			}
+					const actor = new ActorDataModel({
+						color: actorData.color,
+						type: actorData.type,
+						x: actorData.x,
+						y: actorData.y, 
+					});
+		
+					//actor.save();
+					actorsColumn.push(actor);
+				}
+				else {
+					actorsColumn.push(null);
+				}
+			});
+
+			actors.push(actorsColumn);
 		});
 
 		const game = new GameModel({

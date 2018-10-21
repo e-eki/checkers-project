@@ -94,24 +94,15 @@ router.route('/changepassword/')
 				const headerAuthorization = req.header('Authorization') || '';
 				const accessToken = tokenUtils.getTokenFromHeader(headerAuthorization);
 
-				//validate & decode token
-				return tokenUtils.verifyAccessToken(accessToken)
+				return tokenUtils.findUserByAccessToken(accessToken);
 			})
-			.then((result) => {
-					
-				if (result.error || !result.payload) throw new Error('invalid access token: ' + result.error.message);
+			.then((user) => {
 
-				// проверяем, подтверждена ли почта - пароль в лк можно изменить, только если почта подтверждена
-				return userModel.query({_id: result.payload.userId});
-			})
-			.then((userData) => {
-
-				if (!userData.length) throw new Error('no user with this email');
-				else if (!userData[0].isEmailConfirmed) throw new Error('email not confirmed');
+				if (!user.isEmailConfirmed) throw new Error('email not confirmed');
 
 				let tasks = [];
 
-				tasks.push(userData[0]);
+				tasks.push(user);
 
 				//получаем хэш нового пароля
 				tasks.push(utils.makePasswordHash(newPassword));
