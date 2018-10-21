@@ -1,4 +1,6 @@
 
+const moveDirections = require('./moveDirections');
+
 class Checker {
 
     constructor(color, position) {
@@ -6,7 +8,7 @@ class Checker {
 		this.priority = 1;
 		this.color = color;
 		this.position = position;
-		this.directions = (color == "white") ? ["ne", "nw"] : ["se", "sw"];
+		this.directions = (color == "white") ? moveDirections.whiteChecker : moveDirections.blackChecker;
 	}
 		
 };

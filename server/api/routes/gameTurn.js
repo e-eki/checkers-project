@@ -21,12 +21,18 @@ router.route('/gameturn')
 	// запрос, что был сделан ход с данными хода юзера - в ответ отправляется ход ИИ
 	/*data = {
 		accessToken,
-		userTurn: < >,
+		userTurn: {
+			actor, 
+			currentPosition, 
+			targetPosition,
+		},
 	}*/
 	.post(function(req, res) {
 		
 		return Promise.resolve(true)
 			.then(() => {
+
+				if (!req.body.userTurn) throw new Error('no userTurnData in req');
 
 				const headerAuthorization = req.header('Authorization') || '';
 				const accessToken = tokenUtils.getTokenFromHeader(headerAuthorization);
@@ -36,11 +42,16 @@ router.route('/gameturn')
 			.then((game) => {
 
 				// инициализация шахматной доски - расстановка актеров на доске
-				const chessboard = new Chessboard(game.boardSize, game.mode, game.actorsData);
-				
-				chessboard.test();
+				//const chessboard = new Chessboard(game.boardSize, game.mode, game.actorsData);
+				const chessboard = new Chessboard(game, game.actorsData);
 
+				chessboard.set(req.body.userTurn);
 
+				const AIturnData = chessboard.getAIturn();
+
+				chessboard.set(AIturnData);  //??
+
+				//TODO: chessboard actors data!!!
 			
 
 				return utils.sendResponse(res, 'game successfully saved', 201);

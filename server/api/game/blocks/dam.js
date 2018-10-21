@@ -1,14 +1,15 @@
 
 const Checker = require('./checker');
+const moveDirections = require('./moveDirections');
 
 class Dam extends Checker{
 
     constructor(color, position) {
 
-		super();
+		super(color, position);
 
 		this.priority = 5;
-		this.directions = ["n", "e", "s", "w"];
+		this.directions = moveDirections.dam;
 	}
 		
 };

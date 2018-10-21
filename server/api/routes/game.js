@@ -40,7 +40,9 @@ router.route('/game')
 			.then((user) => {
 
 				// инициализация шахматной доски - начальная расстановка актеров на доске
-				const chessboard = new Chessboard(req.body.boardSize, req.body.mode);
+				//const chessboard = new Chessboard(req.body.userColor, req.body.boardSize, req.body.level, req.body.mode);
+				
+				const chessboard = new Chessboard(req.body);  //TODO!
 				const actorsData = chessboard.actorsData;
 
 				const gameData = {

@@ -5,21 +5,21 @@ const Vector = require('./vector');
 const Cell = require('./cell');
 const Checker = require('./checker');
 const Dam = require('./dam');
+const View = require('./view');
 
 class Chessboard {
 	
-	constructor(boardSize, mode, actorsData) {
+	constructor(gameData, actorsData) {
 
-		this.boardSize = boardSize;
-		this.mode = mode;
+		this.boardSize = gameData.boardSize;
+		this.userColor = gameData.userColor;
+		this.level = gameData.level;
+		this.mode = gameData.mode;
 		this.actorsData = [];
 		this.grid = [];   
 		this.actors = [];  
 		
 		this.actorsData = (actorsData !== undefined) ? actorsData : this.fillActorsData();
-		let t = this.actorsData[0];
-		t = this.actorsData[0][0];
-
 		this.grid = this.fillGrid();   //??
 		this.actors = this.fillActorsByActorsData();  //??
 	}
@@ -42,7 +42,7 @@ class Chessboard {
 		return grid;
 	}
 	
-	// упорядоченный (!) массив с данными актеров - положение в массиве соответствует положению на доске
+	// массив с данными актеров
 	fillActorsData() {
 
 		let actorsData = [];
@@ -54,7 +54,7 @@ class Chessboard {
 
 		for (let y = 0; y < this.boardSize; y++) {
 
-			actorsData[y] = [];
+			//actorsData[y] = [];
 		
 			for (let x = 0; x < this.boardSize; x++) {
 
@@ -73,35 +73,42 @@ class Chessboard {
 					// если есть цвет, то есть актер на данной клетке
 					if (actorColor) {
 
-						let actorType = (this.mode !== 'classic') ? 'checker' : 'dam';  //TODO
+						let actorType = (this.mode == 'classic') ? 'checker' : 'dam';  //TODO
 
-						actorsData[y].push({
+						/*actorsData[y].push({
 
 							color: actorColor,
 							type: actorType,
 							x: x,
 							y: y  
+						});*/
+
+						actorsData.push({
+							color: actorColor,
+							type: actorType,
+							x: x,
+							y: y
 						});
 					}
-					else {
-						actorsData[y].push(null);
-					}
+					/*else {
+						actorsData.push(null);
+					}*/
 				}
-				else {
-					actorsData[y].push(null);
-				}
+				/*else {
+					actorsData.push(null);
+				}*/
 			}
 		}
 
 		return actorsData;
 	}
 
-	// actors - неупорядоченный массив с данными актеров
+	// actors - массив с данными актеров
 	fillActorsByActorsData() {
 
 		let actors = [];
 
-		for (let y = 0; y < this.boardSize; y++) {
+		/*for (let y = 0; y < this.boardSize; y++) {
 
 			actors[y] = [];
 		
@@ -119,7 +126,16 @@ class Chessboard {
 					actors[y].push(null);
 				}
 			}
-		}
+		}*/
+
+		this.actorsData.forEach(function(actorData) {
+
+			const position = new Vector(actorData.x, actorData.y);
+			const color = actorData.color;
+			const actor = (actorData.type == 'checker') ? (new Checker(color, position)) : (new Dam(color, position));
+
+			actors.push(actor);
+		}.bind(this));
 
 		return actors;
 	}
@@ -168,21 +184,49 @@ class Chessboard {
 		}
 	};
 
-	test() {
+	/* turnData = {
+		actor, 
+		currentPosition, 
+		targetPosition
+	}*/ 
+	setTurn(turnData) {
 
-		let t = new Vector(1, 1);
-		let t1 = new Vector(2, 1);
-		let f = new Vector(8, 1);
-
-		let r = this.isInside(t);
-		r = this.isInside(f);
-
-		r = this.get(t);
-		r = this.get(t1);
-		
+		this.set(turnData.currentPosition, turnData.targetPosition);
 	}
 
+	getAIturn() {
+		
+		let possibleActions = []; 
 
+		this.actors.forEach(function(actor) {
+
+			if (actor.color !== this.userColor) {
+
+				const actorView = new View(actor, this);
+
+				const actorActions = actorView.findAll();
+				const actorAction = this.chooseActionFromPossible(actorActions);
+
+				if (actorAction) possibleActions.push(actorAction);
+			}
+		}.bind(this));
+	
+		const action = this.chooseActionFromPossible(possibleActions);
+
+		return action;
+	};
+
+	chooseActionFromPossible(actions) {
+
+		if (!actions.length) return null;
+	
+		const maxPriorityAction = actions.reduce(function(min, cur) {
+			if (cur.priority > min.priority) return cur;
+			else return min;
+		});
+
+		return maxPriorityAction;
+	}
 
 };
 

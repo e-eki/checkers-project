@@ -19,30 +19,20 @@ module.exports = {
 
 		let actors = [];
 
-		data.actorsData.forEach((column) => {
+		data.actorsData.forEach((actorData) => {
 
-			let actorsColumn = [];
+			//if (actorData) {  //??
 
-			column.forEach((actorData) => {
-
-				if (actorData) {
-
-					const actor = new ActorDataModel({
-						color: actorData.color,
-						type: actorData.type,
-						x: actorData.x,
-						y: actorData.y, 
-					});
-		
-					//actor.save();
-					actorsColumn.push(actor);
-				}
-				else {
-					actorsColumn.push(null);
-				}
-			});
-
-			actors.push(actorsColumn);
+				const actor = new ActorDataModel({
+					color: actorData.color,
+					type: actorData.type,
+					x: actorData.x,
+					y: actorData.y, 
+				});
+	
+				//actor.save();
+				actors.push(actor);
+			//}
 		});
 
 		const game = new GameModel({
