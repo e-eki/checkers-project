@@ -7,6 +7,7 @@ class Checker {
 
 		this.priority = 1;
 		this.color = color;
+		this.type = 'checker';
 		this.position = position;
 		this.directions = (color == "white") ? moveDirections.whiteChecker : moveDirections.blackChecker;
 	}

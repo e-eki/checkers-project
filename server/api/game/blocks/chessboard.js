@@ -19,7 +19,7 @@ class Chessboard {
 		this.grid = [];   
 		this.actors = [];  
 		
-		this.actorsData = (actorsData !== undefined) ? actorsData : this.fillActorsData();
+		this.actorsData = (actorsData !== undefined) ? actorsData : this.fillStartActorsData();
 		this.grid = this.fillGrid();   //??
 		this.actors = this.fillActorsByActorsData();  //??
 	}
@@ -43,7 +43,7 @@ class Chessboard {
 	}
 	
 	// массив с данными актеров
-	fillActorsData() {
+	fillStartActorsData() {
 
 		let actorsData = [];
 
@@ -140,6 +140,24 @@ class Chessboard {
 		return actors;
 	}
 
+	fillActorsDataByActors() {
+
+		let actorsData = [];
+
+		this.actors.forEach(function(actor) {
+
+			actorsData.push({
+				color: actor.color,
+				type: actor.type,
+				x: actor.position.x,
+				y: actor.position.y
+			});
+
+		}.bind(this));
+
+		return actorsData;
+	}
+
 	isInside(vector) {
 
 		return (vector.x >= 0 && vector.x < this.boardSize) && (vector.y >= 0 && vector.y < this.boardSize);
@@ -185,13 +203,17 @@ class Chessboard {
 	};
 
 	/* turnData = {
-		actor, 
 		currentPosition, 
 		targetPosition
 	}*/ 
-	setTurn(turnData) {
+	setTurn(turnData) { 
+		
+		const currentVector = new Vector(turnData.currentPosition.x, turnData.currentPosition.y);
+		const targetVector = new Vector(turnData.targetPosition.x, turnData.targetPosition.y);
 
-		this.set(turnData.currentPosition, turnData.targetPosition);
+		this.delete(targetVector);
+
+		this.set(currentVector, targetVector);
 	}
 
 	getAIturn() {

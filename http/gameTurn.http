@@ -2,9 +2,19 @@
 ###
 POST /api/gameturn/ HTTP/1.1
 Host: {{host}}
-Authorization: Token eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YmJjZGZiNTAzOWQ0ODIyMjAyY2M1YTgiLCJ1c2VyUm9sZSI6InVzZXIiLCJpYXQiOjE1NDAxNDk2NzMsImV4cCI6MTU0MDE1Njg3Mywic3ViIjoiYWNjZXNzIn0.7s5hdx0Fz-nZqHD1SD2jxwh4Gh_5Sv1IpN4kkiEFbSodfQHdZq5fuTaU3nZgVq-YKh5QDbtCFeWumyOo3_h8Wg
+Authorization: Token eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YmJjZGZiNTAzOWQ0ODIyMjAyY2M1YTgiLCJ1c2VyUm9sZSI6InVzZXIiLCJpYXQiOjE1NDAyMzQ4MTcsImV4cCI6MTU0MDI0MjAxNywic3ViIjoiYWNjZXNzIn0.fLvoR1RwPiDuF1p9LDj6Sqf2wRiDt4B9Lbo82H9jF3NK0doD9APc1Re14wu6tVZh5GUGevh1WoqNnr2DGTH4Jg
 Content-Type: application/json
 
 {
-	"userTurn": "1111"
+	"userTurn": {
+		"currentPosition": {
+			"x": "1",
+			"y": "2"
+		}, 
+		"targetPosition": {
+			"x": "2",
+			"y": "2"
+		} 
+	}
 }
+
