@@ -8,6 +8,7 @@ class Dam extends Checker{
 
 		super(color, position);
 
+		this.type = 'dam';
 		this.priority = 5;
 		this.directions = moveDirections.dam;
 	}

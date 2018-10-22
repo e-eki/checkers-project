@@ -22,7 +22,6 @@ router.route('/gameturn')
 	/*data = {
 		accessToken,
 		userTurn: {
-			actor, 
 			currentPosition, 
 			targetPosition,
 		},
@@ -45,16 +44,38 @@ router.route('/gameturn')
 				//const chessboard = new Chessboard(game.boardSize, game.mode, game.actorsData);
 				const chessboard = new Chessboard(game, game.actorsData);
 
-				chessboard.set(req.body.userTurn);
+				chessboard.setTurn(req.body.userTurn);
 
-				const AIturnData = chessboard.getAIturn();
+				const AIturn = chessboard.getAIturn();
+				delete AIturn.actor;
+				delete AIturn.type;
+				delete AIturn.priority;
 
-				chessboard.set(AIturnData);  //??
+				chessboard.set(AIturn);  //??
 
-				//TODO: chessboard actors data!!!
-			
+				const newActorsData = chessboard.fillActorsDataByActors();
+				game.actorsData = newActorsData;
 
-				return utils.sendResponse(res, 'game successfully saved', 201);
+				let tasks = [];
+
+				tasks.push(AIturn);
+				tasks.push(gameModel.update(game._id, game));
+
+				return Promise.all(tasks);
+			})
+			.spread((AIturn, dbResponse) => {
+
+				if (dbResponse.errors) {
+
+					// log errors
+					dbResponse.errors.forEach((error) => {
+						console.log('game update with error: ' + error.message);
+					});
+
+					throw new Error('game update with error');
+				}
+
+				return utils.sendResponse(res, AIturn, 201);
 			})
 			.catch((error) => {
 				if (error.message == 'game saved with error') return utils.sendErrorResponse(res, error, 500);  //TODO
