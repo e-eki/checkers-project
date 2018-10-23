@@ -4,6 +4,7 @@ const Promise = require('bluebird');
 
 const utils = require('../lib/utils');
 const tokenUtils = require('../lib/tokenUtils');
+const gameModel = require('../models/game');
 
 let router = express.Router();
 
@@ -26,11 +27,37 @@ router.route('/lkUserData')
 			})
 			.then((user) => {
 
+				let tasks = [];
+
+				tasks.push(user);
+				tasks.push(gameModel.query({userId: user._id}));
+
+				return Promise.all(tasks);
+			})
+			.spread((user, games) => {
+
+				let gamesInfo = [];
+
+				if (games.length) {
+					games.forEach((game) => {
+						
+						let gameInfo = {
+							isFinished  :  game.isFinished,
+							movesCount:  game.movesCount,
+							totalOfGame: game.totalOfGame,
+							gameTime: game.gameTime,
+						};
+
+						gamesInfo.push(gameInfo);
+					});
+				}
+
 				const lkData = {
 					login: user.login,
 					email: user.email,
 					isEmailConfirmed: user.isEmailConfirmed,
 					role: user.role,
+					games: gamesInfo,
 				};
 
 				return utils.sendResponse(res, lkData);
