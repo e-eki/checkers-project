@@ -476,8 +476,8 @@ export default class Grid extends Component {
 
 		// добавляем данные о текущем актере
 		this.state.activeActorPosition = {
-			positionX: positionX,
-			positionY: positionY
+			x: positionX,
+			y: positionY
 		};
 
 		// перерисовка доски
@@ -506,18 +506,18 @@ export default class Grid extends Component {
 
 	// отрисовка хода текущего выбранного актера на клетку (newPositionX, newPositionY)
 	chooseCellToMoveActor(newPositionX, newPositionY) {
-		console.log('chooseCellToMoveActor');
+		debugger;
 
 		this.resetAllElements();
 
 		const currentPosition = {
-			positionX: this.state.activeActorPosition.positionX,
-			positionY: this.state.activeActorPosition.positionY
+			x: this.state.activeActorPosition.x,
+			y: this.state.activeActorPosition.y
 		};
 
 		const newPosition = {
-			positionX: newPositionX,
-			positionY: newPositionY
+			x: newPositionX,
+			y: newPositionY
 		};
 
 		this.doTurn(currentPosition, newPosition);
@@ -526,17 +526,17 @@ export default class Grid extends Component {
 	// делает ход выбранным актером с клетки currentPosition на клетку newPosition
 	// (изменение положения актера в массиве actorsDataContainer и последующий вызов перерисовки)
 	doTurn(currentPosition, newPosition) {
-		console.log('doTurn');
+		debugger;
 
 		// подготовка данных для передачи в Display
-		let currentActorData = this.state.actorsDataContainer[currentPosition.positionX][currentPosition.positionY];
+		let currentActorData = this.state.actorsDataContainer[currentPosition.x][currentPosition.y];
 
 		let actor = {
 			isUserColor: currentActorData.isUserColor,
 			type: currentActorData.type,
 		};
 
-		let newActorData = this.state.actorsDataContainer[newPosition.positionX][newPosition.positionY];
+		let newActorData = this.state.actorsDataContainer[newPosition.x][newPosition.y];
 
 		let eatenActor = null;
 		if (newActorData) {
@@ -557,15 +557,15 @@ export default class Grid extends Component {
 		let turnedToDam = false;
 
 		// перемещаем данные актера в массиве данных на новую позицию
-		this.state.actorsDataContainer[newPosition.positionX][newPosition.positionY] = this.state.actorsDataContainer[currentPosition.positionX][currentPosition.positionY];
-		this.state.actorsDataContainer[currentPosition.positionX][currentPosition.positionY] = null;
+		this.state.actorsDataContainer[newPosition.x][newPosition.y] = this.state.actorsDataContainer[currentPosition.x][currentPosition.y];
+		this.state.actorsDataContainer[currentPosition.x][currentPosition.y] = null;
 
 		// сбрасываем данные о текущем актере
 		this.state.activeActorPosition = null;
 
 		// сообщить Display о том, что ход был отрисован
 		// вызываем соответствующий метод в Display (перерисовка вызывается оттуда)
-		this.props.turnIsDone(currentPosition, newPosition, actor, eatenActor, turnedToDam, this.whiteActorsCount, this.blackActorsCount);	
+		this.props.turn(currentPosition, newPosition, actor, eatenActor, turnedToDam, this.whiteActorsCount, this.blackActorsCount);	
 	
 	}
 
@@ -577,7 +577,6 @@ export default class Grid extends Component {
 
 	// и заполнение начальных данных после смены настроек
 	componentWillUpdate(nextProps) {
-		//console.log('componentWillUpdate');
 
 		// если изменились настройки или после завершения игры - обновление данных по умолчанию
 		if (nextProps.boardSize !== this.props.boardSize || 
@@ -587,7 +586,8 @@ export default class Grid extends Component {
 				this.fillGridData(nextProps.boardSize, nextProps.mode, nextProps.userColor, nextProps.isUserTurn);
 				this.changeActorsCount();
 		}
-			
+		
+		debugger;
 		// если игра идет и сейчас будет ход юзера, то делаем активными всех его актеров
 		if (nextProps.startOfGame && nextProps.isUserTurn && !this.props.isUserTurn) {
 
@@ -601,7 +601,9 @@ export default class Grid extends Component {
 			}
 		}
 
+		debugger;
 		// если игра идет и сейчас будет ход ИИ, и есть данные этого хода, то вызываем ход с этими данными
+		// TODO
 		if (!nextProps.isUserTurn && this.props.isUserTurn && nextProps.currentAITurn) {
 
 			//TODO!
