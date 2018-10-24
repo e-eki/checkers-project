@@ -42,6 +42,35 @@ export function finishGameAction(accessToken, movesCount, totalOfGame) {
 	return axios(options);
 };
 
+export function getAIturn(accessToken) {
+	debugger;
+
+	const options = {
+		method: 'GET',
+		headers: { 'Authorization': `Token ${accessToken}` },
+		url: `${apiConst.gameTurnApi}`
+	};
+	
+	return axios(options);
+};
+
+export function setUserTurn(accessToken, userTurn) {
+	debugger;
+
+	const params = {
+		userTurn: userTurn,
+	};
+
+	const options = {
+		method: 'POST',
+		headers: { 'Authorization': `Token ${accessToken}` },
+		data: params,
+		url: `${apiConst.gameTurnApi}`
+	};
+	
+	return axios(options);
+};
+
 
   
   
