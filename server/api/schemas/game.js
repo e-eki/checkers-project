@@ -17,7 +17,7 @@ const gameSchema = new Schema(
 		mode: String,
 		startTime: Date,
 		gameTime: String,
-		actorsData: [actorDataSchema],    //TODO!
+		actorsData: [actorDataSchema],    
 		
 	},
 	{versionKey: false}   //отключение поля __v, которое указывает на версию документа
