@@ -13,12 +13,68 @@ let router = express.Router();
 //----- endpoint: /api/gameTurn/
 router.route('/gameturn')
 
+	// запрос хода ИИ
 	.get(function(req, res) { 
 
-		return utils.sendErrorResponse(res, 'UNSUPPORTED_METHOD');
+		return Promise.resolve(true)
+			.then(() => {
+
+				const headerAuthorization = req.header('Authorization') || '';
+				const accessToken = tokenUtils.getTokenFromHeader(headerAuthorization);
+
+				return gameUtils.findCurrentGameByToken(accessToken);
+			})
+			.then((game) => {
+
+				// инициализация шахматной доски - расстановка актеров на доске
+				//const chessboard = new Chessboard(game.boardSize, game.mode, game.actorsData);
+				const chessboard = new Chessboard(game, game.actorsData);
+
+				const AIturn = chessboard.getAIturn();
+				delete AIturn.actor;
+				delete AIturn.type;
+				delete AIturn.priority;
+
+				chessboard.set(AIturn);  //??
+
+				const newActorsData = chessboard.fillActorsDataByActors();
+				game.actorsData = newActorsData;
+
+				//??
+				game.movesCount++;
+				const currentTime = new Date().getTime();
+				const gameTimeNote = gameUtils.getGameTimeNote(game.startTime, currentTime);
+				game.gameTime = gameTimeNote;
+
+				let tasks = [];
+
+				tasks.push(AIturn);
+				tasks.push(gameModel.update(game._id, game));
+
+				return Promise.all(tasks);
+			})
+			.spread((AIturn, dbResponse) => {
+
+				if (dbResponse.errors) {
+
+					// log errors
+					dbResponse.errors.forEach((error) => {
+						console.log('game update with error: ' + error.message);
+					});
+
+					throw new Error('game update with error');
+				}
+
+				return utils.sendResponse(res, AIturn, 201);
+			})
+			.catch((error) => {
+				if (error.message == 'game update with error') return utils.sendErrorResponse(res, error, 500);  //TODO
+
+				return utils.sendErrorResponse(res, error, 401);
+			});
 	})
 
-	// запрос, что был сделан ход с данными хода юзера - в ответ отправляется ход ИИ
+	// запрос, что был сделан ход с данными хода юзера
 	/*data = {
 		accessToken,
 		userTurn: {
@@ -46,24 +102,18 @@ router.route('/gameturn')
 
 				chessboard.setTurn(req.body.userTurn);
 
-				const AIturn = chessboard.getAIturn();
-				delete AIturn.actor;
-				delete AIturn.type;
-				delete AIturn.priority;
-
-				chessboard.set(AIturn);  //??
-
 				const newActorsData = chessboard.fillActorsDataByActors();
 				game.actorsData = newActorsData;
 
-				let tasks = [];
+				//??
+				game.movesCount++;
+				const currentTime = new Date().getTime();
+				const gameTimeNote = gameUtils.getGameTimeNote(game.startTime, currentTime);
+				game.gameTime = gameTimeNote;
 
-				tasks.push(AIturn);
-				tasks.push(gameModel.update(game._id, game));
-
-				return Promise.all(tasks);
+				return gameModel.update(game._id, game);
 			})
-			.spread((AIturn, dbResponse) => {
+			.then((dbResponse) => {
 
 				if (dbResponse.errors) {
 
@@ -75,10 +125,10 @@ router.route('/gameturn')
 					throw new Error('game update with error');
 				}
 
-				return utils.sendResponse(res, AIturn, 201);
+				return utils.sendResponse(res, 'userTurn set', 201);
 			})
 			.catch((error) => {
-				if (error.message == 'game saved with error') return utils.sendErrorResponse(res, error, 500);  //TODO
+				if (error.message == 'game update with error') return utils.sendErrorResponse(res, error, 500);  //TODO
 
 				return utils.sendErrorResponse(res, error, 401);
 			});
