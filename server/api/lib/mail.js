@@ -23,7 +23,7 @@ const mail = new function() {
 		// отправляем
 		return transport.sendMail({
 			from: config.mail_settings.from,
-			to: 'ifirtree@gmail.com',  //!!!TODO: data.email
+			to: data.email,  //!!!TODO: data.email
 			subject: config.mail_settings.confirmEmailSubject,
 			html: letterHtml
 		})
