@@ -32,7 +32,6 @@ class View {
 	}*/
 
 	look(vector) {  
-
 		if (this.chessboard.isInside(vector))
 			return this.chessboard.get(vector);
 		else
@@ -40,17 +39,15 @@ class View {
 	};
 
 	findAll() {
-
 		let actions = [];
 	
 		// для каждого направления данного актера считаем вектор и для него считаем приоритет и тип (есть/двигаться/null)
 		this.actor.directions.forEach(function(direction) {
 
 			const vector = this.actor.position.plus(moveDirections.all[direction]);
-
 			const element = this.look(vector);
   
-			// если element не равно null, то данный вектор не выходит за пределы доски
+			// если element не null, то данный вектор не выходит за пределы доски
 			if (element) {
 				// для простой шашки считаем по одному вектору для каждого направления
 				const action = this.getActionForVector(vector, element);
@@ -63,7 +60,6 @@ class View {
 	};
 
 	getActionForVector(vector, element) {
-
 		let type = null;
 		let priority = 0;
 		  
@@ -77,7 +73,7 @@ class View {
 		}
 
 		if (element.priority > 0 && element.color !== this.actor.color) {
-			priority += element.priority +this.actor.priority;
+			priority += element.priority + this.actor.priority;
 		}
 
 		const action = {

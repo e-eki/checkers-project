@@ -121,7 +121,6 @@ let loginAction = function(service, data) {
 		.then((user) => {
 			let tasks = [];
 			tasks.push(user);
-
 			//удаляем все рефреш токены для данного юзера - можно залогиниться только на одном устройстве, 
 			// на других в это время разлогинивается
 			tasks.push(tokenUtils.deleteAllRefreshTokens(user.id));

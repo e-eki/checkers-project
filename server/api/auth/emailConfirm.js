@@ -31,13 +31,11 @@ router.route('/emailconfirm/')
 				return userModel.query({email: email});
 			})
 			.then((userData) => {
-
 				if (!userData.length) throw new Error('no user with this email');
-				
-				user = userData[0];
-
+							
 				if (user.isEmailConfirmed) return true; // если имейл уже подтвержден
 
+				user = userData[0];
 				const data = {
 					login: user.login,
 					email: user.email,
@@ -48,14 +46,12 @@ router.route('/emailconfirm/')
 				return mail.sendConfirmEmailLetter(data);
 			})
 			.then((data) => {
-
 				// если имейл уже подтвержден
 				if (data === true) return utils.sendResponse(res, 'Email already confirmed');
 
-				return utils.sendResponse(res, 'Confirm mail sent again');
+				return utils.sendResponse(res, 'Confirm mail send again');
 			})
 			.catch((error) => {
-
 				return utils.sendErrorResponse(res, error, 401);
 			});
 	})
@@ -71,6 +67,7 @@ router.route('/emailconfirm/')
 
 //----- endpoint: /api/emailconfirm/:uuid
 router.route('/emailconfirm/:uuid')
+
 	// сюда приходит запрос на подтверждение имейла по ссылке из письма
 	.get(function(req, res) {
 		// ищем юзеров с данным кодом подтверждения
@@ -97,7 +94,7 @@ router.route('/emailconfirm/:uuid')
 				//TODO: ?? как сделать редирект на главную через неск.секунд после показа страницы?
 				const page = require('../templates/successConfirmPage');
 				res.set('Content-Type', 'text/html');
-
+				
 				return res.send(page);
 			})
 			.catch((error) => {

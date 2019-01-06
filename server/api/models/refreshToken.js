@@ -9,7 +9,6 @@ module.exports = {
 	
 	query: function(config) {
 		if (config) return RefreshTokenModel.find(config);
-
 		return RefreshTokenModel.find({});
 	},
 	
@@ -33,7 +32,6 @@ module.exports = {
 	},
 	
 	delete: function(id) {
-
 		return RefreshTokenModel.findOneAndRemove({_id: id});
 	},
 }

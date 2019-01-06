@@ -22,26 +22,21 @@ router.route('/changepassword/')
 		email: <email>
 	}*/
 	.post(function(req, res) {
-
 		let user;
 
 		return Promise.resolve(true)
 			.then(() => {
-
 				//validate req.body
 				if (!req.body.email || req.body.email == '') throw new Error('incorrect changePassword data: empty email');
 
 				const email = req.body.email;
-
 				// ищем юзера с таким имейлом
 				return userModel.query({email: email});
 			})
 			.then((userData) => {
-
 				if (!userData.length) throw new Error('no user with this email');
 				
 				user = userData[0];
-
 				//для каждого юзера генерится уникальный код сброса пароля и записывается в БД
 				const resetPasswordCode = utils.makeUId(user.login + user.email + Date.now());
 				user.resetPasswordCode = resetPasswordCode; 
@@ -56,17 +51,15 @@ router.route('/changepassword/')
 				return mail.sendResetPasswordLetter(data);
 			})
 			.then((data) => {
-
 				// если письмо отправилось без ошибок - то записываем код сброса пароля в БД
 				return userModel.update(user._id, user);
 			})
 			.then((dbResponse) => {
-
 				if (dbResponse.errors) throw new Error('resetPasswordCode updated with error');
-				return utils.sendResponse(res, 'Reset password mail sent');
+
+				return utils.sendResponse(res, 'Reset password mail send');
 			})
 			.catch((error) => {
-
 				if (error.message == 'no user with this email') return utils.sendErrorResponse(res, error, 401);  //TODO
 
 				return utils.sendErrorResponse(res, error, 500);
@@ -79,7 +72,6 @@ router.route('/changepassword/')
 		newPassword
 	}*/
 	.put(function(req, res) {
-
 		let newPassword;
 
 		return Promise.resolve(true)
@@ -126,7 +118,7 @@ router.route('/changepassword/')
 
 				// удаляем из БД все рефреш токены юзера, а срок действия его access токена закончится сам
 				// после смены пароля надо заново логиниться (?? либо принудительно после того, как закончится access token)
-				return tokenUtils.deleteAllRefreshTokens(userId);  //TODO: удалять все аксесс токены тоже!
+				return tokenUtils.deleteAllRefreshTokens(userId);
 			})
 			.then(() => {
 				return utils.sendResponse(res, 'Password changed');
@@ -152,7 +144,6 @@ router.route('/changepassword/:uuid')
 		// ищем юзеров с данным кодом сброса пароля
 		return Promise.resolve(userModel.query({resetPasswordCode: req.params.uuid}))
 			.then((users) => {
-
 				if (!users.length) throw new Error('no user with this uuid');
 
 				// по идее должен быть один юзер на один код сброса пароля

@@ -84,7 +84,6 @@ module.exports = {
 			where('isFinished').equals('false').
 			exec())
 			  .then((result) => {
-
 				return result;
 			  })
 	}

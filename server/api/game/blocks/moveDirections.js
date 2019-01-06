@@ -15,7 +15,7 @@ module.exports = {
 		"nw": new Vector(-1, -1)
 	},
 
-	whiteChecker: ["ne", "nw"],
+	whiteChecker: [this.all["ne"], "nw"],   //TODO!
 
 	blackChecker: ["se", "sw"],
 

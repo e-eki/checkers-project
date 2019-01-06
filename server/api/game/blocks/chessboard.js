@@ -18,21 +18,17 @@ class Chessboard {
 		this.grid = [];   
 		this.actors = [];  
 		
-		this.actorsData = (actorsData !== undefined) ? actorsData : this.fillStartActorsData();
 		this.grid = this.fillGrid();   //??
+		this.actorsData = (actorsData !== undefined) ? actorsData : this.fillStartActorsData();		
 		this.actors = this.fillActorsByActorsData();  //??
 	}
 
 	fillGrid() {
-
 		let grid = [];
 
 		for (var y = 0; y < this.boardSize; y++) {
-
 			grid[y] = [];
-
 			for (var x = 0; x < this.boardSize; x++) {
-
 				const color = (y + x) % 2 == 0 ? 'white' : 'black';
 				grid[y].push(new Cell(color));
 			}
@@ -43,7 +39,6 @@ class Chessboard {
 	
 	// массив с данными актеров
 	fillStartActorsData() {
-
 		let actorsData = [];
 
 		const firstRowWhite = this.boardSize/2 + 1; 
@@ -52,14 +47,10 @@ class Chessboard {
 		const lastRowBlack = this.boardSize/2 - 2;
 
 		for (let y = 0; y < this.boardSize; y++) {
-
-			//actorsData[y] = [];
-		
-			for (let x = 0; x < this.boardSize; x++) {
-
+			//actorsData[y] = [];	
+			for (let x = 0; x < this.boardSize; x++) {				
 				// актеры могут быть только на черных клетках
 				if ((y + x) % 2 !== 0) {
-
 					let actorColor = null;
 					// определяем цвет актера
 					if (y >= firstRowWhite && y <= lastRowWhite) {
@@ -68,10 +59,8 @@ class Chessboard {
 					else if (y >= firstRowBlack && y <= lastRowBlack) {
 						actorColor = 'black';
 					}
-
 					// если есть цвет, то есть актер на данной клетке
 					if (actorColor) {
-
 						let actorType = (this.mode == 'classic') ? 'checker' : 'dam';  //TODO
 
 						/*actorsData[y].push({
@@ -104,7 +93,6 @@ class Chessboard {
 
 	// actors - массив с данными актеров
 	fillActorsByActorsData() {
-
 		let actors = [];
 
 		/*for (let y = 0; y < this.boardSize; y++) {
@@ -128,7 +116,6 @@ class Chessboard {
 		}*/
 
 		this.actorsData.forEach(function(actorData) {
-
 			const position = new Vector(actorData.x, actorData.y);
 			const color = actorData.color;
 			const actor = (actorData.type == 'checker') ? (new Checker(color, position)) : (new Dam(color, position));
@@ -140,30 +127,25 @@ class Chessboard {
 	}
 
 	fillActorsDataByActors() {
-
 		let actorsData = [];
 
 		this.actors.forEach(function(actor) {
-
 			actorsData.push({
 				color: actor.color,
 				type: actor.type,
 				x: actor.position.x,
 				y: actor.position.y
 			});
-
 		}.bind(this));
 
 		return actorsData;
 	}
 
 	isInside(vector) {
-
 		return (vector.x >= 0 && vector.x < this.boardSize) && (vector.y >= 0 && vector.y < this.boardSize);
 	};
 	
 	find(position) {
-
 		let actor = this.actors.filter((actor) => {  
 			return actor.position.compare(position) == true;
 		});
@@ -173,26 +155,21 @@ class Chessboard {
 	}
 	
 	get(position) {
-
 		let actor = this.find(position); 
 
 		return actor || this.grid[position.y][position.x];
 	};
 	
 	set(position, destination) {
-
 		let actor = this.find(position);
-
 		if (actor) actor.position = destination;
 	};
 	
 	add(actor) {
-
 		this.actors.push(actor);
 	};
 	
 	delete(position) { 
-
 		let actor = this.find(position);
 
 		if (actor) {
@@ -205,24 +182,19 @@ class Chessboard {
 		currentPosition, 
 		targetPosition
 	}*/ 
-	setTurn(turnData) { 
-		
+	setTurn(turnData) { 		
 		const currentVector = new Vector(turnData.currentPosition.x, turnData.currentPosition.y);
 		const targetVector = new Vector(turnData.targetPosition.x, turnData.targetPosition.y);
 
 		this.delete(targetVector);
-
 		this.set(currentVector, targetVector);
 	}
 
-	getAIturn() {
-		
+	getAIturn() {		
 		let possibleActions = []; 
 
 		this.actors.forEach(function(actor) {
-
 			if (actor.color !== this.userColor) {
-
 				const actorView = new View(actor, this);
 
 				const actorActions = actorView.findAll();
@@ -233,12 +205,10 @@ class Chessboard {
 		}.bind(this));
 	
 		const action = this.chooseActionFromPossible(possibleActions);
-
 		return action;
 	};
 
 	chooseActionFromPossible(actions) {
-
 		if (!actions.length) return null;
 	
 		const maxPriorityAction = actions.reduce(function(min, cur) {
@@ -248,7 +218,6 @@ class Chessboard {
 
 		return maxPriorityAction;
 	}
-
 };
 
 module.exports = Chessboard;

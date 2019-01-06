@@ -38,7 +38,7 @@ router.route('/refreshtokens/')
 				return Promise.all(tasks);
 			})
 			.spread((userId, dbResponse) => {
-				//search user for this token (for userRole in access token)
+				//search user for this token
 				return userModel.query({_id: userId});
 			})
 			.then((userData) => {

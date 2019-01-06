@@ -11,23 +11,19 @@ router.route('/user')
 
   // метод не поддерживается - всех пользователей получить не можем
   .get(function(req, res) { 
-
     return utils.sendErrorResponse(res, 'UNSUPPORTED_METHOD');
   })
 
   // метод не поддерживается - пользователь может быть добавлен только через регистрацию
   .post(function(req, res) {
-    
     return utils.sendErrorResponse(res, 'UNSUPPORTED_METHOD');
   })
   
   .put(function(req, res) {
-
 		return utils.sendErrorResponse(res, 'UNSUPPORTED_METHOD');
   })
   
   .delete(function(req, res) {
-
 		return utils.sendErrorResponse(res, 'UNSUPPORTED_METHOD');
 	})
 ;
@@ -37,20 +33,17 @@ router.route('/user/:id')
 
   // получение юзера по его id
   .get(function(req, res) {   
-    
+   
     return userModel.query({_id: req.params.id})
       .then((data) => {
-
         return utils.sendResponse(res, data);
       })
       .catch((error) => {
-
 				return utils.sendErrorResponse(res, error, 500);
 			});
   })
 
   .post(function(req, res) {
-
 		return utils.sendErrorResponse(res, 'UNSUPPORTED_METHOD');
 	})
 

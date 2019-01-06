@@ -7,7 +7,6 @@ const gameModel = require('../models/game');
 const gameUtils = new function() {
 
     this.getGameTimeNote = function(startTime, finishTime) {
-
         const gameTime = finishTime - startTime;
 
 		const minute = 1000 * 60;
@@ -19,14 +18,11 @@ const gameUtils = new function() {
 	};
 	
 	this.findCurrentGameByToken = function(accessToken) {
-
 		return Promise.resolve(true)
 			.then(() => {
-
 				return tokenUtils.findUserByAccessToken(accessToken);
 			})
 			.then((user) => {
-
 				let tasks = [];
 				tasks.push(user);
 				// get game
@@ -35,7 +31,6 @@ const gameUtils = new function() {
 				return Promise.all(tasks);
 			})
 			.spread((user, games) => {
-
 				if (!games.length) throw new Error('no unfinished games for this user');
 
 				//по идее должна быть только одна (или ни одной) незаконченная игра для каждого юзера

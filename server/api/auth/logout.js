@@ -27,7 +27,7 @@ router.route('/logout')
 		accessToken: <access_token>
 	}*/
 	.delete(function(req, res) {
-
+		
 		return Promise.resolve(true)
 			.then(() => {
 				//get token from header
