@@ -1,7 +1,7 @@
+'use strict';
 
 const express = require('express');
 const Promise = require('bluebird');
-
 const userModel = require('../models/user');
 const utils = require('../lib/utils');
 const mail = require('../lib/mail');
@@ -12,7 +12,6 @@ let router = express.Router();
 router.route('/registration')
 
 	.get(function(req, res) {
-
 		return utils.sendErrorResponse(res, 'UNSUPPORTED_METHOD');
 	})
 
@@ -20,10 +19,8 @@ router.route('/registration')
   	.post(function(req, res) {
 
 		let userData;
-
 		return Promise.resolve(true)
 			.then(() => {
-
 				//validate req.body
 				if (!req.body.email || req.body.email == '') throw new Error('incorrect registration data: empty email');
 				else if (!req.body.login || req.body.login == '') throw new Error('incorrect registration data: empty login');
@@ -37,11 +34,8 @@ router.route('/registration')
 				return Promise.all(tasks);
 			})
 			.spread((emailDuplicates, loginDuplicates) => {
-
 				// если занят логин, то выбрасываем ошибку
 				if (loginDuplicates.length) throw new Error('login already exists');
-
-				let tasks = [];
 
 				// если занято мыло, то проверяем - подтверждено ли, если да, то выбрасываем ошибку, что оно занято
 				// если нет, то выбрасываем ошибку, что оно занято - надо подтвердить
@@ -54,7 +48,6 @@ router.route('/registration')
 				return utils.makePasswordHash(req.body.password);
 			})
 			.then((hash) => {
-
 				//для каждого юзера генерится уникальный код подтверждения и записывается в БД
 				// (при повторной отправке подтверждения на имейл код подтверждения берется этот же)
 				const confirmEmailCode = utils.makeUId(req.body.login + req.body.email + Date.now());  
@@ -66,17 +59,13 @@ router.route('/registration')
 					isEmailConfirmed: false,
 					password     : hash,
 					resetPasswordCode: '',
-					role: 'user'
+					role: 'user',   //TODO??? роль юзеру
 				};
-
-				//??? роль юзеру
-				userData.role = 'user';
 
 				//save new user
 				return userModel.create(userData);
 			})
 			.then((dbResponse) => {
-
 				const data = {
 					login: userData.login,
 					email: userData.email,
@@ -87,34 +76,29 @@ router.route('/registration')
 				return mail.sendConfirmEmailLetter(data)
 					.catch((error) => {
 						// возможную ошибку на этапе отправки письма игнорируем - только логируем ее
-						console.log('email error: ', error.message);
+						console.error('email error: ', error.message);
 						return null;
 					})
 			})
 			.then((data) => {
-
 				//показываем страницу успешной регистрации
 				//TODO: ?? как сделать редирект на главную через неск.секунд после показа страницы?
 				//const page = require('../templates/successRegisterPage');
-
 				//res.set('Content-Type', 'text/html');
 				//return res.send(page);
 
 				return utils.sendResponse(res, 'user successfully register', 201);
 			})
 			.catch((error) => {
-
 				return utils.sendErrorResponse(res, error, 401);
 			});
 	})
 
 	.put(function(req, res) {
-
 		return utils.sendErrorResponse(res, 'UNSUPPORTED_METHOD');
 	})
 
 	.delete(function(req, res) {
-
 		return utils.sendErrorResponse(res, 'UNSUPPORTED_METHOD');
 	})
 ;

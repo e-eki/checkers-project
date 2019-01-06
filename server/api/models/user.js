@@ -1,5 +1,6 @@
-const mongoose = require('mongoose');
+'use strict';
 
+const mongoose = require('mongoose');
 const userSchema = require('../schemas/user');
 
 const UserModel = mongoose.model('User', userSchema);
@@ -17,7 +18,7 @@ module.exports = {
 			login     : data.login,
 			email     : data.email,
 			confirmEmailCode: data.confirmEmailCode,
-			isEmailConfirmed: data.isEmailConfirmed ? data.isEmailConfirmed : false,
+			isEmailConfirmed: data.isEmailConfirmed,
 			password     : data.password,
 			resetPasswordCode: data.resetPasswordCode,
 			role: data.role,

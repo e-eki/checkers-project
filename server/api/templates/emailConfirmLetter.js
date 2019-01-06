@@ -1,10 +1,10 @@
+'use strict';
 
 const config = require('../../config');
 
 module.exports = new function() {
 
-    this.get = function(data) {
-		
+    this.get = function(data) {		
 		const mainLink = `${config.server.protocol}://${config.server.host}:${config.server.port}`;
 
 		let letter =  

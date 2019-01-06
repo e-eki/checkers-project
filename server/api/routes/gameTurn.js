@@ -1,7 +1,7 @@
+'use strict';
 
 const express = require('express');
 const Promise = require('bluebird');
-
 const utils = require('../lib/utils');
 const tokenUtils = require('../lib/tokenUtils');
 const gameUtils = require('../lib/gameUtils');
@@ -25,7 +25,6 @@ router.route('/gameturn')
 				return gameUtils.findCurrentGameByToken(accessToken);
 			})
 			.then((game) => {
-
 				// инициализация шахматной доски - расстановка актеров на доске
 				//const chessboard = new Chessboard(game.boardSize, game.mode, game.actorsData);
 				const chessboard = new Chessboard(game, game.actorsData);
@@ -35,7 +34,7 @@ router.route('/gameturn')
 				delete AIturn.type;
 				delete AIturn.priority;
 
-				chessboard.set(AIturn);  //??
+				chessboard.set(AIturn);  //TODO
 
 				const newActorsData = chessboard.fillActorsDataByActors();
 				game.actorsData = newActorsData;
@@ -56,12 +55,10 @@ router.route('/gameturn')
 			.spread((AIturn, dbResponse) => {
 
 				if (dbResponse.errors) {
-
 					// log errors
 					dbResponse.errors.forEach((error) => {
 						console.log('game update with error: ' + error.message);
 					});
-
 					throw new Error('game update with error');
 				}
 
@@ -86,7 +83,6 @@ router.route('/gameturn')
 		
 		return Promise.resolve(true)
 			.then(() => {
-
 				if (!req.body.userTurn) throw new Error('no userTurnData in req');
 
 				const headerAuthorization = req.header('Authorization') || '';
@@ -95,7 +91,6 @@ router.route('/gameturn')
 				return gameUtils.findCurrentGameByToken(accessToken);
 			})
 			.then((game) => {
-
 				// инициализация шахматной доски - расстановка актеров на доске
 				//const chessboard = new Chessboard(game.boardSize, game.mode, game.actorsData);
 				const chessboard = new Chessboard(game, game.actorsData);
@@ -104,7 +99,6 @@ router.route('/gameturn')
 
 				const newActorsData = chessboard.fillActorsDataByActors();
 				game.actorsData = newActorsData;
-
 				//??
 				game.movesCount++;
 				const currentTime = new Date().getTime();
@@ -114,14 +108,11 @@ router.route('/gameturn')
 				return gameModel.update(game._id, game);
 			})
 			.then((dbResponse) => {
-
 				if (dbResponse.errors) {
-
 					// log errors
 					dbResponse.errors.forEach((error) => {
 						console.log('game update with error: ' + error.message);
 					});
-
 					throw new Error('game update with error');
 				}
 
@@ -135,12 +126,10 @@ router.route('/gameturn')
 	})
 	
 	.put(function(req, res) {
-
 		return utils.sendErrorResponse(res, 'UNSUPPORTED_METHOD');
 	})
 	
 	.delete(function(req, res) {
-
 		return utils.sendErrorResponse(res, 'UNSUPPORTED_METHOD');
 	})
 ;

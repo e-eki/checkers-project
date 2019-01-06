@@ -1,7 +1,7 @@
+'use strict';
 
 const express = require('express');
 const Promise = require('bluebird');
-
 const utils = require('../lib/utils');
 const tokenUtils = require('../lib/tokenUtils');
 const gameModel = require('../models/game');
@@ -19,28 +19,23 @@ router.route('/lkUserData')
 
 		return Promise.resolve(true)
 			.then(() => {
-
 				const headerAuthorization = req.header('Authorization') || '';
 				const accessToken = tokenUtils.getTokenFromHeader(headerAuthorization);
 
 				return tokenUtils.findUserByAccessToken(accessToken);
 			})
 			.then((user) => {
-
 				let tasks = [];
-
 				tasks.push(user);
 				tasks.push(gameModel.query({userId: user._id}));
 
 				return Promise.all(tasks);
 			})
 			.spread((user, games) => {
-
-				let gamesInfo = [];
+				let gameInfos = [];
 
 				if (games.length) {
-					games.forEach((game) => {
-						
+					games.forEach((game) => {						
 						let gameInfo = {
 							isFinished  :  game.isFinished,
 							movesCount:  game.movesCount,
@@ -48,7 +43,7 @@ router.route('/lkUserData')
 							gameTime: game.gameTime,
 						};
 
-						gamesInfo.push(gameInfo);
+						gameInfos.push(gameInfo);
 					});
 				}
 
@@ -57,29 +52,25 @@ router.route('/lkUserData')
 					email: user.email,
 					isEmailConfirmed: user.isEmailConfirmed,
 					role: user.role,
-					games: gamesInfo,
+					games: gameInfos,
 				};
 
 				return utils.sendResponse(res, lkData);
 			})
 			.catch((error) => {
-
 				return utils.sendErrorResponse(res, error, 401);
 			});
 	})
 
-	.post(function(req, res) {
-		
+	.post(function(req, res) {		
 		return utils.sendErrorResponse(res, 'UNSUPPORTED_METHOD');
 	})
 	
 	.put(function(req, res) {
-
 		return utils.sendErrorResponse(res, 'UNSUPPORTED_METHOD');
 	})
 	
 	.delete(function(req, res) {
-
 		return utils.sendErrorResponse(res, 'UNSUPPORTED_METHOD');
 	})
 ;

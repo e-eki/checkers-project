@@ -1,11 +1,10 @@
+'use strict';
 
 const express = require('express');
 const Promise = require('bluebird');
-
 const utils = require('../lib/utils');
 const tokenUtils = require('../lib/tokenUtils');
 const gameUtils = require('../lib/gameUtils');
-const userModel = require('../models/user');
 const gameModel = require('../models/game');
 const Chessboard = require('../game/blocks/chessboard');
 
@@ -15,11 +14,10 @@ let router = express.Router();
 router.route('/game')
 
 	.get(function(req, res) { 
-
 		return utils.sendErrorResponse(res, 'UNSUPPORTED_METHOD');
 	})
 
-	// создание-начало игры (при клике на кнопку "Начать игру" на фронтэнде)
+	// создание - начало игры (при клике на кнопку "Начать игру" на фронтэнде)
 	/*data = {
 		accessToken,
 		userColor: < цвет фигур юзера >,
@@ -31,19 +29,16 @@ router.route('/game')
 		
 		return Promise.resolve(true)
 			.then(() => {
-
 				const headerAuthorization = req.header('Authorization') || '';
 				const accessToken = tokenUtils.getTokenFromHeader(headerAuthorization);
 
 				return tokenUtils.findUserByAccessToken(accessToken);
 			})
 			.then((user) => {
-
 				// инициализация шахматной доски - начальная расстановка актеров на доске
 				//const chessboard = new Chessboard(req.body.userColor, req.body.boardSize, req.body.level, req.body.mode);
 				
 				const chessboard = new Chessboard(req.body);  //TODO!
-				const actorsData = chessboard.actorsData;
 
 				const gameData = {
 					userId:  user._id,
@@ -57,16 +52,13 @@ router.route('/game')
 					mode: req.body.mode,
 					startTime: new Date().getTime(),  //??
 					gameTime: '0 ч 0 мин',
-					actorsData: actorsData,    
+					actorsData: chessboard.actorsData,    
 				};
 
 				return gameModel.create(gameData);
-
 			})
 			.then((dbResponse) => {
-
 				if (dbResponse.errors) {
-
 					// log errors
 					dbResponse.errors.forEach((error) => {
 						console.log('game saved with error: ' + error.message);
@@ -95,34 +87,29 @@ router.route('/game')
 
 		return Promise.resolve(true)
 			.then(() => {
-
 				const headerAuthorization = req.header('Authorization') || '';
 				const accessToken = tokenUtils.getTokenFromHeader(headerAuthorization);
 
 				return gameUtils.findCurrentGameByToken(accessToken);
 			})
 			.then((game) => {
-
 				const finishTime = new Date().getTime();
 				const gameTimeNote = gameUtils.getGameTimeNote(game.startTime, finishTime);
 
 				game.isFinished = true;
 				game.movesCount = req.body.movesCount;
 				game.totalOfGame = req.body.totalOfGame;
-				game.actorsData = [];   //??
+				game.actorsData = [];   //TODO??
 				game.gameTime = gameTimeNote;
 
 				return gameModel.update(game._id, game);
 			})
 			.then((dbResponse) => {
-
 				if (dbResponse.errors) {
-
-					// log errors
+					// log errors - TODO logger!
 					dbResponse.errors.forEach((error) => {
 						console.log('game update with error: ' + error.message);
 					});
-
 					// ? если в БД не удалось сохранить игру - то ошибка, надо повторить всё сначала
 					throw new Error('game update with error');
 				}
@@ -137,7 +124,6 @@ router.route('/game')
 	})
 	
 	.delete(function(req, res) {
-
 		return utils.sendErrorResponse(res, 'UNSUPPORTED_METHOD');
 	})
 ;

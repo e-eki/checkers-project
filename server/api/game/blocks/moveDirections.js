@@ -1,10 +1,10 @@
+'use strict';
 
 const Vector = require('./vector');
 
 module.exports = {
 
 	all: {
-
 		"n":  new Vector( 0, -1),
 		"ne": new Vector( 1, -1),
 		"e":  new Vector( 1,  0),
@@ -15,10 +15,9 @@ module.exports = {
 		"nw": new Vector(-1, -1)
 	},
 
-	whiteChecker: ["ne", "nw"],
+	whiteChecker: [this.all["ne"], "nw"],   //TODO!
 
 	blackChecker: ["se", "sw"],
 
 	dam: ["n", "e", "s", "w"],
-	
-  };
+};

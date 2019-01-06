@@ -1,6 +1,6 @@
+'use strict';
 
 const mongoose = require('mongoose');
-
 const actorDataSchema = require('./actorData');
 
 const Schema = mongoose.Schema;

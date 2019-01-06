@@ -1,8 +1,8 @@
+'use strict';
 
 const Promise = require('bluebird');
 const axios = require('axios');
 const qs = require('qs');
-
 const config = require('../../config');
 const userModel = require('../models/user');
 const utils = require('./utils');
@@ -11,15 +11,12 @@ const utils = require('./utils');
 const authUtils = new function() {
 
 	this.getUserBySiteAuth = function(email, password) {
-
 		//find user with this email
 		return Promise.resolve(userModel.query({email: email}))
-			.then((userData) => {
-				
+			.then((userData) => {			
 				if (!userData.length) throw new Error('no user with this email');  //TODO: предложить зарегиться
 
 				let tasks = [];
-
 				tasks.push(userData[0]);
 				tasks.push(utils.comparePassword(password, userData[0].password));
 
@@ -34,7 +31,6 @@ const authUtils = new function() {
 	};
 
 	this.getUserByVkAuth = function(code) {
-
 		//send request to vk api to get access_token & email
 		return axios.get(
 			'https://oauth.vk.com/access_token?'
@@ -46,17 +42,14 @@ const authUtils = new function() {
 					, redirect_uri: config.socialRedirectUri
 				}
 			})
-			.then((response) => {
-				
+			.then((response) => {			
 				//validate vk response
 				if (!response.data.email || response.data.email == '') throw new Error('incorrect vk auth data: empty user email');
 
 				const userEmail = response.data.email;
-
 				return userModel.query({email: userEmail});
 			})
 			.then((userData) => {
-
 				if (!userData.length) throw new Error('no user with this email');
 
 				return userData[0];
@@ -68,7 +61,6 @@ const authUtils = new function() {
 		//send request to google+ api to get access_token
 		return Promise.resolve(true)
 			.then(() => {
-
 				const params = {
 					code: code
 					, client_id: config.google.clientId
@@ -85,8 +77,7 @@ const authUtils = new function() {
 				};
 				return axios(options)
 			})
-			.then((response) => {
-				
+			.then((response) => {				
 				//validate google response
 				if (!response.data.access_token || response.data.access_token == '') throw new Error('incorrect google auth data: empty access_token');
 
@@ -100,16 +91,13 @@ const authUtils = new function() {
 					});
 			})
 			.then((response) => {
-
 				//validate google response
 				if (!response.data.email || response.data.email == '') throw new Error('incorrect google auth data: empty user email');
 
 				const userEmail = response.data.email;
-
 				return userModel.query({email: userEmail});
 			})
 			.then((userData) => {
-
 				if (!userData.length) throw new Error('no user with this email');
 
 				return userData[0];

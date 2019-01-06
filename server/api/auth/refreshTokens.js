@@ -1,7 +1,7 @@
+'use strict';
 
 const express = require('express');
 const Promise = require('bluebird');
-
 const utils = require('../lib/utils');
 const tokenUtils = require('../lib/tokenUtils');
 const userModel = require('../models/user');
@@ -12,7 +12,6 @@ let router = express.Router();
 router.route('/refreshtokens/')
 
 	.get(function(req, res) {
-
 		return utils.sendErrorResponse(res, 'UNSUPPORTED_METHOD');
 	})
 
@@ -24,31 +23,25 @@ router.route('/refreshtokens/')
 
 		return Promise.resolve(true)
 			.then(() => {
-
 				const refreshToken = req.body.refreshToken;
-
 				//validate & decode token
 				return tokenUtils.verifyRefreshToken(refreshToken);
 			})
-			.then((result) => {
-					
+			.then((result) => {					
 				if (result.error || !result.payload) throw new Error('invalid refresh token: ' + result.error.message);
 
 				let tasks = [];
-
 				tasks.push(result.payload.userId);
-
 				// удаляем из БД все рефреш токены юзера (залогиниться можно только с одного устройства единовременно)
 				tasks.push(tokenUtils.deleteAllRefreshTokens(result.payload.userId));
 
 				return Promise.all(tasks);
 			})
 			.spread((userId, dbResponse) => {
-				//search user for this token (for userRole in access token)
+				//search user for this token
 				return userModel.query({_id: userId});
 			})
 			.then((userData) => {
-
 				if (!userData.length) throw new Error('no user for this refresh token');
 
 				// получаем новую пару токенов
@@ -56,22 +49,18 @@ router.route('/refreshtokens/')
 				return tokenUtils.getRefreshTokensAndSaveToDB(user);
 			})
 			.then((tokensData) => {
-
 				utils.sendResponse(res, tokensData, 201);
 			})
 			.catch((error) => {
-
 				return utils.sendErrorResponse(res, error, 401);
 			});
 	})
 
 	.put(function(req, res) {
-
 		return utils.sendErrorResponse(res, 'UNSUPPORTED_METHOD');
 	})
 
 	.delete(function(req, res) {
-
 		return utils.sendErrorResponse(res, 'UNSUPPORTED_METHOD');
 	})
 ;

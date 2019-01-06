@@ -1,5 +1,6 @@
-const mongoose = require('mongoose');
+'use strict';
 
+const mongoose = require('mongoose');
 const refreshTokenSchema = require('../schemas/refreshToken');
 
 const RefreshTokenModel = mongoose.model('RefreshToken', refreshTokenSchema);
@@ -8,7 +9,6 @@ module.exports = {
 	
 	query: function(config) {
 		if (config) return RefreshTokenModel.find(config);
-
 		return RefreshTokenModel.find({});
 	},
 	
@@ -32,7 +32,6 @@ module.exports = {
 	},
 	
 	delete: function(id) {
-
 		return RefreshTokenModel.findOneAndRemove({_id: id});
 	},
 }
