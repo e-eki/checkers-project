@@ -1,8 +1,8 @@
+'use strict';
 
 const Promise = require('bluebird');
 const axios = require('axios');
 const qs = require('qs');
-
 const config = require('../../config');
 const userModel = require('../models/user');
 const utils = require('./utils');

@@ -1,8 +1,7 @@
+'use strict';
 
 const Promise = require('bluebird');
-
 const tokenUtils = require('../lib/tokenUtils');
-const userModel = require('../models/user');
 const gameModel = require('../models/game');
 
 const gameUtils = new function() {

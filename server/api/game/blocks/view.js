@@ -1,3 +1,4 @@
+'use strict';
 
 const moveDirections = require('./moveDirections');
 //const chessboard = require('./chessboard');
@@ -5,10 +6,8 @@ const moveDirections = require('./moveDirections');
 class View {
 
     constructor(actor, chessboard) {
-
 		this.actor = actor;
-		this.chessboard = chessboard;
-		
+		this.chessboard = chessboard;	
 	}
 
 	/*find() {
@@ -91,8 +90,7 @@ class View {
 		}
 
 		return action;
-	}
-		
+	}		
 };
 
 module.exports = View;

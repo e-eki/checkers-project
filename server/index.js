@@ -1,11 +1,12 @@
+'use strict';
 
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
-
 const config = require('./config');
 const mongoDbUtils = require('./api/lib/mongoDbUtils');
 const utils = require('./api/lib/utils');
+const Promise = require('bluebird');
 
 const indexHTML = path.resolve('./front-end/public/index.html');
 const app = express();
@@ -30,9 +31,6 @@ app.use((req, res, next) => {
 app.use(bodyParser.json({type: 'application/json'}));
 //app.use(bodyParser.urlencoded({ extended: true }));
 
-//соединение с БД
-mongoDbUtils.setUpConnection();  //TODO - перехват ошибки
-
 // ---------------------------------------------------------------
 // запросы к api
 app.use('/api', require('./api/auth/registration'));
@@ -54,7 +52,6 @@ app.get('/*', (req, res) => res.sendFile(indexHTML));
 
 // Если произошла ошибка валидации, то отдаем 400 Bad Request
 app.use((req, res, next) => {
-
     //return res.status(404).send(`url does not exist: ${req.url}`);
     const errorMessage = `url does not exist: ${req.url}`;
 
@@ -63,7 +60,6 @@ app.use((req, res, next) => {
 
 // Если же произошла иная ошибка, то отдаем 500 Internal Server Error
 app.use((err, req, res, next) => {
-
     //const status = 500;
     //return res.status(status).send({statusCode: status, data: null, error: {name: 'server_error', message: err.message}});
     const errorMessage = err.message ? err.message : '';
@@ -71,8 +67,19 @@ app.use((err, req, res, next) => {
     return utils.sendErrorResponse(res, errorMessage, 500);
 });
 
+
 app.listen(config.server.port, () => {
+    //соединение с БД
+    mongoDbUtils.setUpConnection();
+
     console.log(`Hosted on:  ${config.server.host}:${config.server.port}`);
-    //console.log(process.env.npm_lifecycle_event);
-    //console.log(process.env.NODE_ENV, process.env.PORT);
+});
+
+// прослушиваем прерывание работы программы (ctrl-c)
+process.on("SIGINT", () => {
+    // отключение от БД  (??)
+    return Promise.resolve(mongoDbUtils.closeConnection())
+        .then(() => {
+            process.exit();
+        })
 });

@@ -1,6 +1,6 @@
+'use strict';
 
 const express = require('express');
-
 const userModel = require('../models/user');
 const utils = require('../lib/utils');
 

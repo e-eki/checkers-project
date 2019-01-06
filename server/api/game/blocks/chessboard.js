@@ -1,6 +1,6 @@
+'use strict';
 
 const Promise = require('bluebird');
-
 const Vector = require('./vector');
 const Cell = require('./cell');
 const Checker = require('./checker');
@@ -10,7 +10,6 @@ const View = require('./view');
 class Chessboard {
 	
 	constructor(gameData, actorsData) {
-
 		this.boardSize = gameData.boardSize;
 		this.userColor = gameData.userColor;
 		this.level = gameData.level;

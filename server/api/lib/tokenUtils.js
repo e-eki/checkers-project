@@ -1,7 +1,7 @@
+'use strict';
 
 const Promise = require('bluebird');
 const jwt = require('jsonwebtoken');
-
 const config = require('../../config');
 const refreshTokenModel = require('../models/refreshToken');
 const userModel = require('../models/user');
@@ -59,7 +59,6 @@ const tokenUtils = new function() {
 
 	// получает из заголовка ответа токен
 	this.getTokenFromHeader = function(headerAuthorization) {
-
 		//TODO - Regex?
 		const parts = headerAuthorization.split(' ');
 		const accessToken = (parts.length && parts[1]) ? parts[1] : '';
@@ -68,7 +67,6 @@ const tokenUtils = new function() {
 	};
 
 	/*this.decodeToken = function(token) {
-
 		let options = {
 			json: true,
 			complete: true,
@@ -79,19 +77,16 @@ const tokenUtils = new function() {
 
 	// проверяет access token
 	this.verifyAccessToken = function(token) {
-
 		return this.verifyToken(token, 'access');
 	};
 
 	// проверяет refresh token
 	this.verifyRefreshToken = function(token) {
-
 		return this.verifyToken(token, 'refresh');
 	}
 
 	//проверяет токен (сигнатуру и срок действия) и возращает декодированный payload, если токен валидный
 	this.verifyToken = function(token, tokenType) {
-
 		//проверка на тип токена, записанный в subject
 		let subject = (tokenType == 'access') ? 'access' : 'refresh';
 
@@ -107,8 +102,10 @@ const tokenUtils = new function() {
 					//TODO: как сравнить токены? сравнение строк не работает
 					//if (!refreshToken || token > refreshToken[0].toString() || token < refreshToken[0].toString()) throw new Error('bad refresh token');
 					
-					if (!refreshToken[0]) throw new Error('bad refresh token');
-					else return {error: error, payload: payload};
+					if (!refreshToken[0]) {
+						error = Error('bad refresh token');
+					}
+					return {error: error, payload: payload};
 				})
 		});
 	};
@@ -209,23 +206,19 @@ const tokenUtils = new function() {
 
 		return Promise.resolve(true)
 			.then(() => {
-
 				//validate & decode token
 				return this.verifyAccessToken(accessToken)
 			})
-			.then((result) => {
-					
+			.then((result) => {					
 				if (result.error || !result.payload) throw new Error('invalid access token: ' + result.error.message);
 
 				// get user
 				return userModel.query({_id: result.payload.userId});
 			})
 			.then((userData) => {
-
 				if (!userData.length) throw new Error('no user with this access token');
 
 				const user = userData[0];
-
 				return user;
 			})
 	};

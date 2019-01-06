@@ -1,7 +1,7 @@
+'use strict';
 
 const express = require('express');
 const Promise = require('bluebird');
-
 const config = require('../../config');
 const utils = require('../lib/utils');
 const mail = require('../lib/mail');
@@ -14,7 +14,6 @@ let router = express.Router();
 router.route('/changepassword/')
 
 	.get(function(req, res) {
-
 		return utils.sendErrorResponse(res, 'UNSUPPORTED_METHOD');
 	})
 
@@ -85,7 +84,6 @@ router.route('/changepassword/')
 
 		return Promise.resolve(true)
 			.then(() => {
-
 				//validate req.body
 				if (!req.body.password || req.body.password == '') throw new Error('incorrect changePassword data: empty newPassword');
 
@@ -97,20 +95,16 @@ router.route('/changepassword/')
 				return tokenUtils.findUserByAccessToken(accessToken);
 			})
 			.then((user) => {
-
 				if (!user.isEmailConfirmed) throw new Error('email not confirmed');
 
 				let tasks = [];
-
 				tasks.push(user);
-
 				//получаем хэш нового пароля
 				tasks.push(utils.makePasswordHash(newPassword));
 
 				return Promise.all(tasks);
 			})
 			.spread((user, hash) => {
-
 				const userData = {
 					login     : user.login,
 					email     : user.email,
@@ -122,22 +116,19 @@ router.route('/changepassword/')
 				};
 
 				let tasks = [];
-
 				tasks.push(user.id);
 				tasks.push(userModel.update(user.id, userData));
 
 				return Promise.all(tasks);
 			})
 			.spread((userId, dbResponse) => {
-
 				if (dbResponse.errors) throw new Error('password updated with error');
 
 				// удаляем из БД все рефреш токены юзера, а срок действия его access токена закончится сам
 				// после смены пароля надо заново логиниться (?? либо принудительно после того, как закончится access token)
-				return tokenUtils.deleteAllRefreshTokens(userId);
+				return tokenUtils.deleteAllRefreshTokens(userId);  //TODO: удалять все аксесс токены тоже!
 			})
 			.then(() => {
-
 				return utils.sendResponse(res, 'Password changed');
 			})
 			.catch((error) => {
@@ -149,7 +140,6 @@ router.route('/changepassword/')
 	})
 
 	.delete(function(req, res) {
-
 		return utils.sendErrorResponse(res, 'UNSUPPORTED_METHOD');
 	})
 ;
@@ -159,7 +149,6 @@ router.route('/changepassword/:uuid')
 
 	// сюда приходит запрос на сброс пароля по ссылке из письма
 	.get(function(req, res) {
-
 		// ищем юзеров с данным кодом сброса пароля
 		return Promise.resolve(userModel.query({resetPasswordCode: req.params.uuid}))
 			.then((users) => {
@@ -172,13 +161,11 @@ router.route('/changepassword/:uuid')
 
 				let tasks = [];
 				tasks.push(user);
-
 				tasks.push(userModel.update(user._id, user));
 
 				return Promise.all(tasks);
 			})
 			.spread((user, dbResponse) => {
-
 				// редиректим на страницу сброса пароля
 				//const mainLink = `${config.server.protocol}://${config.server.host}:${config.server.port}/resetPassword`;
 				//return res.redirect(`${mainLink}`);
@@ -198,7 +185,6 @@ router.route('/changepassword/:uuid')
 				return tokenUtils.getRefreshTokensAndSaveToDB(user);
 			})
 			.then((tokensData) => {
-
 				// как передать токены, одновременно открыв страницу сброса пароля:
 				// передаем аксесс токен как параметр в ссылке, фронт-энд этот параметр извлекает 
 				// и использует для запроса на сброс пароля
@@ -206,28 +192,23 @@ router.route('/changepassword/:uuid')
 				// протухнет ссылка, и новую можно получить только в новом письме.
 
 				// редиректим на страницу сброса пароля
-
 				const link = `${config.server.protocol}://${config.server.host}:${config.server.port}/resetPassword/${tokensData.accessToken}`;
 				return res.redirect(`${link}`);
 			})
 			.catch((error) => {
-
 				return utils.sendErrorResponse(res, error, 401);
 			});
 	})
 
 	.post(function(req, res) {
-
 		return utils.sendErrorResponse(res, 'UNSUPPORTED_METHOD');
 	})
 
 	.put(function(req, res) {
-
 		return utils.sendErrorResponse(res, 'UNSUPPORTED_METHOD');
 	})
 
 	.delete(function(req, res) {
-
 		return utils.sendErrorResponse(res, 'UNSUPPORTED_METHOD');
 	})
 ;

@@ -1,6 +1,7 @@
+'use strict';
+
 const mongoose = require('mongoose');
 const Promise = require('bluebird');
-
 const actorDataSchema = require('../schemas/actorData');
 const gameSchema = require('../schemas/game');
 

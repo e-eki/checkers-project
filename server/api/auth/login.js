@@ -1,9 +1,7 @@
+'use strict';
 
 const express = require('express');
 const Promise = require('bluebird');
-
-const config = require('../../config');
-const userModel = require('../models/user');
 const utils = require('../lib/utils');
 const tokenUtils = require('../lib/tokenUtils');
 const authUtils = require('../lib/authUtils');
@@ -20,8 +18,7 @@ router.route('/login')
 	.get(function(req, res) {
 
 		return Promise.resolve(true)
-			.then(() => {
-				
+			.then(() => {				
 				//validate req.query
 				// (code & state sends by vk as GET-parameter)
 				// (code & scope sends by google as GET-parameter)
@@ -36,15 +33,13 @@ router.route('/login')
 				const data = {
 					code: req.query.code,	
 				};
-				
+
 				return loginAction(service, data);
 			})
 			.then((tokensData) => {
-
 				return utils.sendResponse(res, tokensData);
 			})
 			.catch((error) => {
-
 				return utils.sendErrorResponse(res, error, 401);
 			});
 	})
@@ -56,8 +51,7 @@ router.route('/login')
   	.post(function(req, res) {
 
 		return Promise.resolve(true)
-			.then(() => {
-				
+			.then(() => {				
 				//validate req.body
 				if (!req.body.email || req.body.email == '') throw new Error('incorrect login data: empty email');
 				else if (!req.body.password || req.body.password == '') throw new Error('incorrect login data: empty password');
@@ -70,22 +64,18 @@ router.route('/login')
 				return loginAction('site', data);
 			})
 			.then((tokensData) => {
-
 				return utils.sendResponse(res, tokensData);  
 			})
 			.catch((error) => {
-
 				return utils.sendErrorResponse(res, error, 401);
 			});
 	})
 
 	.put(function(req, res) {
-
 		return utils.sendErrorResponse(res, 'UNSUPPORTED_METHOD');
 	})
 
 	.delete(function(req, res) {
-
 		return utils.sendErrorResponse(res, 'UNSUPPORTED_METHOD');
 	})
 ;
@@ -108,7 +98,6 @@ let loginAction = function(service, data) {
 
 	return Promise.resolve(true)
 		.then(() => {
-
 			let _promise;
 
 			//TODO: fb
@@ -130,7 +119,6 @@ let loginAction = function(service, data) {
 			return _promise;
 		})
 		.then((user) => {
-
 			let tasks = [];
 			tasks.push(user);
 

@@ -1,14 +1,13 @@
+'use strict';
 
 const bcrypt = require('bcryptjs');
 const Promise = require('bluebird');
 const uuidv5 = require('uuid/v5');
-
 const config = require('../../config');
 
 const utils = new function() {
 
     this.sendResponse = function(res, response, statusCode) {
-
         let status = statusCode || 200;
         let responseData = response ? response : 'OK'; //??
 
@@ -16,12 +15,10 @@ const utils = new function() {
     };
 
 	this.sendErrorResponse = function(res, error, statusCode) {
-
         let status = statusCode || error.statusCode || 500;
         if (error == 'UNSUPPORTED_METHOD') status = 404; //???
 
         let errorMessage = error.message || error || 'error'; //??
-
         //if (status == 500) errorMessage = 'internal_server_error: ' + errorMessage;   //??
 
         return res.status(status).send(errorMessage);
@@ -29,7 +26,6 @@ const utils = new function() {
 
     // вычисляет хэш пароля
     this.makePasswordHash = function(password) {
-
         // оборачиваем в промис вызов функции, тк иначе она промис не возвращает, хоть и асинхронная
         return Promise.resolve(bcrypt.genSalt(config.bcrypt.saltLength))  // генерим соль
             .then((salt) => {
@@ -40,7 +36,6 @@ const utils = new function() {
 
     // сравнивает пароль с хэшем пароля из БД
     this.comparePassword = function(password, hash) {
-
         return Promise.resolve(bcrypt.compare(password, hash));
     };
 
@@ -48,8 +43,6 @@ const utils = new function() {
     this.makeUId = function(string) {
         return uuidv5(string, uuidv5.URL);   //??
     };
-
-
 };
 
 module.exports = utils;

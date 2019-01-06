@@ -1,7 +1,7 @@
+'use strict';
 
 const express = require('express');
 const Promise = require('bluebird');
-
 const utils = require('../lib/utils');
 const tokenUtils = require('../lib/tokenUtils');
 const gameModel = require('../models/game');

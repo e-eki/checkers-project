@@ -1,5 +1,6 @@
-const mongoose = require('mongoose');
+'use strict';
 
+const mongoose = require('mongoose');
 const refreshTokenSchema = require('../schemas/refreshToken');
 
 const RefreshTokenModel = mongoose.model('RefreshToken', refreshTokenSchema);
