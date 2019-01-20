@@ -32,10 +32,10 @@ router.route('/emailconfirm/')
 			})
 			.then((userData) => {
 				if (!userData.length) throw new Error('no user with this email');
-							
+					
+				let user = userData[0];
 				if (user.isEmailConfirmed) return true; // если имейл уже подтвержден
-
-				user = userData[0];
+				
 				const data = {
 					login: user.login,
 					email: user.email,
@@ -43,7 +43,11 @@ router.route('/emailconfirm/')
 				};
 
 				//отправляем письмо с кодом подтверждения на указанный имейл
-				return mail.sendConfirmEmailLetter(data);
+				return mail.sendConfirmEmailLetter(data)
+					.catch((error) => {
+						// возможная ошибка на этапе отправки письма
+						throw new Error('email error: '+ error.message);
+					})
 			})
 			.then((data) => {
 				// если имейл уже подтвержден

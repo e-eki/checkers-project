@@ -22,6 +22,7 @@ router.route('/registration')
 		return Promise.resolve(true)
 			.then(() => {
 				//validate req.body
+				// TODO: проверка формата имейла
 				if (!req.body.email || req.body.email == '') throw new Error('incorrect registration data: empty email');
 				else if (!req.body.login || req.body.login == '') throw new Error('incorrect registration data: empty login');
 				else if (!req.body.password || req.body.password == '') throw new Error('incorrect registration data: empty password');
