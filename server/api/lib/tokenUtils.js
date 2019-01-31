@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const config = require('../../config');
 const refreshTokenModel = require('../models/refreshToken');
 const userModel = require('../models/user');
+const utils = require('./utils');
 
 const tokenUtils = new function() {
 
@@ -123,9 +124,7 @@ const tokenUtils = new function() {
 				dbResponses.forEach((dbResponse) => {
 					if (dbResponse.errors) {
 						// log errors
-						dbResponse.errors.forEach((error) => {
-							console.log('refresh token deleted with error: ' + error.message);
-						});
+						utils.logDbErrors(dbResponse.errors);
 					};
 				});
 
@@ -168,10 +167,7 @@ const tokenUtils = new function() {
 			})
 			.spread((dbResponse, tokensData) => {
 				if (dbResponse.errors) {
-					// log errors
-					dbResponse.errors.forEach((error) => {
-						console.log('refresh token saved with error: ' + error.message);
-					});
+					utils.logDbErrors(dbResponse.errors);
 
 					// ? если в БД не удалось сохранить рефреш токен - то ошибка, надо повторить всё сначала
 					throw new Error('refresh token saved with error');

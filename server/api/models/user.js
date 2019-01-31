@@ -8,8 +8,7 @@ const UserModel = mongoose.model('User', userSchema);
 module.exports = {
 	
 	query: function(config) {
-		if (config) return UserModel.find(config);
-
+		if (config) return UserModel.find(config);		
 		return UserModel.find({});
 	},
 	

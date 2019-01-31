@@ -157,6 +157,11 @@ router.route('/changepassword/:uuid')
 				return Promise.all(tasks);
 			})
 			.spread((user, dbResponse) => {
+				if (dbResponse.errors) {
+					// log errors
+					utils.logDbErrors(dbResponse.errors);
+				};
+				
 				// редиректим на страницу сброса пароля
 				//const mainLink = `${config.server.protocol}://${config.server.host}:${config.server.port}/resetPassword`;
 				//return res.redirect(`${mainLink}`);

@@ -43,7 +43,7 @@ router.route('/registration')
 				if (emailDuplicates.length) {
 					
 					if (emailDuplicates[0].isEmailConfirmed) throw new Error('email already exists');
-					else return utils.sendErrorResponse(res, 'email already exists, but not confirmed', 401);  //TODO!!!
+					else throw new Error('email already exists, but not confirmed');  //todo: предложить подтвердить
 				}
 
 				return utils.makePasswordHash(req.body.password);
@@ -67,6 +67,11 @@ router.route('/registration')
 				return userModel.create(userData);
 			})
 			.then((dbResponse) => {
+				if (dbResponse.errors) {
+					// log errors
+					utils.logDbErrors(dbResponse.errors);
+				};
+
 				const data = {
 					login: userData.login,
 					email: userData.email,

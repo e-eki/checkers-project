@@ -43,6 +43,14 @@ const utils = new function() {
     this.makeUId = function(string) {
         return uuidv5(string, uuidv5.URL);   //??
     };
+
+    // логгирует ошибки БД
+    this.logDbErrors = function(dbErrors) {
+        dbErrors.forEach((error) => {
+            console.log('Database error: ' + error.message);
+        });
+    };
+    
 };
 
 module.exports = utils;

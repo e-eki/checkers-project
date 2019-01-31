@@ -55,10 +55,7 @@ router.route('/gameturn')
 			.spread((AIturn, dbResponse) => {
 
 				if (dbResponse.errors) {
-					// log errors
-					dbResponse.errors.forEach((error) => {
-						console.log('game update with error: ' + error.message);
-					});
+					utils.logDbErrors(dbResponse.errors);
 					throw new Error('game update with error');
 				}
 
@@ -109,10 +106,7 @@ router.route('/gameturn')
 			})
 			.then((dbResponse) => {
 				if (dbResponse.errors) {
-					// log errors
-					dbResponse.errors.forEach((error) => {
-						console.log('game update with error: ' + error.message);
-					});
+					utils.logDbErrors(dbResponse.errors);
 					throw new Error('game update with error');
 				}
 

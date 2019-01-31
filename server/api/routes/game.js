@@ -59,10 +59,7 @@ router.route('/game')
 			})
 			.then((dbResponse) => {
 				if (dbResponse.errors) {
-					// log errors
-					dbResponse.errors.forEach((error) => {
-						console.log('game saved with error: ' + error.message);
-					});
+					utils.logDbErrors(dbResponse.errors);
 
 					// ? если в БД не удалось сохранить игру - то ошибка, надо повторить всё сначала
 					throw new Error('game saved with error');
@@ -106,10 +103,8 @@ router.route('/game')
 			})
 			.then((dbResponse) => {
 				if (dbResponse.errors) {
-					// log errors - TODO logger!
-					dbResponse.errors.forEach((error) => {
-						console.log('game update with error: ' + error.message);
-					});
+					utils.logDbErrors(dbResponse.errors);
+					
 					// ? если в БД не удалось сохранить игру - то ошибка, надо повторить всё сначала
 					throw new Error('game update with error');
 				}

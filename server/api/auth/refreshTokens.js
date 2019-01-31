@@ -38,6 +38,11 @@ router.route('/refreshtokens/')
 				return Promise.all(tasks);
 			})
 			.spread((userId, dbResponse) => {
+				if (dbResponse.errors) {
+					// log errors
+					utils.logDbErrors(dbResponse.errors);
+				};
+				
 				//search user for this token
 				return userModel.query({_id: userId});
 			})
