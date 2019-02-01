@@ -22,10 +22,20 @@ router.route('/registration')
 		return Promise.resolve(true)
 			.then(() => {
 				//validate req.body
-				// TODO: проверка формата имейла
-				if (!req.body.email || req.body.email == '') throw new Error('incorrect registration data: empty email');
-				else if (!req.body.login || req.body.login == '') throw new Error('incorrect registration data: empty login');
-				else if (!req.body.password || req.body.password == '') throw new Error('incorrect registration data: empty password');
+				let validationErrors = [];
+
+				if (req.body.email || req.body.email == '') {
+					validationErrors.push('incorrect registration data: empty email');
+				}
+				if (!req.body.login || req.body.login == '') {
+					validationErrors.push('incorrect registration data: empty login');
+				}
+				if (!req.body.password || req.body.password == '') {
+					validationErrors.push('incorrect registration data: empty password');
+				}
+				if (validationErrors.length !== 0) {
+					throw utils.initError('VALIDATION_ERROR', 400, validationErrors);
+				}
 
 				//check email & login duplicates
 				let tasks = [];
@@ -81,9 +91,8 @@ router.route('/registration')
 				//отправляем письмо с кодом подтверждения на указанный имейл
 				return mail.sendConfirmEmailLetter(data)
 					.catch((error) => {
-						// возможную ошибку на этапе отправки письма игнорируем - только логируем ее
-						console.error('email error: ', error.message);
-						return null;
+						// возможная ошибка на этапе отправки письма
+						throw new Error('email error: this email not exists');
 					})
 			})
 			.then((data) => {
@@ -96,7 +105,7 @@ router.route('/registration')
 				return utils.sendResponse(res, 'user successfully register', 201);
 			})
 			.catch((error) => {
-				return utils.sendErrorResponse(res, error, 401);
+				return utils.sendErrorResponse(res, error);
 			});
 	})
 

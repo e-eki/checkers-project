@@ -18,7 +18,6 @@ router.route('/gameturn')
 
 		return Promise.resolve(true)
 			.then(() => {
-
 				const headerAuthorization = req.header('Authorization') || '';
 				const accessToken = tokenUtils.getTokenFromHeader(headerAuthorization);
 
