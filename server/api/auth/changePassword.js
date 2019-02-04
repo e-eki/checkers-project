@@ -27,14 +27,18 @@ router.route('/changepassword/')
 		return Promise.resolve(true)
 			.then(() => {
 				//validate req.body
-				if (!req.body.email || req.body.email == '') throw new Error('incorrect changePassword data: empty email');
+				if (!req.body.email || req.body.email == '') {
+					throw utils.initError('VALIDATION_ERROR', 'empty email');
+				}
 
 				const email = req.body.email;
 				// ищем юзера с таким имейлом
 				return userModel.query({email: email});
 			})
 			.then((userData) => {
-				if (!userData.length) throw new Error('no user with this email');
+				if (!userData.length) {
+					throw utils.initError('UNAUTHORIZED', 'No user with this email');
+				}
 				
 				user = userData[0];
 				//для каждого юзера генерится уникальный код сброса пароля и записывается в БД
@@ -48,21 +52,25 @@ router.route('/changepassword/')
 				};
 
 				//отправляем письмо с кодом сброса пароля на указанный имейл
-				return mail.sendResetPasswordLetter(data);
+				return mail.sendResetPasswordLetter(data)
+					.catch((error) => {
+						// возможная ошибка на этапе отправки письма
+						throw utils.initError('INVALID_INPUT_DATA', 'Email not exists');					
+					})
 			})
 			.then((data) => {
 				// если письмо отправилось без ошибок - то записываем код сброса пароля в БД
 				return userModel.update(user._id, user);
 			})
 			.then((dbResponse) => {
-				if (dbResponse.errors) throw new Error('resetPasswordCode updated with error');
+				if (dbResponse.errors) {
+					throw utils.initError('INTERNAL_SERVER_ERROR', 'change password error');
+				}
 
 				return utils.sendResponse(res, 'Reset password mail send');
 			})
 			.catch((error) => {
-				if (error.message == 'no user with this email') return utils.sendErrorResponse(res, error, 401);  //TODO
-
-				return utils.sendErrorResponse(res, error, 500);
+				return utils.sendErrorResponse(res, error);
 			});
 	})
 
@@ -77,7 +85,9 @@ router.route('/changepassword/')
 		return Promise.resolve(true)
 			.then(() => {
 				//validate req.body
-				if (!req.body.password || req.body.password == '') throw new Error('incorrect changePassword data: empty newPassword');
+				if (!req.body.password || req.body.password == '') {
+					throw utils.initError('VALIDATION_ERROR', 'empty new password');
+				}
 
 				newPassword = req.body.password;
 
@@ -87,7 +97,10 @@ router.route('/changepassword/')
 				return tokenUtils.findUserByAccessToken(accessToken);
 			})
 			.then((user) => {
-				if (!user.isEmailConfirmed) throw new Error('email not confirmed');
+				if (!user.isEmailConfirmed) {
+					//todo: предложить подтвердить
+					throw utils.initError('UNAUTHORIZED', 'email not confirmed');
+				}
 
 				let tasks = [];
 				tasks.push(user);
@@ -114,7 +127,10 @@ router.route('/changepassword/')
 				return Promise.all(tasks);
 			})
 			.spread((userId, dbResponse) => {
-				if (dbResponse.errors) throw new Error('password updated with error');
+				if (dbResponse.errors) {
+					utils.logDbErrors(dbResponse.errors);
+					throw utils.initError('INTERNAL_SERVER_ERROR', 'change password error');
+				}
 
 				// удаляем из БД все рефреш токены юзера, а срок действия его access токена закончится сам
 				// после смены пароля надо заново логиниться (?? либо принудительно после того, как закончится access token)
@@ -124,10 +140,7 @@ router.route('/changepassword/')
 				return utils.sendResponse(res, 'Password changed');
 			})
 			.catch((error) => {
-				//TODO: сделать status внутри error!
-				if (error.message == 'password updated with error') return utils.sendErrorResponse(res, error, 500);  
-
-				return utils.sendErrorResponse(res, error, 401);
+				return utils.sendErrorResponse(res, error);
 			});
 	})
 
@@ -144,7 +157,9 @@ router.route('/changepassword/:uuid')
 		// ищем юзеров с данным кодом сброса пароля
 		return Promise.resolve(userModel.query({resetPasswordCode: req.params.uuid}))
 			.then((users) => {
-				if (!users.length) throw new Error('no user with this uuid');
+				if (!users.length) {
+					throw utils.initError('UNAUTHORIZED', 'no user with this uuid');
+				}
 
 				// по идее должен быть один юзер на один код сброса пароля
 				const user = users[0];

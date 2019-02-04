@@ -145,8 +145,12 @@ const tokenUtils = new function() {
 		return Promise.all(tasks)
 			.spread((user, accessToken, accessTokenExpiresIn, refreshToken) => {
 				// validate tokens
-				if (!accessToken || accessToken == '') throw new Error('accessToken created with error');
-				if (!refreshToken || refreshToken == '') throw new Error('refreshToken created with error');
+				if (!accessToken || accessToken == '') {
+					throw utils.initError('INTERNAL_SERVER_ERROR', 'token error: tokens generate error');
+				}
+				if (!refreshToken || refreshToken == '') {
+					throw utils.initError('INTERNAL_SERVER_ERROR', 'token error: tokens generate error');
+				}
 
 				let tasks = [];
 				//save refresh token to DB
@@ -170,7 +174,7 @@ const tokenUtils = new function() {
 					utils.logDbErrors(dbResponse.errors);
 
 					// ? если в БД не удалось сохранить рефреш токен - то ошибка, надо повторить всё сначала
-					throw new Error('refresh token saved with error');
+					throw utils.initError('INTERNAL_SERVER_ERROR', 'token error: tokens generate error');
 				}
 
 				return tokensData;
@@ -186,13 +190,17 @@ const tokenUtils = new function() {
 				return this.verifyAccessToken(accessToken)
 			})
 			.then((result) => {					
-				if (result.error || !result.payload) throw new Error('invalid access token: ' + result.error.message);
+				if (result.error || !result.payload) {
+					throw utils.initError('UNAUTHORIZED', 'token error: invalid access token: ' + result.error.message);
+				}
 
 				// get user
 				return userModel.query({_id: result.payload.userId});
 			})
 			.then((userData) => {
-				if (!userData.length) throw new Error('no user with this access token');
+				if (!userData.length)  {
+					throw utils.initError('UNAUTHORIZED', 'no user with this access token');
+				}
 
 				const user = userData[0];
 				return user;

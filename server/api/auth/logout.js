@@ -39,7 +39,9 @@ router.route('/logout')
 			})
 			.then((result) => {
 				// validate result
-				if (result.error || !result.payload) throw new Error('invalid access token: ' + result.error.message);
+				if (result.error || !result.payload) {
+					throw utils.initError('UNAUTHORIZED', 'token error: invalid access token: ' + result.error.message);
+				}
 
 				return tokenUtils.deleteAllRefreshTokens(result.payload.userId);
 			})
@@ -47,7 +49,7 @@ router.route('/logout')
 				return utils.sendResponse(res, 'User is logged out', 204);
 			})
 			.catch((error) => {
-				return utils.sendErrorResponse(res, error, 401);
+				return utils.sendErrorResponse(res, error);
 			});
 	})
 ;

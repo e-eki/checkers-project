@@ -10,16 +10,16 @@ const utils = new function() {
 
     // 
 	/*data = {
-		error: <  >,
-		status: <  >,
-		data: <  >,
+		error: <  error object {statusCode: name: message: data:} | string >,
+		status: < number >,
+		data: < error detail data >,
 	}*/
-    this.initError = function(error, status, data) {
+    this.initError = function(error, data, status) {
         let _error = {
             __type: 'api.error'
             , statusCode: status || 500
-            , name: errors.UNKNOWN_ERROR.name
-            , message: errors.UNKNOWN_ERROR.message
+            , name: errors.INTERNAL_SERVER_ERROR.name
+            , message: errors.INTERNAL_SERVER_ERROR.message
             , data: null
         };
 
@@ -30,26 +30,26 @@ const utils = new function() {
         if (error.constructor.name === 'Error') {
             _error.name = error.name;
             _error.message = error.message;
-            if (!this.isNull(data)) _error.data = data;
+            if (data) _error.data = data;
         }
         else if (error.constructor.name === 'String' && errors[error]) {
             _error.name = errors[error].name;
             _error.message = errors[error].message;
             // в data может быть message (если string)
-            if (!this.isNull(data)) {
-                if (data.constructor.name = 'String') {
+            if (data) {
+                if (data.constructor.name === 'String') {
                     _error.message = data;
                 }
                 else {
                     _error.data = data;
                 }
             }
-            if (!this.isNull(errors[error].status)) _error.statusCode = errors[error].status;
+            if (errors[error].status) _error.statusCode = errors[error].status;
         }
         else {
-            if (!this.isNull(error.name)) _error.name = error.name;
-            if (!this.isNull(error.message)) _error.message = error.message;
-            if (!this.isNull(data)) _error.data = data;
+            if (error.name) _error.name = error.name;
+            if (error.message) _error.message = error.message;
+            if (data) _error.data = data;
         }
 
         return _error;
@@ -63,13 +63,10 @@ const utils = new function() {
     };
 
 	this.sendErrorResponse = function(res, error, statusCode, data) {
-        const err = this.initError(error, statusCode, data);
+        const err = (error.__type === 'api.error') ? error : this.initError(error, data, statusCode);
+        
         const status = err.statusCode || 500;
-
-        /*let status = statusCode || error.statusCode || 500;
-        if (error == 'UNSUPPORTED_METHOD') status = 404; //???
-
-        let errorMessage = error.message || error || 'error'; //??*/
+        delete err.statusCode;
 
         return res.status(status).send(err);
     };
@@ -97,7 +94,7 @@ const utils = new function() {
     // логгирует ошибки БД
     this.logDbErrors = function(dbErrors) {
         dbErrors.forEach((error) => {
-            console.log('Database error: ' + error.message);
+            console.error('Database error: ' + error.message);
         });
     };
     

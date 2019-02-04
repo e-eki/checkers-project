@@ -62,15 +62,13 @@ router.route('/game')
 					utils.logDbErrors(dbResponse.errors);
 
 					// ? если в БД не удалось сохранить игру - то ошибка, надо повторить всё сначала
-					throw new Error('game saved with error');
+					throw utils.initError('INTERNAL_SERVER_ERROR', 'game error');
 				}
 
 				return utils.sendResponse(res, 'game successfully saved', 201);
 			})
 			.catch((error) => {
-				if (error.message == 'game saved with error') return utils.sendErrorResponse(res, error, 500);  //TODO
-
-				return utils.sendErrorResponse(res, error, 401);
+				return utils.sendErrorResponse(res, error);
 			});
 	})
 	
@@ -106,15 +104,13 @@ router.route('/game')
 					utils.logDbErrors(dbResponse.errors);
 					
 					// ? если в БД не удалось сохранить игру - то ошибка, надо повторить всё сначала
-					throw new Error('game update with error');
+					throw utils.initError('INTERNAL_SERVER_ERROR', 'game error');
 				}
 
 				return utils.sendResponse(res, 'game successfully update');
 			})
 			.catch((error) => {
-				if (error.message == 'game update with error') return utils.sendErrorResponse(res, error, 500);  //TODO
-
-				return utils.sendErrorResponse(res, error, 401);
+				return utils.sendErrorResponse(res, error);
 			});
 	})
 	

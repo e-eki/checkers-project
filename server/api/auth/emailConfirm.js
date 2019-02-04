@@ -24,14 +24,18 @@ router.route('/emailconfirm/')
 		return Promise.resolve(true)
 			.then(() => {
 				//validate req.body
-				if (!req.body.email || req.body.email == '') throw new Error('incorrect changePassword data: empty email');
+				if (!req.body.email || req.body.email == '') {
+					throw utils.initError('VALIDATION_ERROR', 'empty email');
+				}
 
 				const email = req.body.email;
 				// ищем юзера с таким имейлом
 				return userModel.query({email: email});
 			})
 			.then((userData) => {
-				if (!userData.length) throw new Error('no user with this email');
+				if (!userData.length) {
+					throw utils.initError('UNAUTHORIZED', 'no user with this email');
+				}
 					
 				let user = userData[0];
 				if (user.isEmailConfirmed) return true; // если имейл уже подтвержден
@@ -46,7 +50,7 @@ router.route('/emailconfirm/')
 				return mail.sendConfirmEmailLetter(data)
 					.catch((error) => {
 						// возможная ошибка на этапе отправки письма
-						throw new Error('email error: '+ error.message);
+						throw utils.initError('INVALID_INPUT_DATA', 'Email not exists');					
 					})
 			})
 			.then((data) => {
@@ -56,7 +60,7 @@ router.route('/emailconfirm/')
 				return utils.sendResponse(res, 'Confirm mail send again');
 			})
 			.catch((error) => {
-				return utils.sendErrorResponse(res, error, 401);
+				return utils.sendErrorResponse(res, error);
 			});
 	})
 
@@ -77,7 +81,9 @@ router.route('/emailconfirm/:uuid')
 		// ищем юзеров с данным кодом подтверждения
 		return userModel.query({confirmEmailCode: req.params.uuid})
 			.then((users) => {
-				if (!users.length) throw new Error('no user with this uuid');
+				if (!users.length) {
+					throw utils.initError('UNAUTHORIZED', 'no user with this uuid');
+				}
 
 				// по идее должен быть один юзер на один код подтверждения
 				const userData = users[0];
@@ -102,7 +108,7 @@ router.route('/emailconfirm/:uuid')
 				return res.send(page);
 			})
 			.catch((error) => {
-				return utils.sendErrorResponse(res, error, 401);
+				return utils.sendErrorResponse(res, error);
 			});
 	})
 

@@ -55,15 +55,13 @@ router.route('/gameturn')
 
 				if (dbResponse.errors) {
 					utils.logDbErrors(dbResponse.errors);
-					throw new Error('game update with error');
+					throw utils.initError('INTERNAL_SERVER_ERROR', 'game error');
 				}
 
 				return utils.sendResponse(res, AIturn, 201);
 			})
 			.catch((error) => {
-				if (error.message == 'game update with error') return utils.sendErrorResponse(res, error, 500);  //TODO
-
-				return utils.sendErrorResponse(res, error, 401);
+				return utils.sendErrorResponse(res, error);
 			});
 	})
 
@@ -79,7 +77,9 @@ router.route('/gameturn')
 		
 		return Promise.resolve(true)
 			.then(() => {
-				if (!req.body.userTurn) throw new Error('no userTurnData in req');
+				if (!req.body.userTurn) {
+					throw utils.initError('VALIDATION_ERROR', 'incorrect game turn data: empty user turn data');
+				}
 
 				const headerAuthorization = req.header('Authorization') || '';
 				const accessToken = tokenUtils.getTokenFromHeader(headerAuthorization);
@@ -106,15 +106,13 @@ router.route('/gameturn')
 			.then((dbResponse) => {
 				if (dbResponse.errors) {
 					utils.logDbErrors(dbResponse.errors);
-					throw new Error('game update with error');
+					throw utils.initError('INTERNAL_SERVER_ERROR', 'game error');
 				}
 
 				return utils.sendResponse(res, 'userTurn set', 201);
 			})
 			.catch((error) => {
-				if (error.message == 'game update with error') return utils.sendErrorResponse(res, error, 500);  //TODO
-
-				return utils.sendErrorResponse(res, error, 401);
+				return utils.sendErrorResponse(res, error);
 			});
 	})
 	

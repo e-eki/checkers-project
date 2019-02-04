@@ -14,7 +14,10 @@ const authUtils = new function() {
 		//find user with this email
 		return Promise.resolve(userModel.query({email: email}))
 			.then((userData) => {			
-				if (!userData.length) throw new Error('no user with this email');  //TODO: предложить зарегиться
+				if (!userData.length) {
+					//TODO: предложить зарегиться
+					throw utils.initError('UNAUTHORIZED', 'No user with this email');
+				}
 
 				let tasks = [];
 				tasks.push(userData[0]);
@@ -24,7 +27,9 @@ const authUtils = new function() {
 			})
 			.spread((user, passwordIsCorrect) => {
 				//check password
-				if (passwordIsCorrect === false) throw new Error('incorrect password');
+				if (passwordIsCorrect === false) {
+					throw utils.initError('UNAUTHORIZED', 'incorrect password');
+				}
 
 				return user;
 			})
@@ -44,13 +49,17 @@ const authUtils = new function() {
 			})
 			.then((response) => {			
 				//validate vk response
-				if (!response.data.email || response.data.email == '') throw new Error('incorrect vk auth data: empty user email');
+				if (!response.data.email || response.data.email == '') {
+					throw utils.initError('UNAUTHORIZED', 'incorrect vk auth data: empty user email');
+				}					
 
 				const userEmail = response.data.email;
 				return userModel.query({email: userEmail});
 			})
 			.then((userData) => {
-				if (!userData.length) throw new Error('no user with this email');
+				if (!userData.length) {
+					throw utils.initError('UNAUTHORIZED', 'incorrect vk auth data: no user with this email');
+				}
 
 				return userData[0];
 			})
@@ -79,7 +88,9 @@ const authUtils = new function() {
 			})
 			.then((response) => {				
 				//validate google response
-				if (!response.data.access_token || response.data.access_token == '') throw new Error('incorrect google auth data: empty access_token');
+				if (!response.data.access_token || response.data.access_token == '') {
+					throw utils.initError('UNAUTHORIZED', 'incorrect google auth data: empty access_token');
+				}
 
 				//send request to google+ api to get email (user data)
 				return axios.get(
@@ -92,13 +103,17 @@ const authUtils = new function() {
 			})
 			.then((response) => {
 				//validate google response
-				if (!response.data.email || response.data.email == '') throw new Error('incorrect google auth data: empty user email');
+				if (!response.data.email || response.data.email == '')  {
+					throw utils.initError('UNAUTHORIZED', 'incorrect google auth data: empty user email');
+				}
 
 				const userEmail = response.data.email;
 				return userModel.query({email: userEmail});
 			})
 			.then((userData) => {
-				if (!userData.length) throw new Error('no user with this email');
+				if (!userData.length) {
+					throw utils.initError('UNAUTHORIZED', 'incorrect google auth data: no user with this email');
+				}
 
 				return userData[0];
 			})

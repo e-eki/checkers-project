@@ -28,7 +28,9 @@ router.route('/refreshtokens/')
 				return tokenUtils.verifyRefreshToken(refreshToken);
 			})
 			.then((result) => {					
-				if (result.error || !result.payload) throw new Error('invalid refresh token: ' + result.error.message);
+				if (result.error || !result.payload) {
+					throw utils.initError('UNAUTHORIZED', 'token error: invalid refresh token: ' + result.error.message);
+				}
 
 				let tasks = [];
 				tasks.push(result.payload.userId);
@@ -47,7 +49,9 @@ router.route('/refreshtokens/')
 				return userModel.query({_id: userId});
 			})
 			.then((userData) => {
-				if (!userData.length) throw new Error('no user for this refresh token');
+				if (!userData.length) {
+					throw utils.initError('UNAUTHORIZED', 'token error: no user for this refresh token');
+				}
 
 				// получаем новую пару токенов
 				const user = userData[0];
@@ -57,7 +61,7 @@ router.route('/refreshtokens/')
 				utils.sendResponse(res, tokensData, 201);
 			})
 			.catch((error) => {
-				return utils.sendErrorResponse(res, error, 401);
+				return utils.sendErrorResponse(res, error);
 			});
 	})
 

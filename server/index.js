@@ -52,19 +52,13 @@ app.get('/*', (req, res) => res.sendFile(indexHTML));
 
 // Если произошла ошибка валидации, то отдаем 400 Bad Request
 app.use((req, res, next) => {
-    //return res.status(404).send(`url does not exist: ${req.url}`);
-    const errorMessage = `url does not exist: ${req.url}`;
-
-    return utils.sendErrorResponse(res, errorMessage, 404);
+    const error = utils.initError('NOT_FOUND', 'url does not exist');
+    return utils.sendErrorResponse(res, error);
 });
 
 // Если же произошла иная ошибка, то отдаем 500 Internal Server Error
-app.use((err, req, res, next) => {
-    //const status = 500;
-    //return res.status(status).send({statusCode: status, data: null, error: {name: 'server_error', message: err.message}});
-    const errorMessage = err.message ? err.message : '';
-
-    return utils.sendErrorResponse(res, errorMessage, 500);
+app.use((error, req, res, next) => {
+    return utils.sendErrorResponse(res, error);
 });
 
 
