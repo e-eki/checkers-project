@@ -10,14 +10,14 @@ const userModel = require('../models/user');
 
 let router = express.Router();
 
-//----- endpoint: /api/changepassword/
+//----- endpoint: /api/resetpassword/
 router.route('/resetpassword/')
 
 	.get(function(req, res) {
 		return utils.sendErrorResponse(res, 'UNSUPPORTED_METHOD');
 	})
 
-	//запрос на сброс пароля 
+	//запрос письмо с кодом на сброс пароля 
 	/* data = {
 		email: <email>
 	}*/
@@ -66,7 +66,6 @@ router.route('/resetpassword/')
 				if (dbResponse.errors) {
 					throw utils.initError('INTERNAL_SERVER_ERROR', 'reset password error');
 				}
-
 				return utils.sendResponse(res, 'Reset password mail send');
 			})
 			.catch((error) => {
@@ -148,8 +147,8 @@ router.route('/resetpassword/')
 	})
 ;
 
-//----- endpoint: /api/changepassword/:uuid
-router.route('/changepassword/:uuid')
+//----- endpoint: /api/resetpassword/:uuid
+router.route('/resetpassword/:uuid')
 
 	// сюда приходит запрос на сброс пароля по ссылке из письма
 	.get(function(req, res) {
@@ -206,7 +205,7 @@ router.route('/changepassword/:uuid')
 				return res.redirect(`${link}`);
 			})
 			.catch((error) => {
-				return utils.sendErrorResponse(res, error, 401);
+				return utils.sendErrorResponse(res, error);
 			});
 	})
 

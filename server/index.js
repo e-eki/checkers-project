@@ -37,7 +37,7 @@ app.use('/api', require('./api/auth/registration'));
 app.use('/api', require('./api/auth/emailConfirm'));
 app.use('/api', require('./api/auth/login'));
 app.use('/api', require('./api/auth/logout'));
-app.use('/api', require('./api/auth/changePassword'));
+app.use('/api', require('./api/auth/resetPassword'));
 app.use('/api', require('./api/auth/refreshTokens'));
 
 app.use('/api', require('./api/routes/user'));

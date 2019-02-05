@@ -35,7 +35,7 @@ router.route('/gameturn')
 
 				chessboard.set(AIturn);  //TODO
 
-				const newActorsData = chessboard.fillActorsDataByActors();
+				const newActorsData = chessboard.fillActorsDataByActors(chessboard.actors);
 				game.actorsData = newActorsData;
 
 				//??
@@ -93,7 +93,7 @@ router.route('/gameturn')
 
 				chessboard.setTurn(req.body.userTurn);
 
-				const newActorsData = chessboard.fillActorsDataByActors();
+				const newActorsData = chessboard.fillActorsDataByActors(chessboard.actors);
 				game.actorsData = newActorsData;
 				//??
 				game.movesCount++;

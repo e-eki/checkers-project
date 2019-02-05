@@ -6,7 +6,7 @@ const gameModel = require('../models/game');
 
 const gameUtils = new function() {
 
-    this.getGameTimeNote = function(startTime, finishTime) {
+    this.getGameTimeNote = function(startTime, finishTime) {  //todo: check
         const gameTime = finishTime - startTime;
 
 		const minute = 1000 * 60;

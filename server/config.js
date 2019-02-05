@@ -40,7 +40,7 @@ module.exports = {
         secret: 'ZnVja2luZyBmdWNraW5nIGJvcnNjaA=='
         , access: {
             //expiresIn: 1200000   //20 мин = 20*60*1000
-            expiresIn: 10   //2 ч = 120*60*1000   //TODO!!
+            expiresIn: 7200000   //2 ч = 120*60*1000   //TODO!!
           },
         
           refresh: {

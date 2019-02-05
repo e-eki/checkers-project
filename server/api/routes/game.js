@@ -35,6 +35,25 @@ router.route('/game')
 				return tokenUtils.findUserByAccessToken(accessToken);
 			})
 			.then((user) => {
+				//validate req.body
+				let validationErrors = [];
+
+				if (!req.body.userColor || req.body.userColor === '') {
+					validationErrors.push('empty userColor value');
+				}
+				if (!req.body.boardSize || req.body.boardSize === 0) {
+					validationErrors.push('empty boardSize value');
+				}
+				if (!req.body.level || req.body.level === '') {
+					validationErrors.push('empty level value');
+				}
+				if (!req.body.mode || req.body.mode === '') {
+					validationErrors.push('empty mode value');
+				}
+				if (validationErrors.length !== 0) {
+					throw utils.initError('VALIDATION_ERROR', validationErrors);
+				}
+
 				// инициализация шахматной доски - начальная расстановка актеров на доске
 				//const chessboard = new Chessboard(req.body.userColor, req.body.boardSize, req.body.level, req.body.mode);
 				
@@ -44,7 +63,7 @@ router.route('/game')
 					userId:  user._id,
 					isFinished  :  false,
 					movesCount:  0,   //??
-					totalOfGame: 'standoff',   //??
+					totalOfGame: 'standoff',   //TODO!!! rules in db
 
 					userColor: req.body.userColor,
 					boardSize: req.body.boardSize,
