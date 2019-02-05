@@ -73,7 +73,7 @@ router.route('/gameturn')
 			targetPosition,
 		},
 	}*/
-	.post(function(req, res) {
+	.put(function(req, res) {
 		
 		return Promise.resolve(true)
 			.then(() => {
@@ -109,14 +109,14 @@ router.route('/gameturn')
 					throw utils.initError('INTERNAL_SERVER_ERROR', 'game error');
 				}
 
-				return utils.sendResponse(res, 'userTurn set', 201);
+				return utils.sendResponse(res, 'user turn set', 201);
 			})
 			.catch((error) => {
 				return utils.sendErrorResponse(res, error);
 			});
 	})
 	
-	.put(function(req, res) {
+	.post(function(req, res) {
 		return utils.sendErrorResponse(res, 'UNSUPPORTED_METHOD');
 	})
 	

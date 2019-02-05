@@ -34,7 +34,7 @@ router.route('/emailconfirm/')
 			})
 			.then((userData) => {
 				if (!userData.length) {
-					throw utils.initError('UNAUTHORIZED', 'no user with this email');
+					throw utils.initError('FORBIDDEN', 'no user with this email');
 				}
 					
 				let user = userData[0];
@@ -82,7 +82,7 @@ router.route('/emailconfirm/:uuid')
 		return userModel.query({confirmEmailCode: req.params.uuid})
 			.then((users) => {
 				if (!users.length) {
-					throw utils.initError('UNAUTHORIZED', 'no user with this uuid');
+					throw utils.initError('FORBIDDEN', 'no user with this uuid');
 				}
 
 				// по идее должен быть один юзер на один код подтверждения

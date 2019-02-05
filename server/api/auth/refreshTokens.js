@@ -29,7 +29,7 @@ router.route('/refreshtokens/')
 			})
 			.then((result) => {					
 				if (result.error || !result.payload) {
-					throw utils.initError('UNAUTHORIZED', 'token error: invalid refresh token: ' + result.error.message);
+					throw utils.initError('FORBIDDEN', 'token error: invalid refresh token: ' + result.error.message);
 				}
 
 				let tasks = [];
@@ -50,7 +50,7 @@ router.route('/refreshtokens/')
 			})
 			.then((userData) => {
 				if (!userData.length) {
-					throw utils.initError('UNAUTHORIZED', 'token error: no user for this refresh token');
+					throw utils.initError('FORBIDDEN', 'token error: no user for this refresh token');
 				}
 
 				// получаем новую пару токенов

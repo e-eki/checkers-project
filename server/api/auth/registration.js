@@ -57,8 +57,7 @@ router.route('/registration')
 						throw utils.initError('VALIDATION_ERROR', 'email duplicate: Email exists in database');
 					}
 					else {
-						//todo: предложить подтвердить
-						throw utils.initError('VALIDATION_ERROR', 'email_duplicate: Email exists in database, but not confirmed', 401);
+						throw utils.initError('UNAUTHORIZED', 'email_duplicate: Email exists in database, but not confirmed');
 					}
 				}
 

@@ -15,7 +15,6 @@ const authUtils = new function() {
 		return Promise.resolve(userModel.query({email: email}))
 			.then((userData) => {			
 				if (!userData.length) {
-					//TODO: предложить зарегиться
 					throw utils.initError('UNAUTHORIZED', 'No user with this email');
 				}
 
@@ -28,7 +27,7 @@ const authUtils = new function() {
 			.spread((user, passwordIsCorrect) => {
 				//check password
 				if (passwordIsCorrect === false) {
-					throw utils.initError('UNAUTHORIZED', 'incorrect password');
+					throw utils.initError('FORBIDDEN', 'incorrect password');
 				}
 
 				return user;
@@ -50,7 +49,7 @@ const authUtils = new function() {
 			.then((response) => {			
 				//validate vk response
 				if (!response.data.email || response.data.email == '') {
-					throw utils.initError('UNAUTHORIZED', 'incorrect vk auth data: empty user email');
+					throw utils.initError('FORBIDDEN', 'incorrect vk auth data: empty user email');
 				}					
 
 				const userEmail = response.data.email;
@@ -58,7 +57,7 @@ const authUtils = new function() {
 			})
 			.then((userData) => {
 				if (!userData.length) {
-					throw utils.initError('UNAUTHORIZED', 'incorrect vk auth data: no user with this email');
+					throw utils.initError('FORBIDDEN', 'incorrect vk auth data: no user with this email');
 				}
 
 				return userData[0];
@@ -89,7 +88,7 @@ const authUtils = new function() {
 			.then((response) => {				
 				//validate google response
 				if (!response.data.access_token || response.data.access_token == '') {
-					throw utils.initError('UNAUTHORIZED', 'incorrect google auth data: empty access_token');
+					throw utils.initError('FORBIDDEN', 'incorrect google auth data: empty access_token');
 				}
 
 				//send request to google+ api to get email (user data)
@@ -104,7 +103,7 @@ const authUtils = new function() {
 			.then((response) => {
 				//validate google response
 				if (!response.data.email || response.data.email == '')  {
-					throw utils.initError('UNAUTHORIZED', 'incorrect google auth data: empty user email');
+					throw utils.initError('FORBIDDEN', 'incorrect google auth data: empty user email');
 				}
 
 				const userEmail = response.data.email;
@@ -112,7 +111,7 @@ const authUtils = new function() {
 			})
 			.then((userData) => {
 				if (!userData.length) {
-					throw utils.initError('UNAUTHORIZED', 'incorrect google auth data: no user with this email');
+					throw utils.initError('FORBIDDEN', 'incorrect google auth data: no user with this email');
 				}
 
 				return userData[0];

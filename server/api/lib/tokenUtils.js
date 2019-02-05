@@ -191,7 +191,7 @@ const tokenUtils = new function() {
 			})
 			.then((result) => {					
 				if (result.error || !result.payload) {
-					throw utils.initError('UNAUTHORIZED', 'token error: invalid access token: ' + result.error.message);
+					throw utils.initError('FORBIDDEN', 'token error: invalid access token: ' + result.error.message);
 				}
 
 				// get user
@@ -199,7 +199,7 @@ const tokenUtils = new function() {
 			})
 			.then((userData) => {
 				if (!userData.length)  {
-					throw utils.initError('UNAUTHORIZED', 'no user with this access token');
+					throw utils.initError('FORBIDDEN', 'no user with this access token');
 				}
 
 				const user = userData[0];

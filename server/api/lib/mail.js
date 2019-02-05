@@ -23,7 +23,7 @@ const mail = new function() {
 		// отправляем
 		return transport.sendMail({
 			from: config.mail_settings.from,
-			to: data.email,  //!!!TODO: data.email
+			to: data.email,
 			subject: config.mail_settings.confirmEmailSubject,
 			html: letterHtml
 		})
@@ -51,7 +51,7 @@ const mail = new function() {
 		// отправляем
 		return transport.sendMail({
 			from: config.mail_settings.from,
-			to: data.email,  //!!!TODO: data.email
+			to: data.email,
 			subject: config.mail_settings.resetPasswordSubject,
 			html: letterHtml
 		})

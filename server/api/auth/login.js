@@ -31,7 +31,7 @@ router.route('/login')
 					validationErrors.push('incorrect social login data: empty code');
 				}
 				if (validationErrors.length !== 0) {
-					throw utils.initError('UNAUTHORIZED', validationErrors);
+					throw utils.initError('FORBIDDEN', validationErrors);
 				}
 
 				const service = req.query.state ? req.query.state : 'google';

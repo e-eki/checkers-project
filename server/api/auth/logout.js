@@ -40,7 +40,7 @@ router.route('/logout')
 			.then((result) => {
 				// validate result
 				if (result.error || !result.payload) {
-					throw utils.initError('UNAUTHORIZED', 'token error: invalid access token: ' + result.error.message);
+					throw utils.initError('FORBIDDEN', 'token error: invalid access token: ' + result.error.message);
 				}
 
 				return tokenUtils.deleteAllRefreshTokens(result.payload.userId);
