@@ -33,6 +33,7 @@ router.route('/refreshtokens/')
 				}
 
 				let tasks = [];
+				//todo! check expires_in in refresh_token!
 				tasks.push(result.payload.userId);
 				// удаляем из БД все рефреш токены юзера (залогиниться можно только с одного устройства единовременно)
 				tasks.push(tokenUtils.deleteAllRefreshTokens(result.payload.userId));
