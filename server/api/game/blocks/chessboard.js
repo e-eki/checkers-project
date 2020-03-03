@@ -19,8 +19,8 @@ class Chessboard {
 		this.actors = [];  
 		
 		this.grid = this.fillGrid();   //??
-		this.actorsData = (actorsData !== undefined) ? actorsData : this.fillStartActorsData();		
-		this.actors = this.fillActorsByActorsData();  //??
+		this.actorsData = (actorsData !== undefined) ? actorsData : this.fillStartActorsData(this.boardSize, this.mode);		
+		this.actors = this.fillActorsByActorsData(this.actorsData);  //??
 	}
 
 	fillGrid() {
@@ -38,17 +38,17 @@ class Chessboard {
 	}
 	
 	// массив с данными актеров
-	fillStartActorsData() {
+	fillStartActorsData(boardSize, mode) {
 		let actorsData = [];
 
-		const firstRowWhite = this.boardSize/2 + 1; 
-		const lastRowWhite = this.boardSize - 1;
+		const firstRowWhite = boardSize/2 + 1; 
+		const lastRowWhite = boardSize - 1;
 		const firstRowBlack = 0;
-		const lastRowBlack = this.boardSize/2 - 2;
+		const lastRowBlack = boardSize/2 - 2;
 
-		for (let y = 0; y < this.boardSize; y++) {
+		for (let y = 0; y < boardSize; y++) {
 			//actorsData[y] = [];	
-			for (let x = 0; x < this.boardSize; x++) {				
+			for (let x = 0; x < boardSize; x++) {				
 				// актеры могут быть только на черных клетках
 				if ((y + x) % 2 !== 0) {
 					let actorColor = null;
@@ -61,7 +61,7 @@ class Chessboard {
 					}
 					// если есть цвет, то есть актер на данной клетке
 					if (actorColor) {
-						let actorType = (this.mode == 'classic') ? 'checker' : 'dam';  //TODO
+						let actorType = (mode == 'classic') ? 'checker' : 'dam';  //TODO
 
 						/*actorsData[y].push({
 
@@ -92,7 +92,7 @@ class Chessboard {
 	}
 
 	// actors - массив с данными актеров
-	fillActorsByActorsData() {
+	fillActorsByActorsData(actorsData) {
 		let actors = [];
 
 		/*for (let y = 0; y < this.boardSize; y++) {
@@ -115,7 +115,7 @@ class Chessboard {
 			}
 		}*/
 
-		this.actorsData.forEach(function(actorData) {
+		actorsData.forEach(function(actorData) {
 			const position = new Vector(actorData.x, actorData.y);
 			const color = actorData.color;
 			const actor = (actorData.type == 'checker') ? (new Checker(color, position)) : (new Dam(color, position));
@@ -126,10 +126,10 @@ class Chessboard {
 		return actors;
 	}
 
-	fillActorsDataByActors() {
+	fillActorsDataByActors(actors) {
 		let actorsData = [];
 
-		this.actors.forEach(function(actor) {
+		actors.forEach(function(actor) {
 			actorsData.push({
 				color: actor.color,
 				type: actor.type,

@@ -58,7 +58,7 @@ router.route('/lkUserData')
 				return utils.sendResponse(res, lkData);
 			})
 			.catch((error) => {
-				return utils.sendErrorResponse(res, error, 401);
+				return utils.sendErrorResponse(res, error);
 			});
 	})
 

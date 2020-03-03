@@ -22,9 +22,20 @@ router.route('/registration')
 		return Promise.resolve(true)
 			.then(() => {
 				//validate req.body
-				if (!req.body.email || req.body.email == '') throw new Error('incorrect registration data: empty email');
-				else if (!req.body.login || req.body.login == '') throw new Error('incorrect registration data: empty login');
-				else if (!req.body.password || req.body.password == '') throw new Error('incorrect registration data: empty password');
+				let validationErrors = [];
+
+				if (!req.body.email || req.body.email == '') {
+					validationErrors.push('empty email');
+				}
+				if (!req.body.login || req.body.login == '') {
+					validationErrors.push('empty login');
+				}
+				if (!req.body.password || req.body.password == '') {
+					validationErrors.push('empty password');
+				}
+				if (validationErrors.length !== 0) {
+					throw utils.initError('VALIDATION_ERROR', validationErrors);
+				}
 
 				//check email & login duplicates
 				let tasks = [];
@@ -35,14 +46,19 @@ router.route('/registration')
 			})
 			.spread((emailDuplicates, loginDuplicates) => {
 				// если занят логин, то выбрасываем ошибку
-				if (loginDuplicates.length) throw new Error('login already exists');
+				if (loginDuplicates.length) {
+					throw utils.initError('VALIDATION_ERROR', 'login duplicate: Login exists in database');
+				}
 
 				// если занято мыло, то проверяем - подтверждено ли, если да, то выбрасываем ошибку, что оно занято
 				// если нет, то выбрасываем ошибку, что оно занято - надо подтвердить
-				if (emailDuplicates.length) {
-					
-					if (emailDuplicates[0].isEmailConfirmed) throw new Error('email already exists');
-					else return utils.sendErrorResponse(res, 'email already exists, but not confirmed', 401);  //TODO!!!
+				if (emailDuplicates.length) {			
+					if (emailDuplicates[0].isEmailConfirmed) {
+						throw utils.initError('VALIDATION_ERROR', 'email duplicate: Email exists in database');
+					}
+					else {
+						throw utils.initError('UNAUTHORIZED', 'email_duplicate: Email exists in database, but not confirmed');
+					}
 				}
 
 				return utils.makePasswordHash(req.body.password);
@@ -66,6 +82,11 @@ router.route('/registration')
 				return userModel.create(userData);
 			})
 			.then((dbResponse) => {
+				if (dbResponse.errors) {
+					// log errors
+					utils.logDbErrors(dbResponse.errors);
+				};
+
 				const data = {
 					login: userData.login,
 					email: userData.email,
@@ -75,9 +96,8 @@ router.route('/registration')
 				//отправляем письмо с кодом подтверждения на указанный имейл
 				return mail.sendConfirmEmailLetter(data)
 					.catch((error) => {
-						// возможную ошибку на этапе отправки письма игнорируем - только логируем ее
-						console.error('email error: ', error.message);
-						return null;
+						// возможная ошибка на этапе отправки письма
+						throw utils.initError('INVALID_INPUT_DATA', 'Email not exists');					
 					})
 			})
 			.then((data) => {
@@ -90,7 +110,7 @@ router.route('/registration')
 				return utils.sendResponse(res, 'user successfully register', 201);
 			})
 			.catch((error) => {
-				return utils.sendErrorResponse(res, error, 401);
+				return utils.sendErrorResponse(res, error);
 			});
 	})
 

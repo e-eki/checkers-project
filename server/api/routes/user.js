@@ -39,7 +39,7 @@ router.route('/user/:id')
         return utils.sendResponse(res, data);
       })
       .catch((error) => {
-				return utils.sendErrorResponse(res, error, 500);
+				return utils.sendErrorResponse(res, error);
 			});
   })
 
@@ -52,15 +52,12 @@ router.route('/user/:id')
 		accessToken
 	}*/
   .put(function(req, res) {
-
     //TODO: проверка токенов
     /*return userModel.update(req.params.id, req.body)
       .then((data) => {
-
         return utils.sendResponse(res, data);
       })
       .catch((error) => {
-
 				return utils.sendErrorResponse(res, error, 500);
       });*/
       
@@ -68,7 +65,6 @@ router.route('/user/:id')
   })
 
   .delete(function(req, res) {
-
     /*userModel.delete(req.params.id)
       .then((data) => {
         res.send(data)

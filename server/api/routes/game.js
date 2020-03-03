@@ -35,6 +35,25 @@ router.route('/game')
 				return tokenUtils.findUserByAccessToken(accessToken);
 			})
 			.then((user) => {
+				//validate req.body
+				let validationErrors = [];
+
+				if (!req.body.userColor || req.body.userColor === '') {
+					validationErrors.push('empty userColor value');
+				}
+				if (!req.body.boardSize || req.body.boardSize === 0) {
+					validationErrors.push('empty boardSize value');
+				}
+				if (!req.body.level || req.body.level === '') {
+					validationErrors.push('empty level value');
+				}
+				if (!req.body.mode || req.body.mode === '') {
+					validationErrors.push('empty mode value');
+				}
+				if (validationErrors.length !== 0) {
+					throw utils.initError('VALIDATION_ERROR', validationErrors);
+				}
+
 				// инициализация шахматной доски - начальная расстановка актеров на доске
 				//const chessboard = new Chessboard(req.body.userColor, req.body.boardSize, req.body.level, req.body.mode);
 				
@@ -44,7 +63,7 @@ router.route('/game')
 					userId:  user._id,
 					isFinished  :  false,
 					movesCount:  0,   //??
-					totalOfGame: 'standoff',   //??
+					totalOfGame: 'standoff',   //TODO!!! rules in db
 
 					userColor: req.body.userColor,
 					boardSize: req.body.boardSize,
@@ -59,21 +78,16 @@ router.route('/game')
 			})
 			.then((dbResponse) => {
 				if (dbResponse.errors) {
-					// log errors
-					dbResponse.errors.forEach((error) => {
-						console.log('game saved with error: ' + error.message);
-					});
+					utils.logDbErrors(dbResponse.errors);
 
 					// ? если в БД не удалось сохранить игру - то ошибка, надо повторить всё сначала
-					throw new Error('game saved with error');
+					throw utils.initError('INTERNAL_SERVER_ERROR', 'game error');
 				}
 
 				return utils.sendResponse(res, 'game successfully saved', 201);
 			})
 			.catch((error) => {
-				if (error.message == 'game saved with error') return utils.sendErrorResponse(res, error, 500);  //TODO
-
-				return utils.sendErrorResponse(res, error, 401);
+				return utils.sendErrorResponse(res, error);
 			});
 	})
 	
@@ -106,20 +120,16 @@ router.route('/game')
 			})
 			.then((dbResponse) => {
 				if (dbResponse.errors) {
-					// log errors - TODO logger!
-					dbResponse.errors.forEach((error) => {
-						console.log('game update with error: ' + error.message);
-					});
+					utils.logDbErrors(dbResponse.errors);
+					
 					// ? если в БД не удалось сохранить игру - то ошибка, надо повторить всё сначала
-					throw new Error('game update with error');
+					throw utils.initError('INTERNAL_SERVER_ERROR', 'game error');
 				}
 
 				return utils.sendResponse(res, 'game successfully update');
 			})
 			.catch((error) => {
-				if (error.message == 'game update with error') return utils.sendErrorResponse(res, error, 500);  //TODO
-
-				return utils.sendErrorResponse(res, error, 401);
+				return utils.sendErrorResponse(res, error);
 			});
 	})
 	

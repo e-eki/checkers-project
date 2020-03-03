@@ -18,7 +18,6 @@ router.route('/gameturn')
 
 		return Promise.resolve(true)
 			.then(() => {
-
 				const headerAuthorization = req.header('Authorization') || '';
 				const accessToken = tokenUtils.getTokenFromHeader(headerAuthorization);
 
@@ -36,7 +35,7 @@ router.route('/gameturn')
 
 				chessboard.set(AIturn);  //TODO
 
-				const newActorsData = chessboard.fillActorsDataByActors();
+				const newActorsData = chessboard.fillActorsDataByActors(chessboard.actors);
 				game.actorsData = newActorsData;
 
 				//??
@@ -55,19 +54,14 @@ router.route('/gameturn')
 			.spread((AIturn, dbResponse) => {
 
 				if (dbResponse.errors) {
-					// log errors
-					dbResponse.errors.forEach((error) => {
-						console.log('game update with error: ' + error.message);
-					});
-					throw new Error('game update with error');
+					utils.logDbErrors(dbResponse.errors);
+					throw utils.initError('INTERNAL_SERVER_ERROR', 'game error');
 				}
 
 				return utils.sendResponse(res, AIturn, 201);
 			})
 			.catch((error) => {
-				if (error.message == 'game update with error') return utils.sendErrorResponse(res, error, 500);  //TODO
-
-				return utils.sendErrorResponse(res, error, 401);
+				return utils.sendErrorResponse(res, error);
 			});
 	})
 
@@ -79,11 +73,13 @@ router.route('/gameturn')
 			targetPosition,
 		},
 	}*/
-	.post(function(req, res) {
+	.put(function(req, res) {
 		
 		return Promise.resolve(true)
 			.then(() => {
-				if (!req.body.userTurn) throw new Error('no userTurnData in req');
+				if (!req.body.userTurn) {
+					throw utils.initError('VALIDATION_ERROR', 'incorrect game turn data: empty user turn data');
+				}
 
 				const headerAuthorization = req.header('Authorization') || '';
 				const accessToken = tokenUtils.getTokenFromHeader(headerAuthorization);
@@ -97,7 +93,7 @@ router.route('/gameturn')
 
 				chessboard.setTurn(req.body.userTurn);
 
-				const newActorsData = chessboard.fillActorsDataByActors();
+				const newActorsData = chessboard.fillActorsDataByActors(chessboard.actors);
 				game.actorsData = newActorsData;
 				//??
 				game.movesCount++;
@@ -109,23 +105,18 @@ router.route('/gameturn')
 			})
 			.then((dbResponse) => {
 				if (dbResponse.errors) {
-					// log errors
-					dbResponse.errors.forEach((error) => {
-						console.log('game update with error: ' + error.message);
-					});
-					throw new Error('game update with error');
+					utils.logDbErrors(dbResponse.errors);
+					throw utils.initError('INTERNAL_SERVER_ERROR', 'game error');
 				}
 
-				return utils.sendResponse(res, 'userTurn set', 201);
+				return utils.sendResponse(res, 'user turn set', 201);
 			})
 			.catch((error) => {
-				if (error.message == 'game update with error') return utils.sendErrorResponse(res, error, 500);  //TODO
-
-				return utils.sendErrorResponse(res, error, 401);
+				return utils.sendErrorResponse(res, error);
 			});
 	})
 	
-	.put(function(req, res) {
+	.post(function(req, res) {
 		return utils.sendErrorResponse(res, 'UNSUPPORTED_METHOD');
 	})
 	

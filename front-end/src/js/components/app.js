@@ -21,7 +21,7 @@ export default class App extends Component {
                 <Route path="/registration" component={RegistrationPage} />
                 <Route path="/recoveryPassword" component={RecoveryPasswordPage} />
                 <Route path="/emailConfirm" component={EmailConfirmPage} />
-                <Route path="/resetPassword" component={ResetPasswordPage} />
+                <Route path="/resetPassword/" component={ResetPasswordPage} />
                 
 
                 <Route component={NotFoundPage} />

@@ -18,14 +18,21 @@ router.route('/login')
 	.get(function(req, res) {
 
 		return Promise.resolve(true)
-			.then(() => {				
+			.then(() => {	
+				let validationErrors = [];
+
 				//validate req.query
 				// (code & state sends by vk as GET-parameter)
 				// (code & scope sends by google as GET-parameter)
-				if ((!req.query.state || req.query.state == '') && (!req.query.scope || req.query.scope == ''))
-					throw new Error('empty service name');
-
-				else if (!req.query.code || req.query.code == '') throw new Error('incorrect social login data: empty code');
+				if ((!req.query.state || req.query.state == '') && (!req.query.scope || req.query.scope == '')) {
+					validationErrors.push('incorrect social login data: empty service name');
+				}
+				else if (!req.query.code || req.query.code == '') {
+					validationErrors.push('incorrect social login data: empty code');
+				}
+				if (validationErrors.length !== 0) {
+					throw utils.initError('FORBIDDEN', validationErrors);
+				}
 
 				const service = req.query.state ? req.query.state : 'google';
 				//const redirectUri = config.server.host + ':' + config.server.host + '/api' + req.route.path;  //???
@@ -40,7 +47,7 @@ router.route('/login')
 				return utils.sendResponse(res, tokensData);
 			})
 			.catch((error) => {
-				return utils.sendErrorResponse(res, error, 401);
+				return utils.sendErrorResponse(res, error);
 			});
 	})
 
@@ -51,10 +58,18 @@ router.route('/login')
   	.post(function(req, res) {
 
 		return Promise.resolve(true)
-			.then(() => {				
+			.then(() => {	
+				let validationErrors = [];			
 				//validate req.body
-				if (!req.body.email || req.body.email == '') throw new Error('incorrect login data: empty email');
-				else if (!req.body.password || req.body.password == '') throw new Error('incorrect login data: empty password');
+				if (!req.body.email || req.body.email == '') {
+					validationErrors.push('empty email');
+				}
+				else if (!req.body.password || req.body.password == '') {
+					validationErrors.push('empty password');
+				}
+				if (validationErrors.length !== 0) {
+					throw utils.initError('VALIDATION_ERROR', validationErrors);
+				}
 
 				const data = {
 					email: req.body.email,
@@ -67,7 +82,7 @@ router.route('/login')
 				return utils.sendResponse(res, tokensData);  
 			})
 			.catch((error) => {
-				return utils.sendErrorResponse(res, error, 401);
+				return utils.sendErrorResponse(res, error);
 			});
 	})
 
@@ -112,8 +127,7 @@ let loginAction = function(service, data) {
 					_promise = authUtils.getUserByGoogleAuth(data.code);
 					break;
 				default:
-					throw new Error('login error: no service name');
-					break;
+					throw utils.initError('INTERNAL_SERVER_ERROR');
 			}
 
 			return _promise;
