@@ -1,6 +1,0 @@
-
-### Повторная отправка письма подтверждения имейла
-POST /api/emailConfirm/ HTTP/1.1
-Host: {{host}}
-Authorization: Token eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YmI4ZjBhNmQ2NGZiNDBhODg4MjgxMjgiLCJ1c2VyUm9sZSI6InVzZXIiLCJpYXQiOjE1Mzg5MzQ3MDksImV4cCI6MTUzODkzNTkwOSwic3ViIjoiYWNjZXNzIn0.qLu_NFTZ9-HlvTTyeU2rGNRb506ZcN3_a_tEzWM5HHC_y0SBJMVf-3D2Z_sfOqL-9fyIM-ArR5DOd33SmsK-Wg
-
