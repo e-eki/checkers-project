@@ -15,7 +15,7 @@
     "express": "^4.16.3",
     "jsonwebtoken": "^8.3.0",
     "mongoose": "^5.2.14",
-    "nodemailer": "^4.6.8",
+    "nodemailer": "^6.4.16",
     "path": "^0.12.7",
     "qs": "^6.5.2",
     "uuid": "^3.3.2"
